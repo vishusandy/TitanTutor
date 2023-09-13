@@ -1,6 +1,6 @@
 
 import type { Session } from "./session";
-export type NextFunc = (session: Session) => string | null;
+import type { Config } from "./config";
 
 export interface Lesson extends Iterator<string>, Iterable<string> {
     completed: string[];
@@ -36,7 +36,6 @@ export class PregenLesson implements Lesson {
 
     batch(n: number): string[] {
         let words: string[] = []
-
         for (let i = 0; i < n; i++) {
             let word = this.words.shift();
 
