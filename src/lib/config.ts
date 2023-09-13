@@ -13,8 +13,7 @@ export const enum KbMapping {
 
 export const enum CheckMode {
     Char = 0,
-    WholeWord = 1, // move to next word after hitting space
-    WholeWordRepeat = 2, // redo current word if wrong
+    WordRepeat = 1, // redo current word if wrong
 }
 
 
@@ -56,7 +55,8 @@ export type Config = {
     wordgen: WordGenMode;
     tts?: Audio;
     duration: Duration;
-    showWords: number;
+    wordBatchSize: number;
+    minQueue: number;
 }
 
 
@@ -64,11 +64,12 @@ export function defaultConfig(): Config {
     return {
         kb: KbTarget.Dvorak,
         mapping: noMap,
-        check_mode: CheckMode.Char,
+        check_mode: CheckMode.WordRepeat,
         backspace: BackspaceMode.Accept,
         wordgen: WordGenMode.Pregen,
         tts: undefined,
         duration: { length: 100, type: DurationType.NumWords },
-        showWords: 10
+        wordBatchSize: 4,
+        minQueue: 2,
     };
 }

@@ -1,167 +1,120 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { type Config, BackspaceMode, CheckMode } from './config';
+	import { type Config, CheckMode } from './config';
 	import type { Session } from './session';
 	import Word from './word.svelte';
-	import { LetterState, type WordState, blank_state } from './types';
+	import { WordState } from './word_state';
 
 	export let session: Session;
 	let config: Config = session.config;
 
-	let currentWord: WordState = blank_state;
+	let currentWord: WordState = new WordState('');
 	let history: WordState[] = [];
-	let queue: string[] = [];
-	// let textbox: HTMLDivElement | undefined;
+	let queue: WordState[] = [];
+
 	nextWord();
 
 	onMount(() => {
 		document.addEventListener('keydown', handleInput);
-		currentWord = blank_state;
-		history = [];
-		queue = [];
 	});
 
 	onDestroy(() => {
 		document.removeEventListener('keydown', handleInput);
-		currentWord = blank_state;
-		history = [];
-		queue = [];
 	});
+
+	function refreshWord() {
+		currentWord = currentWord; // trigger update
+	}
+
+	function refreshHistory() {
+		history = history;
+	}
+
+	function refreshQueue() {
+		queue = queue;
+	}
+
+	function reset() {
+		currentWord.reset(currentWord.word);
+		refreshWord();
+	}
+
+	function lessonCompleted() {
+		endLesson();
+	}
 
 	function endLesson() {}
 
-	function resetWord(word: string) {
-		currentWord.word = word;
-		currentWord.state = currentWord.word.split('').map((_) => LetterState.Incomplete);
-		currentWord.input = '';
-	}
-
-	function mapState(): LetterState[] {
-		let rst = currentWord.state.map((_, i) => {
-			if (currentWord.input.length === i) return LetterState.Active;
-			if (currentWord.input.length > i) {
-				if (currentWord.word[i] === currentWord.input[i]) return LetterState.Complete;
-				return LetterState.Error;
-			} else return LetterState.Incomplete;
-		});
-		return rst;
-	}
-
 	function fillQueue() {
 		if (queue.length === 0) {
-			queue = session.lesson.batch(config.showWords);
+			queue = session.lesson.batch(config.wordBatchSize).map((w) => {
+				return new WordState(w);
+			});
 		}
 	}
 
 	function nextWord() {
-		if (currentWord && currentWord.word != '') {
+		if (!currentWord.empty()) {
 			history.push(currentWord);
+			refreshHistory();
 		}
 
 		fillQueue();
 
-		let word = queue.shift();
-		if (word === undefined) {
-			endLesson();
+		let w = queue.shift();
+		if (w === undefined) {
+			lessonCompleted();
 			return;
 		}
 
-		resetWord(word);
-		console.log(currentWord);
-		console.log(history);
+		refreshQueue();
+		currentWord = w;
 	}
 
-	function backspace(e: KeyboardEvent): boolean {
-		if (e.key == 'Backspace') {
-			if (config.backspace == BackspaceMode.Accept) {
-				currentWord.input = currentWord.input.slice(0, -1);
-				currentWord.state = mapState();
+	function processKey(e: KeyboardEvent) {
+		if (currentWord.isBackspace(config, e) || !currentWord.add(config, e)) {
+			refreshWord();
+			return;
+		}
+		refreshWord();
+	}
+
+	function modeChar(e: KeyboardEvent) {
+		processKey(e);
+
+		if (currentWord.atEnd()) {
+			nextWord();
+		}
+	}
+
+	function modeWord(e: KeyboardEvent) {
+		if (e.key === ' ' || e.key === 'Enter') {
+			if (currentWord.completed()) {
+				nextWord();
+			} else {
+				reset();
 			}
 
 			e.preventDefault();
-			return true;
+			return;
 		}
 
-		return false;
-	}
-
-	function addChar(e: KeyboardEvent): boolean {
-		let mapped = config.mapping(e.key);
-
-		if (mapped == null) {
-			return false;
-		}
-
-		e.preventDefault();
-		currentWord.input += mapped;
-		currentWord.state = mapState();
-
-		return true;
+		processKey(e);
 	}
 
 	function handleInput(e: KeyboardEvent) {
 		switch (config.check_mode) {
 			case CheckMode.Char:
-				if (backspace(e) || !addChar(e)) return;
-
-				if (currentWord.input.length === currentWord.word.length) {
-					nextWord();
-				}
+				modeChar(e);
 				break;
-
+			case CheckMode.WordRepeat:
+				modeWord(e);
+				break;
 			default:
 				break;
 		}
 
 		return;
-		if (
-			e.key == ' ' &&
-			config.check_mode == CheckMode.Char &&
-			currentWord.input.length < currentWord.word.length
-		) {
-			currentWord.input += ' ';
-			currentWord.state = mapState();
-			e.preventDefault();
-			return;
-		}
-
-		if (e.key == ' ' || e.key == 'Enter') {
-			if (currentWord.input != currentWord.word) {
-				if (config.check_mode == CheckMode.WholeWordRepeat) {
-					currentWord.input = '';
-					currentWord.state = mapState();
-				} else {
-					nextWord();
-				}
-			}
-			console.log(`space=${e.key}`);
-			return;
-		} else if (e.key == 'Backspace') {
-			if (config.backspace == BackspaceMode.Accept) {
-				currentWord.input = currentWord.input.slice(0, -1);
-				currentWord.state = mapState();
-			}
-			e.preventDefault();
-			return;
-		}
-
-		let mapped = config.mapping(e.key);
-
-		if (mapped == null) {
-			return;
-		}
-
-		e.preventDefault();
-		currentWord.input += mapped;
-		currentWord.state = mapState();
-
-		if (
-			config.backspace != BackspaceMode.Accept &&
-			config.check_mode == CheckMode.WholeWordRepeat &&
-			currentWord.input.length >= currentWord.word.length
-		) {
-			nextWord();
-		}
 	}
 </script>
 
@@ -170,5 +123,8 @@
 		<Word word={w.word} state={w.state} />
 	{/each}
 	<Word word={currentWord.word} state={currentWord.state} active={true} />
+	{#each queue as q}
+		<Word word={q.word} state={q.state} />
+	{/each}
 </div>
 <div id="typing">{currentWord.input}</div>

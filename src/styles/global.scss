@@ -1,0 +1,7 @@
+:not(.active) .complete {
+    color: green;
+}
+
+.active .complete {
+    color: grey;
+}

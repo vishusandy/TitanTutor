@@ -21,9 +21,6 @@
 	.active {
 		color: #eeee0f;
 	}
-	.complete {
-		color: green;
-	}
 	.error {
 		color: #d43f3f;
 	}

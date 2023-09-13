@@ -15,9 +15,12 @@
 
 <style>
 	.word {
-		margin: 0px;
+		margin: 0.1rem 0.2rem;
 	}
 	.active {
 		border: 1px solid green;
+	}
+	:not(.active) {
+		border: 1px solid transparent;
 	}
 </style>
