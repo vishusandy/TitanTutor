@@ -1,0 +1,20 @@
+
+export const enum LetterState {
+    Incomplete = 0,
+    Active = 1,
+    Complete = 2,
+    Error = 3,
+}
+
+export type WordState = {
+    word: string;
+    state: LetterState[];
+    input: string;
+}
+
+export const blank_state = {
+    word: '',
+    state: [],
+    input: '',
+}
+
