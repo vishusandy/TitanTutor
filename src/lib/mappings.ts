@@ -1,10 +1,38 @@
 export interface Mapping {
     get(key: string): string | undefined;
+    controlKey(key: string): boolean;
 }
+
+const functionKeyList = [
+    'Delete',
+    'Enter',
+    'ArrowDown',
+    'ArrowUp',
+    'ArrowLeft',
+    'ArrowRight',
+    'Home',
+    'End',
+    'PageUp',
+    'PageDown',
+    // 'Tab',
+    'Escape',
+    'Insert',
+    '',
+    '',
+    '',
+    '',
+    '',
+];
+
+const functionKeys = new Set(functionKeyList);
+
 
 export class NoMap implements Mapping {
     get(key: string): string | undefined {
         return key;
+    }
+    controlKey(key: string): boolean {
+        return functionKeys.has(key);
     }
 }
 

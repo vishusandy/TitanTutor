@@ -2,7 +2,7 @@
 	import Letter from './letter.svelte';
 	import type { LetterState } from '$lib/types';
 
-	export let word: string;
+	export let word: string[];
 	export let state: LetterState[];
 	export let active: boolean = false;
 </script>
@@ -16,11 +16,10 @@
 <style>
 	.word {
 		margin: 0.1rem 0.2rem;
+		border: 1px solid transparent;
 	}
 	.active {
+		margin: 0.1rem 0.2rem;
 		border: 1px solid green;
-	}
-	:not(.active) {
-		border: 1px solid transparent;
 	}
 </style>

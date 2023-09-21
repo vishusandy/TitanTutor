@@ -1,18 +1,8 @@
-import { LetterState } from './types';
 
+export function stop(e: Event) {
+    e.preventDefault();
+}
 
-function letterState(input: string, word: string, i: number): LetterState {
-    if (input.length < i) {
-        return LetterState.Incomplete;
-    }
-
-    if (input.length === i) {
-        return LetterState.Active;
-    }
-
-    if (input[i] === word[i]) {
-        return LetterState.Complete;
-    }
-
-    return LetterState.Error;
+export function onlyFocus(e: MouseEvent) {
+    
 }
