@@ -1,7 +1,7 @@
 
 import { type Config, CheckMode } from './config';
 import type { Session } from './session';
-import { Action } from './types';
+import { Action, LetterState } from './types';
 import { WordState } from './word_state';
 
 export class Tutor {
@@ -19,6 +19,7 @@ export class Tutor {
 
     fillQueue() {
         if (this.queue.length < this.config.minQueue) {
+            // call bacth() to get some new words, then make a new WordState for each word, and finally add them to the queue
             this.queue.push(...this.session.lesson.batch(this.config.wordBatchSize - this.queue.length).map((w) => {
                 return new WordState(w);
             }));
@@ -37,13 +38,16 @@ export class Tutor {
             return Action.lessonCompleted;
         }
 
+        if (w.state.length > 0) {
+            w.state[0] = LetterState.Active;
+        }
         this.currentWord = w;
         return Action.Refresh;
     }
 
     processKey(e: KeyboardEvent): Action {
         if (!this.currentWord.isBackspace(this.config, e)) {
-            this.currentWord.add(this.config, e);
+            this.currentWord.isChar(this.config, e);
         }
         // if (this.currentWord.isBackspace(this.config, e) || !this.currentWord.add(this.config, e)) {
         //     return Action.Refresh;
@@ -68,6 +72,8 @@ export class Tutor {
                 act = this.nextWord();
             } else {
                 act = Action.Refresh;
+                this.currentWord.reset(this.currentWord.word);
+                this.currentWord.state[0] = LetterState.Active;
             }
 
             e.preventDefault();

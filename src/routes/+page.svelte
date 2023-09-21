@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Typing from '$lib/typing.svelte';
+	import Typing from '$lib/components/typing.svelte';
 	import type { Session } from '$lib/session';
 	import { pregen_test } from '$lib/lesson';
 	import { defaultConfig } from '$lib/config';

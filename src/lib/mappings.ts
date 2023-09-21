@@ -1,99 +1,39 @@
-export type KeyMap = {
-    a: string,
-    b: string,
-    c: string,
-    d: string,
-    e: string,
-    f: string,
-    g: string,
-    h: string,
-    i: string,
-    j: string,
-    k: string,
-    l: string,
-    m: string,
-    n: string,
-    o: string,
-    p: string,
-    q: string,
-    r: string,
-    s: string,
-    t: string,
-    u: string,
-    v: string,
-    w: string,
-    x: string,
-    y: string,
-    z: string,
-    A: string,
-    B: string,
-    C: string,
-    D: string,
-    E: string,
-    F: string,
-    G: string,
-    H: string,
-    I: string,
-    J: string,
-    K: string,
-    L: string,
-    M: string,
-    N: string,
-    O: string,
-    P: string,
-    Q: string,
-    R: string,
-    S: string,
-    T: string,
-    U: string,
-    V: string,
-    W: string,
-    X: string,
-    Y: string,
-    Z: string,
-    '1': string,
-    '2': string,
-    '3': string,
-    '4': string,
-    '5': string,
-    '6': string,
-    '7': string,
-    '9': string,
-    '0': string,
-    '!': string,
-    '@': string,
-    '#': string,
-    '$': string,
-    '%': string,
-    '^': string,
-    '&': string,
-    '*': string,
-    '(': string,
-    ')': string,
-    '{': string,
-    '}': string,
-    '[': string,
-    ']': string,
-    '/': string,
-    '?': string,
-    '=': string,
-    '+': string,
-    '-': string,
-    '_': string,
-    '\'': string,
-    '"': string,
-    ',': string,
-    '<': string,
-    '.': string,
-    '>': string,
-    ':': string,
-    ';': string,
-    '`': string,
-    '~': string,
-};
-
-export type KeyboardMap = (key: string) => string | null;
-
-export function noMap(key: string): string | null {
-    return key.length === 1 ? key : null;
+export interface Mapping {
+    get(key: string): string | undefined;
 }
+
+export class NoMap implements Mapping {
+    get(key: string): string | undefined {
+        return key;
+    }
+}
+
+export type KbRows = {
+    bottomLeft: string[],
+    topLeft: string[],
+    homeLeft: string[],
+    bottomCenter: string[],
+    topCenter: string[],
+    homeCenter: string[],
+    bottomRight: string[],
+    topRight: string[],
+    homeRight: string[],
+}
+
+
+
+/*
+Alt
+Compose
+Shift
+Delete
+Home
+End
+PageUp
+PageDown
+Control
+Shift
+Tab
+Alt
+F1-12
+*/

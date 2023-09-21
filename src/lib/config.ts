@@ -1,5 +1,5 @@
-import type Word from "./word.svelte";
-import { type KeyboardMap, noMap } from "./mappings";
+// import { qwertyToDvorak } from "./mappings/qwerty_to_dvorak";
+import { type Mapping, NoMap } from "./mappings";
 
 export const enum KbTarget {
     Qwerty = 0,
@@ -49,7 +49,7 @@ export const enum WordGenMode {
 
 export type Config = {
     kb: KbTarget;
-    mapping: KeyboardMap;
+    mapping: Mapping;
     check_mode: CheckMode;
     backspace: BackspaceMode;
     wordgen: WordGenMode;
@@ -63,7 +63,8 @@ export type Config = {
 export function defaultConfig(): Config {
     return {
         kb: KbTarget.Dvorak,
-        mapping: noMap,
+        mapping: new NoMap(),
+        // mapping: qwertyToDvorak,
         check_mode: CheckMode.WordRepeat,
         backspace: BackspaceMode.Accept,
         wordgen: WordGenMode.Pregen,

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { Action } from './types';
-	import { Tutor } from './tutor';
-	import type { Session } from './session';
+	import { Action } from '$lib/types';
+	import { Tutor } from '$lib/tutor';
+	import type { Session } from '$lib/session';
 	import Word from './word.svelte';
 
 	export let session: Session;
@@ -42,3 +42,6 @@
 	{/each}
 </div>
 <div id="typing">{tutor.currentWord.input}</div>
+
+<style>
+</style>

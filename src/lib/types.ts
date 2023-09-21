@@ -18,9 +18,3 @@ export type WordState = {
     input: string;
 }
 
-export const blank_state = {
-    word: '',
-    state: [],
-    input: '',
-}
-

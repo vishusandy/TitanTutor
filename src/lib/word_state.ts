@@ -1,16 +1,23 @@
 import { LetterState } from './types';
-import { type Config, BackspaceMode, CheckMode } from './config';
-import type { B } from 'vitest/dist/types-63abf2e0';
+import { type Config, BackspaceMode } from './config';
 
 export class WordState {
     word: string;
-    state: LetterState[];
+    wordChars: string[];
     input: string;
+    rawInput: string[] = [];
+    inputChars: string[] = [];
+    state: LetterState[];
+    corretedErrors: number = 0;
+    uncorrectedErrors: number = 0;
+    keystrokes: number = 0;
+    wordErrors: number = 0; // only for word mode - number of failed attempts at this word
 
     constructor(word: string) {
         this.word = word;
         this.state = word.split('').map((_) => { return LetterState.Incomplete });
         this.input = '';
+        this.wordChars = [...word];
     }
 
     empty(): boolean {
@@ -46,19 +53,31 @@ export class WordState {
         return true;
     }
 
-    add(config: Config, e: KeyboardEvent): boolean {
-        let mapped = config.mapping(e.key);
+    isChar(config: Config, e: KeyboardEvent): boolean {
+        let mapped = config.mapping.get(e.key);
 
         if (mapped == null) {
             return false;
         }
 
-        this.input += mapped;
-        this.state = this.mapState();
+        this.addChar(mapped);
 
         e.preventDefault();
 
         return true;
+    }
+
+    private addChar(char: string) {
+        this.input += char;
+        this.inputChars = [...this.input];
+        this.state = this.mapState();
+
+        // https://dev.to/coolgoose/quick-and-easy-way-of-counting-utf-8-characters-in-javascript-23ce
+        if (this.inputChars.length <= this.wordChars.length) {
+
+        } else {
+            this.uncorrectedErrors += 1;
+        }
     }
 
     private mapState(): LetterState[] {

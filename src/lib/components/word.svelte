@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Letter from './letter.svelte';
-	import type { LetterState } from './types';
+	import type { LetterState } from '$lib/types';
 
 	export let word: string;
 	export let state: LetterState[];
