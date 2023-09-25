@@ -1,22 +1,26 @@
 
-import type { Session } from "./session";
-import type { Config } from "./config";
-
 export interface Lesson extends Iterator<string>, Iterable<string> {
     completed: string[];
     batch(n: number): string[];
 }
 
 
-export class PregenLesson implements Lesson {
+export type PregenListConfig = {
+    shuffle: boolean;
+    length: number;
+};
+
+export class PregenList implements Lesson {
     completed: string[] = [];
     words: string[];
 
     constructor(words: string[]) {
-        let word = words.shift();
-        if (word === undefined) {
-            throw new Error("Invalid word list: must contain at least one element");
+        if (words.length === 0) {
+            throw new Error("Invalid pregenerated word list: the list must contain at least one element");
         }
+
+        // if()
+
         this.words = words;
     }
 
@@ -36,21 +40,18 @@ export class PregenLesson implements Lesson {
 
     batch(n: number): string[] {
         let words: string[] = []
-        for (let i = 0; i < n; i++) {
-            let word = this.words.shift();
-
-            if (word === undefined) {
-                return words;
-            }
-
+        let word: string | undefined;
+        let i: number = 0;
+        while (i < n && (word = this.words.shift())) {
             words.push(word)
+            i += 1;
         }
 
         return words;
     }
 };
 
-export const pregen_test = new PregenLesson([
+export const pregen_test = new PregenList([
     'account',
     'attention',
     'amount',
@@ -102,9 +103,3 @@ export const pregen_test = new PregenLesson([
     'front',
     'fruit',
 ]);
-
-// export type OnDemandFunc = (session: Session) => string[] | null;
-// interface LessonOnDemand extends Lesson {
-//     cur: string;
-//     gen: OnDemandFunc;
-// }

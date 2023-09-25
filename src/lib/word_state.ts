@@ -87,7 +87,7 @@ export class WordState {
 
         let act = Action.None;
 
-        // allow multiple chars (eg mobile)
+        // allow multiple chars (eg mobile input)
         for (const c of e.data) {
             const mapped = config.mapping.get(c);
             if (mapped !== undefined) {
@@ -98,13 +98,13 @@ export class WordState {
 
         if (act != Action.None) {
             e.preventDefault();
+            this.keystrokes += 1;
         }
 
         return act;
     }
 
     private addChar(char: string) {
-        this.keystrokes += 1;
         this.input += char;
         this.inputChars = [...this.input];
         this.state = this.mapState();

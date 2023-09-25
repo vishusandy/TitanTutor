@@ -5,7 +5,7 @@
 	import { defaultConfig } from '$lib/config';
 
 	let config = defaultConfig();
-	let session: Session = { started: new Date(), config: config, lesson: pregen_test };
+	let session: Session = { started: undefined, dur: 0, config: config, lesson: pregen_test };
 </script>
 
 <Typing {session} />

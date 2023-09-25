@@ -14,14 +14,9 @@ const functionKeyList = [
     'End',
     'PageUp',
     'PageDown',
-    // 'Tab',
     'Escape',
     'Insert',
-    '',
-    '',
-    '',
-    '',
-    '',
+    // 'Tab',
 ];
 
 const functionKeys = new Set(functionKeyList);

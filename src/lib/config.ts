@@ -6,11 +6,6 @@ export const enum KbTarget {
     Dvorak = 1,
 }
 
-export const enum KbMapping {
-    None = 0,
-    QwertyToDvorak = 1,
-}
-
 export const enum CheckMode {
     Char = 0,
     WordRepeat = 1, // redo current word if wrong
@@ -30,6 +25,14 @@ export type Audio = {
     voice: SpeechSynthesisVoice;
 }
 
+// class Audio {
+//     rate: number; // 0.5 to 2.0
+//     pitch: number; // 0.0 to 2.0
+//     volume: number; // 0.0 to 1.0
+//     voice: SpeechSynthesisVoice;
+
+// }
+
 export const enum DurationType {
     NumWords = 0,
     Time = 1,
@@ -41,18 +44,12 @@ export type Duration = {
     type: DurationType;
 }
 
-export const enum WordGenMode {
-    Pregen = 0,
-    OnDemand = 1,
-}
-
 
 export type Config = {
     kb: KbTarget;
     mapping: Mapping;
     check_mode: CheckMode;
     backspace: BackspaceMode;
-    wordgen: WordGenMode;
     tts?: Audio;
     duration: Duration;
     wordBatchSize: number;
@@ -64,10 +61,8 @@ export function defaultConfig(): Config {
     return {
         kb: KbTarget.Dvorak,
         mapping: new NoMap(),
-        // mapping: qwertyToDvorak,
         check_mode: CheckMode.WordRepeat,
         backspace: BackspaceMode.Accept,
-        wordgen: WordGenMode.Pregen,
         tts: undefined,
         duration: { length: 100, type: DurationType.NumWords },
         wordBatchSize: 4,

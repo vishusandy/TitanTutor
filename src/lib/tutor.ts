@@ -10,19 +10,12 @@ export class Tutor {
     word: WordState = new WordState('');
     history: WordState[] = [];
     queue: WordState[] = [];
+    audioPlayed: number = 0;
 
     constructor(session: Session) {
         this.session = session;
         this.config = this.session.config;
         this.nextWord();
-    }
-
-    fillQueue() {
-        if (this.queue.length < this.config.minQueue) {
-            this.queue.push(...this.session.lesson.batch(this.config.wordBatchSize - this.queue.length).map((w) => {
-                return new WordState(w);
-            }));
-        }
     }
 
     nextWord(): Action {
@@ -34,14 +27,24 @@ export class Tutor {
 
         let w = this.queue.shift();
         if (w === undefined) {
+            this.word = new WordState('');
             return Action.lessonCompleted;
         }
 
         if (w.state.length > 0) {
             w.state[0] = LetterState.Active;
         }
+
         this.word = w;
         return Action.Refresh;
+    }
+
+    fillQueue() {
+        if (this.queue.length < this.config.minQueue) {
+            this.queue.push(...this.session.lesson.batch(this.config.wordBatchSize - this.queue.length).map((w) => {
+                return new WordState(w);
+            }));
+        }
     }
 
     handleBeforeInput(e: InputEvent): Action {
