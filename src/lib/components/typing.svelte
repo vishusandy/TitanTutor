@@ -17,6 +17,7 @@
 
 	onMount(async () => {
 		document.addEventListener('keydown', shortcuts);
+
 		if (textbox) {
 			started = false;
 			await tick();
@@ -25,17 +26,9 @@
 	});
 
 	async function shortcuts(e: KeyboardEvent) {
-		console.log(started);
-		if (started) {
-			if (e.key === 'F4') {
-				if (paused) {
-					unpause(e);
-				} else {
-					pause(e);
-				}
-
-				e.preventDefault();
-			}
+		if (started && e.key === 'F4') {
+			paused ? unpause(e) : pause(e);
+			e.preventDefault();
 		}
 	}
 
