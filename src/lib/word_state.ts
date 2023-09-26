@@ -4,15 +4,15 @@ import { Action } from './types';
 
 export class WordState {
     word: string;
-    wordChars: string[];
     input: string;
-    inputChars: string[] = [];
     state: LetterState[];
     correctedErrors: number = 0;
     uncorrectedErrors: number = 0;
     keystrokes: number = 0;
     backspaces: number = 0;
     wordAttempts: number = 0;
+    wordChars: string[];
+    inputChars: string[] = [];
 
     constructor(word: string) {
         this.word = word;
@@ -22,12 +22,7 @@ export class WordState {
     }
 
     getWord(): string {
-        // return this.wordChars.join('').toString();
         return this.word;
-    }
-
-    getInput(): string {
-        return this.inputChars.join('').toString();
     }
 
     empty(): boolean {
@@ -61,27 +56,6 @@ export class WordState {
         return true;
     }
 
-    addBackspace(config: Config): boolean {
-        this.keystrokes += 1;
-
-        if (config.backspace == BackspaceMode.Accept) {
-            if (this.inputChars.length !== 0) {
-                this.backspaces += 1;
-                if (this.state[this.inputChars.length - 1] === LetterState.Error) {
-                    this.correctedErrors += 1;
-                    this.uncorrectedErrors = Math.max(this.uncorrectedErrors - 1, 0);
-                }
-            }
-
-            this.inputChars.pop();
-            this.input = this.inputChars.join('').toString();
-            this.state = this.mapState();
-            return true;
-        }
-
-        return false;
-    }
-
     isChar(config: Config, e: InputEvent): Action {
         if (!e.data) return Action.None;
 
@@ -102,6 +76,27 @@ export class WordState {
         }
 
         return act;
+    }
+
+    addBackspace(config: Config): boolean {
+        this.keystrokes += 1;
+
+        if (config.backspace == BackspaceMode.Accept) {
+            if (this.inputChars.length !== 0) {
+                this.backspaces += 1;
+                if (this.state[this.inputChars.length - 1] === LetterState.Error) {
+                    this.correctedErrors += 1;
+                    this.uncorrectedErrors = Math.max(this.uncorrectedErrors - 1, 0);
+                }
+            }
+
+            this.inputChars.pop();
+            this.input = this.inputChars.join('').toString();
+            this.state = this.mapState();
+            return true;
+        }
+
+        return false;
     }
 
     private addChar(char: string) {
