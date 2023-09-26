@@ -9,68 +9,52 @@
 	export let session: Session;
 	let textbox: HTMLInputElement | undefined;
 	let resume: string = '';
+	let started: boolean = false;
 	let paused: boolean = true;
+	let done: boolean = false;
 
 	let tutor = new Tutor(session);
 
 	onMount(async () => {
-		registerStartEvents();
+		if (textbox) {
+			textbox.placeholder = 'Press any key to start';
+			paused = true;
+			await tick();
+			textbox.focus();
+		}
 	});
 
-	async function registerStartEvents() {
+	async function start(e: Event | undefined) {
 		if (textbox === undefined) return;
 
-		textbox.addEventListener('keydown', start);
-		paused = true;
+		started = true;
+		paused = false;
+		session.started = new Date();
 		await tick();
 		textbox.focus();
 	}
 
-	function registerInputEvents(box: HTMLInputElement) {
-		box.addEventListener('keydown', handleKeydown);
-		box.addEventListener('beforeinput', handleBeforeInput);
-		box.addEventListener('selectstart', prevent);
-		box.addEventListener('mousedown', prevent);
-		box.addEventListener('click', handleClick);
-	}
-
-	function unregisterInputEvents() {
+	async function unpause(e: Event | undefined) {
 		if (textbox === undefined) return;
 
-		textbox.removeEventListener('beforeinput', handleBeforeInput);
-		textbox.removeEventListener('keydown', handleKeydown);
-		textbox.removeEventListener('selectstart', prevent);
-		textbox.removeEventListener('mousedown', prevent);
-		textbox.removeEventListener('click', handleClick);
-	}
-
-	function start(e: Event | undefined) {
-		if (textbox === undefined) return;
-
-		session.started = new Date();
-		textbox.value = resume;
-		resume = '';
-		textbox.placeholder = '';
-		textbox.removeEventListener('keydown', start);
-		registerInputEvents(textbox);
 		paused = false;
-		textbox.addEventListener('blur', pause);
+		session.started = new Date();
+		await tick();
+		textbox.focus();
 	}
 
 	function pause(e: Event | undefined) {
 		if (textbox === undefined) return;
-
-		resume = tutor.word.input;
-		textbox.value = '';
+		console.log('pause');
+		paused = true;
+		textbox.placeholder = 'Paused';
 		if (session.started !== undefined) {
 			const now = new Date();
 			session.dur += now.getTime() - session.started.getTime();
 			session.started = undefined;
 		}
 
-		unregisterInputEvents();
 		textbox.placeholder = 'Paused';
-		registerStartEvents();
 	}
 
 	function handleClick(e: Event) {
@@ -79,12 +63,11 @@
 	}
 
 	function lessonCompleted() {
-		console.log('Lesson completed');
 		endLesson();
 	}
 
 	function endLesson() {
-		unregisterInputEvents();
+		done = true;
 	}
 
 	function handleBeforeInput(e: InputEvent) {
@@ -122,12 +105,36 @@
 	{/each}
 </div>
 
-<input
-	class="textbox"
-	bind:this={textbox}
-	value={tutor.word.input}
-	placeholder="Press any key to start"
-/>
+{#if !done}
+	{#if paused && !started}
+		<input
+			class="textbox"
+			bind:this={textbox}
+			placeholder="Press any key to start"
+			on:keydown={start}
+		/>
+	{:else if paused && started}
+		<input
+			class="textbox"
+			bind:this={textbox}
+			placeholder="Paused"
+			on:focus={unpause}
+			on:keydown={unpause}
+		/>
+	{:else}
+		<input
+			class="textbox"
+			bind:this={textbox}
+			value={tutor.word.input}
+			on:blur={pause}
+			on:beforeinput={handleBeforeInput}
+			on:keydown={handleKeydown}
+			on:selectstart={prevent}
+			on:mousedown={prevent}
+			on:click={handleClick}
+		/>
+	{/if}
+{/if}
 
 <style>
 	.paused {
