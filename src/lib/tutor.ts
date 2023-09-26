@@ -2,14 +2,14 @@
 import { type Config, CheckMode, BackspaceMode } from './config';
 import type { Session } from './session';
 import { Action, LetterState } from './types';
-import { WordState } from './word_state';
+import { WordState, CompletedWord } from './word_state';
 
 export class Tutor {
     session: Session;
     config: Config;
     word: WordState = new WordState('');
-    history: WordState[] = [];
-    queue: WordState[] = [];
+    history: CompletedWord[] = [];
+    queue: string[] = [];
     audioPlayed: number = 0;
 
     constructor(session: Session) {
@@ -20,17 +20,18 @@ export class Tutor {
 
     nextWord(): Action {
         if (!this.word.empty()) {
-            this.history.push(this.word);
+            this.history.push(new CompletedWord(this.word.wordChars, this.word.state));
         }
 
         this.fillQueue();
 
-        let w = this.queue.shift();
-        if (w === undefined) {
+        let next = this.queue.shift();
+        if (next === undefined) {
             this.word = new WordState('');
             return Action.lessonCompleted;
         }
 
+        let w = new WordState(next);
         if (w.state.length > 0) {
             w.state[0] = LetterState.Active;
         }
@@ -41,9 +42,7 @@ export class Tutor {
 
     fillQueue() {
         if (this.queue.length < this.config.minQueue) {
-            this.queue.push(...this.session.lesson.batch(this.config.wordBatchSize - this.queue.length).map((w) => {
-                return new WordState(w);
-            }));
+            this.queue.push(...this.session.lesson.batch(this.config.wordBatchSize - this.queue.length));
         }
     }
 

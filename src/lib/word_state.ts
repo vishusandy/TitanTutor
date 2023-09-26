@@ -2,6 +2,16 @@ import { LetterState } from './types';
 import { type Config, BackspaceMode } from './config';
 import { Action } from './types';
 
+export class CompletedWord {
+    word: string[];
+    state: LetterState[];
+
+    constructor(word: string[], state: LetterState[]) {
+        this.word = word;
+        this.state = state;
+    }
+}
+
 export class WordState {
     word: string;
     input: string;

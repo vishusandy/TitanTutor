@@ -5,33 +5,26 @@
 	import type { Session } from '$lib/session';
 	import { prevent } from '$lib/util';
 	import Word from './word.svelte';
+	import QueuedWord from './queued_word.svelte';
 
 	export let session: Session;
+
+	let tutor = new Tutor(session);
 	let textbox: HTMLInputElement | undefined;
-	let resume: string = '';
 	let started: boolean = false;
 	let paused: boolean = true;
 	let done: boolean = false;
 
-	let tutor = new Tutor(session);
-
 	onMount(async () => {
 		if (textbox) {
-			textbox.placeholder = 'Press any key to start';
-			paused = true;
 			await tick();
 			textbox.focus();
 		}
 	});
 
 	async function start(e: Event | undefined) {
-		if (textbox === undefined) return;
-
 		started = true;
-		paused = false;
-		session.started = new Date();
-		await tick();
-		textbox.focus();
+		unpause(e);
 	}
 
 	async function unpause(e: Event | undefined) {
@@ -45,16 +38,13 @@
 
 	function pause(e: Event | undefined) {
 		if (textbox === undefined) return;
-		console.log('pause');
+
 		paused = true;
-		textbox.placeholder = 'Paused';
 		if (session.started !== undefined) {
 			const now = new Date();
 			session.dur += now.getTime() - session.started.getTime();
 			session.started = undefined;
 		}
-
-		textbox.placeholder = 'Paused';
 	}
 
 	function handleClick(e: Event) {
@@ -97,11 +87,11 @@
 
 <div class="tutor" class:paused>
 	{#each tutor.history as w}
-		<Word word={w.wordChars} state={w.state} />{' '}
+		<Word word={w.word} state={w.state} />{' '}
 	{/each}
 	<Word word={tutor.word.wordChars} state={tutor.word.state} active={true} />
 	{#each tutor.queue as q}
-		<Word word={q.wordChars} state={q.state} />{' '}
+		<QueuedWord word={q} />{' '}
 	{/each}
 </div>
 
