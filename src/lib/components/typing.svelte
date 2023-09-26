@@ -16,18 +16,40 @@
 	let done: boolean = false;
 
 	onMount(async () => {
+		document.addEventListener('keydown', shortcuts);
 		if (textbox) {
+			started = false;
 			await tick();
 			textbox.focus();
 		}
 	});
 
-	async function start(e: Event | undefined) {
+	async function shortcuts(e: KeyboardEvent) {
+		console.log(started);
+		if (started) {
+			if (e.key === 'F4') {
+				if (paused) {
+					unpause(e);
+				} else {
+					pause(e);
+				}
+
+				e.preventDefault();
+			}
+		}
+	}
+
+	async function start(e: Event) {
+		if ('key' in e && e.key === 'F4') {
+			e.preventDefault();
+			return;
+		}
+
 		started = true;
 		unpause(e);
 	}
 
-	async function unpause(e: Event | undefined) {
+	async function unpause(e: Event) {
 		if (textbox === undefined) return;
 
 		paused = false;
@@ -36,7 +58,7 @@
 		textbox.focus();
 	}
 
-	function pause(e: Event | undefined) {
+	function pause(e: Event) {
 		if (textbox === undefined) return;
 
 		paused = true;
