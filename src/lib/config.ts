@@ -1,5 +1,7 @@
 // import { qwertyToDvorak } from "./mappings/qwerty_to_dvorak";
 import { type Mapping, NoMap } from "./mappings";
+import { UserConfig } from "./user_config";
+import type { Audio } from "./audio";
 
 export const enum KbTarget {
     Qwerty = 0,
@@ -12,26 +14,19 @@ export const enum CheckMode {
 }
 
 
-// ignores backspace/delete
+// ignores or accepts backspace
 export const enum BackspaceMode {
     Accept = 0,
     Ignore = 1,
 }
 
-export type Audio = {
-    rate: number;
-    pitch: number;
-    volume: number;
-    voice: SpeechSynthesisVoice;
-}
-
-// class Audio {
-//     rate: number; // 0.5 to 2.0
-//     pitch: number; // 0.0 to 2.0
-//     volume: number; // 0.0 to 1.0
+// export type Audio = {
+//     rate: number;
+//     pitch: number;
+//     volume: number;
 //     voice: SpeechSynthesisVoice;
-
 // }
+
 
 export const enum DurationType {
     NumWords = 0,
@@ -54,6 +49,7 @@ export type Config = {
     duration: Duration;
     wordBatchSize: number;
     minQueue: number;
+    user: UserConfig;
 }
 
 
@@ -67,5 +63,15 @@ export function defaultConfig(): Config {
         duration: { length: 100, type: DurationType.NumWords },
         wordBatchSize: 4,
         minQueue: 2,
+        user: UserConfig.default(),
     };
+}
+
+
+export function saveConfig(config: Config) {
+
+}
+
+export function loadConfig() {
+
 }

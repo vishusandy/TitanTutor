@@ -26,13 +26,22 @@
 	});
 
 	async function shortcuts(e: KeyboardEvent) {
-		if (started && e.key === 'F4') {
+		if (!started) return;
+
+		if (e.key === 'F4') {
 			paused ? unpause(e) : pause(e);
 			e.preventDefault();
+		} else if (e.key === 'F7') {
+			e.preventDefault();
+			pause(e);
+
+			if (window.confirm('Are you sure you want to stop?')) {
+				endLesson();
+			}
 		}
 	}
 
-	async function start(e: Event) {
+	async function startInput(e: Event) {
 		if ('key' in e && e.key === 'F4') {
 			e.preventDefault();
 			return;
@@ -55,6 +64,7 @@
 		if (textbox === undefined) return;
 
 		paused = true;
+
 		if (session.started !== undefined) {
 			const now = new Date();
 			session.dur += now.getTime() - session.started.getTime();
@@ -116,7 +126,7 @@
 			class="textbox"
 			bind:this={textbox}
 			placeholder="Press any key to start"
-			on:keydown={start}
+			on:keydown={startInput}
 		/>
 	{:else if paused && started}
 		<input

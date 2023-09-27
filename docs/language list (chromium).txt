@@ -1,0 +1,393 @@
+Afrikaans espeak-ng
+Afrikaans espeak-ng-mbrola
+Afrikaans
+Albanian espeak-ng
+Albanian espeak-ng-mbrola
+Albanian
+Amharic espeak-ng
+Amharic espeak-ng-mbrola
+Amharic
+Arabic espeak-ng
+Arabic espeak-ng-mbrola
+Arabic
+Aragonese espeak-ng
+Aragonese espeak-ng-mbrola
+Aragonese
+Armenian (East Armenia) espeak-ng
+Armenian (East Armenia) espeak-ng-mbrola
+Armenian (East Armenia)
+Armenian (West Armenia) espeak-ng
+Armenian (West Armenia) espeak-ng-mbrola
+Armenian (West Armenia)
+Assamese espeak-ng
+Assamese espeak-ng-mbrola
+Assamese
+Azerbaijani espeak-ng
+Azerbaijani espeak-ng-mbrola
+Azerbaijani
+Bashkir espeak-ng
+Bashkir espeak-ng-mbrola
+Bashkir
+Basque espeak-ng
+Basque espeak-ng-mbrola
+Basque
+Belarusian espeak-ng
+Belarusian espeak-ng-mbrola
+Belarusian
+Bengali espeak-ng
+Bengali espeak-ng-mbrola
+Bengali
+Bishnupriya Manipuri espeak-ng
+Bishnupriya Manipuri espeak-ng-mbrola
+Bishnupriya Manipuri
+Bosnian espeak-ng
+Bosnian espeak-ng-mbrola
+Bosnian
+Bulgarian espeak-ng
+Bulgarian espeak-ng-mbrola
+Bulgarian
+Catalan espeak-ng
+Catalan espeak-ng-mbrola
+Catalan
+Cherokee  espeak-ng
+Cherokee  espeak-ng-mbrola
+Cherokee 
+Chinese (Cantonese, latin as Jyutping) espeak-ng
+Chinese (Cantonese, latin as Jyutping) espeak-ng-mbrola
+Chinese (Cantonese, latin as Jyutping)
+Chinese (Cantonese) espeak-ng
+Chinese (Cantonese) espeak-ng-mbrola
+Chinese (Cantonese)
+Chinese (Mandarin, latin as English) espeak-ng
+Chinese (Mandarin, latin as English) espeak-ng-mbrola
+Chinese (Mandarin, latin as English)
+Chinese (Mandarin, latin as Pinyin) espeak-ng
+Chinese (Mandarin, latin as Pinyin) espeak-ng-mbrola
+Chinese (Mandarin, latin as Pinyin)
+Chuvash espeak-ng
+Chuvash espeak-ng-mbrola
+Chuvash
+Croatian espeak-ng
+Croatian espeak-ng-mbrola
+Croatian
+Czech espeak-ng
+Czech espeak-ng-mbrola
+Czech
+Danish espeak-ng
+Danish espeak-ng-mbrola
+Danish
+Dutch espeak-ng
+Dutch espeak-ng-mbrola
+Dutch
+English (America, New York City) espeak-ng
+English (America, New York City) espeak-ng-mbrola
+English (America, New York City)
+English (America) espeak-ng
+English (America) espeak-ng-mbrola
+English (America)
+English (Caribbean) espeak-ng
+English (Caribbean) espeak-ng-mbrola
+English (Caribbean)
+English (Great Britain) espeak-ng
+English (Great Britain) espeak-ng-mbrola
+English (Great Britain)
+English (Lancaster) espeak-ng
+English (Lancaster) espeak-ng-mbrola
+English (Lancaster)
+English (Received Pronunciation) espeak-ng
+English (Received Pronunciation) espeak-ng-mbrola
+English (Received Pronunciation)
+English (Scotland) espeak-ng
+English (Scotland) espeak-ng-mbrola
+English (Scotland)
+English (West Midlands) espeak-ng
+English (West Midlands) espeak-ng-mbrola
+English (West Midlands)
+Esperanto espeak-ng
+Esperanto espeak-ng-mbrola
+Esperanto
+Estonian espeak-ng
+Estonian espeak-ng-mbrola
+Estonian
+Finnish espeak-ng
+Finnish espeak-ng-mbrola
+Finnish
+French (Belgium) espeak-ng
+French (Belgium) espeak-ng-mbrola
+French (Belgium)
+French (France) espeak-ng
+French (France) espeak-ng-mbrola
+French (France)
+French (Switzerland) espeak-ng
+French (Switzerland) espeak-ng-mbrola
+French (Switzerland)
+Gaelic (Irish) espeak-ng
+Gaelic (Irish) espeak-ng-mbrola
+Gaelic (Irish)
+Gaelic (Scottish) espeak-ng
+Gaelic (Scottish) espeak-ng-mbrola
+Gaelic (Scottish)
+Georgian espeak-ng
+Georgian espeak-ng-mbrola
+Georgian
+German espeak-ng
+German espeak-ng-mbrola
+German
+Greek (Ancient) espeak-ng
+Greek (Ancient) espeak-ng-mbrola
+Greek (Ancient)
+Greek espeak-ng
+Greek espeak-ng-mbrola
+Greek
+Greenlandic espeak-ng
+Greenlandic espeak-ng-mbrola
+Greenlandic
+Guarani espeak-ng
+Guarani espeak-ng-mbrola
+Guarani
+Gujarati espeak-ng
+Gujarati espeak-ng-mbrola
+Gujarati
+Haitian Creole espeak-ng
+Haitian Creole espeak-ng-mbrola
+Haitian Creole
+Hakka Chinese espeak-ng
+Hakka Chinese espeak-ng-mbrola
+Hakka Chinese
+Hawaiian espeak-ng
+Hawaiian espeak-ng-mbrola
+Hawaiian
+Hebrew espeak-ng
+Hebrew espeak-ng-mbrola
+Hebrew
+Hindi espeak-ng
+Hindi espeak-ng-mbrola
+Hindi
+Hungarian espeak-ng
+Hungarian espeak-ng-mbrola
+Hungarian
+Icelandic espeak-ng
+Icelandic espeak-ng-mbrola
+Icelandic
+Ido espeak-ng
+Ido espeak-ng-mbrola
+Ido
+Indonesian espeak-ng
+Indonesian espeak-ng-mbrola
+Indonesian
+Interlingua espeak-ng
+Interlingua espeak-ng-mbrola
+Interlingua
+Italian espeak-ng
+Italian espeak-ng-mbrola
+Italian
+Japanese espeak-ng
+Japanese espeak-ng-mbrola
+Japanese
+K'iche' espeak-ng
+K'iche' espeak-ng-mbrola
+K'iche'
+Kannada espeak-ng
+Kannada espeak-ng-mbrola
+Kannada
+Kazakh espeak-ng
+Kazakh espeak-ng-mbrola
+Kazakh
+Klingon espeak-ng
+Klingon espeak-ng-mbrola
+Klingon
+Konkani espeak-ng
+Konkani espeak-ng-mbrola
+Konkani
+Korean espeak-ng
+Korean espeak-ng-mbrola
+Korean
+Kurdish espeak-ng
+Kurdish espeak-ng-mbrola
+Kurdish
+Kyrgyz espeak-ng
+Kyrgyz espeak-ng-mbrola
+Kyrgyz
+Lang_Belta espeak-ng
+Lang_Belta espeak-ng-mbrola
+Lang_Belta
+Latgalian espeak-ng
+Latgalian espeak-ng-mbrola
+Latgalian
+Latin espeak-ng
+Latin espeak-ng-mbrola
+Latin
+Latvian espeak-ng
+Latvian espeak-ng-mbrola
+Latvian
+Lingua Franca Nova espeak-ng
+Lingua Franca Nova espeak-ng-mbrola
+Lingua Franca Nova
+Lithuanian espeak-ng
+Lithuanian espeak-ng-mbrola
+Lithuanian
+Lojban espeak-ng
+Lojban espeak-ng-mbrola
+Lojban
+Lule Saami espeak-ng
+Lule Saami espeak-ng-mbrola
+Lule Saami
+Luxembourgish espeak-ng
+Luxembourgish espeak-ng-mbrola
+Luxembourgish
+Macedonian espeak-ng
+Macedonian espeak-ng-mbrola
+Macedonian
+Malay espeak-ng
+Malay espeak-ng-mbrola
+Malay
+Malayalam espeak-ng
+Malayalam espeak-ng-mbrola
+Malayalam
+Maltese espeak-ng
+Maltese espeak-ng-mbrola
+Maltese
+Māori espeak-ng
+Māori espeak-ng-mbrola
+Māori
+Marathi espeak-ng
+Marathi espeak-ng-mbrola
+Marathi
+Myanmar (Burmese) espeak-ng
+Myanmar (Burmese) espeak-ng-mbrola
+Myanmar (Burmese)
+Nahuatl (Classical) espeak-ng
+Nahuatl (Classical) espeak-ng-mbrola
+Nahuatl (Classical)
+Nepali espeak-ng
+Nepali espeak-ng-mbrola
+Nepali
+Nogai espeak-ng
+Nogai espeak-ng-mbrola
+Nogai
+Norwegian Bokmål espeak-ng
+Norwegian Bokmål espeak-ng-mbrola
+Norwegian Bokmål
+Oriya espeak-ng
+Oriya espeak-ng-mbrola
+Oriya
+Oromo espeak-ng
+Oromo espeak-ng-mbrola
+Oromo
+Papiamento espeak-ng
+Papiamento espeak-ng-mbrola
+Papiamento
+Persian (Pinglish) espeak-ng
+Persian (Pinglish) espeak-ng-mbrola
+Persian (Pinglish)
+Persian espeak-ng
+Persian espeak-ng-mbrola
+Persian
+Polish espeak-ng
+Polish espeak-ng-mbrola
+Polish
+Portuguese (Brazil) espeak-ng
+Portuguese (Brazil) espeak-ng-mbrola
+Portuguese (Brazil)
+Portuguese (Portugal) espeak-ng
+Portuguese (Portugal) espeak-ng-mbrola
+Portuguese (Portugal)
+Punjabi espeak-ng
+Punjabi espeak-ng-mbrola
+Punjabi
+Pyash espeak-ng
+Pyash espeak-ng-mbrola
+Pyash
+Quechua espeak-ng
+Quechua espeak-ng-mbrola
+Quechua
+Quenya espeak-ng
+Quenya espeak-ng-mbrola
+Quenya
+Romanian espeak-ng
+Romanian espeak-ng-mbrola
+Romanian
+Russian (Latvia) espeak-ng
+Russian (Latvia) espeak-ng-mbrola
+Russian (Latvia)
+Russian espeak-ng
+Russian espeak-ng-mbrola
+Russian
+Serbian espeak-ng
+Serbian espeak-ng-mbrola
+Serbian
+Setswana espeak-ng
+Setswana espeak-ng-mbrola
+Setswana
+Shan (Tai Yai) espeak-ng
+Shan (Tai Yai) espeak-ng-mbrola
+Shan (Tai Yai)
+Sindarin espeak-ng
+Sindarin espeak-ng-mbrola
+Sindarin
+Sindhi espeak-ng
+Sindhi espeak-ng-mbrola
+Sindhi
+Sinhala espeak-ng
+Sinhala espeak-ng-mbrola
+Sinhala
+Slovak espeak-ng
+Slovak espeak-ng-mbrola
+Slovak
+Slovenian espeak-ng
+Slovenian espeak-ng-mbrola
+Slovenian
+Spanish (Latin America) espeak-ng
+Spanish (Latin America) espeak-ng-mbrola
+Spanish (Latin America)
+Spanish (Spain) espeak-ng
+Spanish (Spain) espeak-ng-mbrola
+Spanish (Spain)
+Swahili espeak-ng
+Swahili espeak-ng-mbrola
+Swahili
+Swedish espeak-ng
+Swedish espeak-ng-mbrola
+Swedish
+Tamil espeak-ng
+Tamil espeak-ng-mbrola
+Tamil
+Tatar espeak-ng
+Tatar espeak-ng-mbrola
+Tatar
+Telugu espeak-ng
+Telugu espeak-ng-mbrola
+Telugu
+Thai espeak-ng
+Thai espeak-ng-mbrola
+Thai
+Turkish espeak-ng
+Turkish espeak-ng-mbrola
+Turkish
+Turkmen espeak-ng
+Turkmen espeak-ng-mbrola
+Turkmen
+Ukrainian espeak-ng
+Ukrainian espeak-ng-mbrola
+Ukrainian
+Urdu espeak-ng
+Urdu espeak-ng-mbrola
+Urdu
+Uyghur espeak-ng
+Uyghur espeak-ng-mbrola
+Uyghur
+Uzbek espeak-ng
+Uzbek espeak-ng-mbrola
+Uzbek
+Vietnamese (Central) espeak-ng
+Vietnamese (Central) espeak-ng-mbrola
+Vietnamese (Central)
+Vietnamese (Northern) espeak-ng
+Vietnamese (Northern) espeak-ng-mbrola
+Vietnamese (Northern)
+Vietnamese (Southern) espeak-ng
+Vietnamese (Southern) espeak-ng-mbrola
+Vietnamese (Southern)
+Welsh espeak-ng
+Welsh espeak-ng-mbrola
+Welsh
