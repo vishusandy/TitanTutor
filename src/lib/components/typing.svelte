@@ -25,22 +25,6 @@
 		}
 	});
 
-	async function shortcuts(e: KeyboardEvent) {
-		if (!started) return;
-
-		if (e.key === 'F4') {
-			paused ? unpause(e) : pause(e);
-			e.preventDefault();
-		} else if (e.key === 'F7') {
-			e.preventDefault();
-			pause(e);
-
-			if (window.confirm('Are you sure you want to stop?')) {
-				endLesson();
-			}
-		}
-	}
-
 	async function startInput(e: Event) {
 		if ('key' in e && e.key === 'F4') {
 			e.preventDefault();
@@ -79,6 +63,22 @@
 
 	function endLesson() {
 		done = true;
+	}
+
+	async function shortcuts(e: KeyboardEvent) {
+		if (!started) return;
+
+		if (e.key === 'F4') {
+			paused ? unpause(e) : pause(e);
+			e.preventDefault();
+		} else if (e.key === 'F7') {
+			e.preventDefault();
+			pause(e);
+
+			if (window.confirm('Are you sure you want to stop?')) {
+				endLesson();
+			}
+		}
 	}
 
 	function handleBeforeInput(e: InputEvent) {

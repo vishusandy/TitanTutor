@@ -7,8 +7,6 @@
 
 	let config = defaultConfig();
 	let session: Session = {
-		started: undefined,
-		dur: 0,
 		config: config,
 		lesson: pregen_test,
 		stats: new Stats()
