@@ -31,6 +31,7 @@ export class Tutor {
             return Action.lessonCompleted;
         }
 
+        this.session.stats.add(this.word);
         let w = new WordState(next);
         if (w.state.length > 0) {
             w.state[0] = LetterState.Active;
@@ -70,6 +71,7 @@ export class Tutor {
                 act = this.nextWord();
             } else {
                 act = Action.Refresh;
+                this.session.stats.resetWord(this.word);
                 this.word.reset(this.word.getWord());
                 this.word.state[0] = LetterState.Active;
             }

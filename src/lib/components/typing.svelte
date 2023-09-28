@@ -55,7 +55,8 @@
 		if (textbox === undefined) return;
 
 		paused = false;
-		session.started = new Date();
+		session.stats.resume();
+
 		await tick();
 		textbox.focus();
 	}
@@ -64,12 +65,7 @@
 		if (textbox === undefined) return;
 
 		paused = true;
-
-		if (session.started !== undefined) {
-			const now = new Date();
-			session.dur += now.getTime() - session.started.getTime();
-			session.started = undefined;
-		}
+		session.stats.pause();
 	}
 
 	function handleClick(e: Event) {
