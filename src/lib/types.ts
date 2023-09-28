@@ -12,9 +12,3 @@ export const enum LetterState {
     Error = 3,
 }
 
-export type WordState = {
-    word: string;
-    state: LetterState[];
-    input: string;
-}
-
