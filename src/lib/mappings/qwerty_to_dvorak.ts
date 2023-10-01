@@ -1,3 +1,4 @@
+import { Mapping } from "$lib/mappings";
 
 const qToD: [string, string][] = [
     ['_', '{'],
@@ -96,9 +97,14 @@ const qToD: [string, string][] = [
 
 const qwertyToDvorak: Map<string, string> = new Map(qToD);
 
-export class QwertyToDvorak {
+export class QwertyToDvorak extends Mapping {
+    static mapName: string = 'qwerty_to_dvorak';
+
+    getName(): string {
+        return QwertyToDvorak.mapName;
+    }
+    
     get(key: string): string | undefined {
         return qwertyToDvorak.get(key);
     }
-    
 }

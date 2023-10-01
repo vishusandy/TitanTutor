@@ -19,6 +19,30 @@ export class Audio {
         utter.pitch = this.pitch;
         speechSynthesis.speak(utter);
     }
+
+    static serialize(audio: Audio | undefined): string {
+        if (audio === undefined) {
+            return '';
+        }
+
+        return JSON.stringify({
+            rate: audio.rate,
+            pitch: audio.pitch,
+            volume: audio.volume,
+            voice: audio.voice.name,
+        });
+    }
+
+    static deserialize(s: string): Audio | undefined {
+        if (s === '') { return undefined; }
+
+        const o: any = JSON.parse(s);
+        const voice = speechSynthesis.getVoices().find((v: SpeechSynthesisVoice) => v.name === o.voice);
+        
+        if (voice === undefined) return undefined;
+        
+        return new Audio(voice, o.rate, o.pitch, o.volume);
+    }
 }
 
 export function getLanguages(): Map<string, SpeechSynthesisVoice[]> {

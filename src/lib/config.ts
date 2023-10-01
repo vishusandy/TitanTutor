@@ -1,6 +1,7 @@
 // import { qwertyToDvorak } from "./mappings/qwerty_to_dvorak";
-import { type Mapping, NoMap } from "./mappings";
-import type { Audio } from "./audio";
+import { Mapping } from "./mappings";
+import { NoMap } from "./mappings/no_map";
+import { Audio } from "./audio";
 import { mapLocale } from "./util";
 
 export const enum KbTarget {
@@ -20,7 +21,8 @@ export const enum BackspaceMode {
     Ignore = 1,
 }
 
-export type Config = {
+export class Config {
+    version: number;
     kb: KbTarget;
     mapping: Mapping;
     check_mode: CheckMode;
@@ -32,29 +34,100 @@ export type Config = {
     pause: string;
     lang: string[]; // array to match different browsers' languages
 
+    constructor(
+        version: number,
+        kb: KbTarget,
+        mapping: Mapping,
+        check_mode: CheckMode,
+        backspace: BackspaceMode,
+        tts: Audio | undefined,
+        wordBatchSize: number,
+        minQueue: number,
+        stop: string,
+        pause: string,
+        lang: string[]
+    ) {
+        this.version = version;
+        this.kb = kb;
+        this.mapping = mapping;
+        this.check_mode = check_mode;
+        this.backspace = backspace;
+        this.tts = tts;
+        this.wordBatchSize = wordBatchSize;
+        this.minQueue = minQueue;
+        this.stop = stop;
+        this.pause = pause;
+        this.lang = lang;
+    }
+
+    static default() {
+        return new Config(
+            1,
+            KbTarget.Dvorak,
+            new NoMap(),
+            CheckMode.WordRepeat,
+            BackspaceMode.Accept,
+            undefined,
+            4,
+            2,
+            'F4',
+            'F4',
+            mapLocale(navigator.language)
+        );
+    }
+
+    storable(): StorableConfig {
+        return new StorableConfig(this);
+    }
+
+    static load(s: string): Config {
+        return StorableConfig.deserialize(s);
+    }
 }
 
 
-export function defaultConfig(): Config {
-    return {
-        kb: KbTarget.Dvorak,
-        mapping: new NoMap(),
-        check_mode: CheckMode.WordRepeat,
-        backspace: BackspaceMode.Accept,
-        tts: undefined,
-        wordBatchSize: 4,
-        minQueue: 2,
-        stop: 'F4',
-        pause: 'F4',
-        lang: mapLocale(navigator.language),
-    };
-}
+class StorableConfig {
+    version: number;
+    kb: number;
+    mapping: string;
+    check_mode: number;
+    backspace: number;
+    tts: string;
+    wordBatchSize: number;
+    minQueue: number;
+    stop: string;
+    pause: string;
+    lang: string[];
 
+    constructor(config: Config) {
+        this.version = config.version;
+        this.kb = config.kb;
+        this.mapping = config.mapping.serialize();
+        this.check_mode = config.check_mode;
+        this.backspace = config.backspace;
+        this.tts = Audio.serialize(config.tts);
+        this.wordBatchSize = config.wordBatchSize;
+        this.minQueue = config.minQueue;
+        this.stop = config.stop;
+        this.pause = config.pause;
+        this.lang = config.lang;
+    }
 
-export function saveConfig(config: Config) {
+    static deserialize(s: string): Config {
+        const o: StorableConfig = JSON.parse(s);
 
-}
-
-export function loadConfig() {
-
+        return new Config(
+            o.version,
+            o.kb,
+            Mapping.deserialize(o.mapping),
+            o.check_mode,
+            o.backspace,
+            Audio.deserialize(o.tts),
+            o.wordBatchSize,
+            o.minQueue,
+            o.stop,
+            o.pause,
+            o.lang
+        );
+    }
 }

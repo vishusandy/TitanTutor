@@ -2,11 +2,11 @@
 	import Typing from '$lib/components/typing.svelte';
 	import type { Session } from '$lib/session';
 	import { pregen_test } from '$lib/lesson';
-	import { defaultConfig } from '$lib/config';
+	import { Config } from '$lib/config';
 	import { Stats } from '$lib/stats';
 
 	let session: Session = {
-		config: defaultConfig(),
+		config: Config.default(),
 		lesson: pregen_test,
 		stats: new Stats()
 	};
