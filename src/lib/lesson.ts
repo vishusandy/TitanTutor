@@ -1,4 +1,17 @@
 
+// todo: unused
+export const enum DurationType {
+    NumWords = 0,
+    Time = 1,
+    UntilError = 2,
+}
+
+// todo: unused
+export type Duration = {
+    length: number;
+    type: DurationType;
+}
+
 export interface Lesson extends Iterator<string>, Iterable<string> {
     completed: string[];
     batch(n: number): string[];

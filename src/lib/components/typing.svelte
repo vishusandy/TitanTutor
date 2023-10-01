@@ -3,7 +3,6 @@
 	import { Action } from '$lib/types';
 	import { Tutor } from '$lib/tutor';
 	import type { Session } from '$lib/session';
-	import { prevent } from '$lib/util';
 	import Word from './word.svelte';
 	import QueuedWord from './queued_word.svelte';
 
@@ -16,8 +15,6 @@
 	let done: boolean = false;
 
 	onMount(async () => {
-		document.addEventListener('keydown', shortcuts);
-
 		if (textbox) {
 			started = false;
 			await tick();
@@ -53,7 +50,6 @@
 	}
 
 	function handleClick(e: Event) {
-		prevent(e);
 		textbox?.focus();
 	}
 
@@ -106,6 +102,8 @@
 	}
 </script>
 
+<svelte:document on:keydown={shortcuts} />
+
 <div class="tutor" class:paused>
 	{#each tutor.history as w}
 		<Word word={w.word} state={w.state} />{' '}
@@ -140,9 +138,9 @@
 			on:blur={pause}
 			on:beforeinput={handleBeforeInput}
 			on:keydown={handleKeydown}
-			on:selectstart={prevent}
-			on:mousedown={prevent}
-			on:click={handleClick}
+			on:selectstart|preventDefault={() => {}}
+			on:mousedown|preventDefault={() => {}}
+			on:click|preventDefault={handleClick}
 		/>
 	{/if}
 {/if}

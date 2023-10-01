@@ -5,9 +5,8 @@
 	import { defaultConfig } from '$lib/config';
 	import { Stats } from '$lib/stats';
 
-	let config = defaultConfig();
 	let session: Session = {
-		config: config,
+		config: defaultConfig(),
 		lesson: pregen_test,
 		stats: new Stats()
 	};

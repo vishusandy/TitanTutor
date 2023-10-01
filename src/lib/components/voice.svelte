@@ -12,17 +12,17 @@
 
 	export let defaultLangs: string[] = ['English (America)', 'Google US English'];
 
-	export let audio: Audio | undefined = undefined;
+	export let data: Audio | undefined = undefined;
 	export let text: string = 'Example Text';
 
-	let pitch: number = audio !== undefined ? audio.pitch : 1;
-	let rate: number = audio !== undefined ? audio.rate : 1;
-	let volume: number = audio !== undefined ? audio.volume : 1;
+	let pitch: number = data !== undefined ? data.pitch : 1;
+	let rate: number = data !== undefined ? data.rate : 1;
+	let volume: number = data !== undefined ? data.volume : 1;
 
 	let voiceIdx: number = 0;
 	let langs: Map<string, SpeechSynthesisVoice[]> = new Map();
 	let lang: string | null = null;
-	voiceListLoaded(); // initial load (will not work for chrome, see onMount)
+	voiceListLoaded(); // this initial load will not work for chrome (see onMount)
 
 	let voiceList: SpeechSynthesisVoice[] | undefined = undefined;
 	$: voiceList = lang ? langs.get(lang) : undefined;
@@ -30,7 +30,7 @@
 	let voice: SpeechSynthesisVoice | undefined = undefined;
 	$: voice = voiceList ? voiceList[0] : undefined;
 
-	$: audio = voice ? new Audio(voice, rate, pitch, volume) : undefined;
+	$: data = voice ? new Audio(voice, rate, pitch, volume) : undefined;
 
 	onMount(() => {
 		// Chrome browsers are weird.  You cannot convince me otherwise.
@@ -109,7 +109,7 @@
 		<label for="text">Text: </label>
 		<input id="text" bind:value={text} />
 		<div class="btn-cont">
-			<button class="play" type="button" on:click={play}>Play</button>
+			<button class="play" type="button" on:click={play}>Test</button>
 		</div>
 	</div>
 </form>

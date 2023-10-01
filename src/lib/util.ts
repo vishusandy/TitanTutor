@@ -1,9 +1,4 @@
 
-export function prevent(e: Event) {
-    e.preventDefault();
-}
-
-
 // https://www.freecodecamp.org/news/how-to-shuffle-an-array-of-items-using-javascript-or-typescript/
 export function shuffle(input: string[]) {
     let array = [...input];
@@ -14,3 +9,11 @@ export function shuffle(input: string[]) {
     return array;
 };
 
+
+export function mapLocale(locale: string): string[] {
+    const map: Map<string, string[]> = new Map([
+        ['en-US', ['English (America)']],
+    ]);
+
+    return map.get(locale) ?? ['English (America)'];
+}

@@ -1,7 +1,7 @@
 // import { qwertyToDvorak } from "./mappings/qwerty_to_dvorak";
 import { type Mapping, NoMap } from "./mappings";
-import { UserConfig } from "./user_config";
 import type { Audio } from "./audio";
+import { mapLocale } from "./util";
 
 export const enum KbTarget {
     Qwerty = 0,
@@ -20,36 +20,18 @@ export const enum BackspaceMode {
     Ignore = 1,
 }
 
-// export type Audio = {
-//     rate: number;
-//     pitch: number;
-//     volume: number;
-//     voice: SpeechSynthesisVoice;
-// }
-
-
-export const enum DurationType {
-    NumWords = 0,
-    Time = 1,
-    UntilError = 2,
-}
-
-export type Duration = {
-    length: number;
-    type: DurationType;
-}
-
-
 export type Config = {
     kb: KbTarget;
     mapping: Mapping;
     check_mode: CheckMode;
     backspace: BackspaceMode;
     tts?: Audio;
-    duration: Duration;
     wordBatchSize: number;
     minQueue: number;
-    user: UserConfig;
+    stop: string;
+    pause: string;
+    lang: string[]; // array to match different browsers' languages
+
 }
 
 
@@ -60,10 +42,11 @@ export function defaultConfig(): Config {
         check_mode: CheckMode.WordRepeat,
         backspace: BackspaceMode.Accept,
         tts: undefined,
-        duration: { length: 100, type: DurationType.NumWords },
         wordBatchSize: 4,
         minQueue: 2,
-        user: UserConfig.default(),
+        stop: 'F4',
+        pause: 'F4',
+        lang: mapLocale(navigator.language),
     };
 }
 
