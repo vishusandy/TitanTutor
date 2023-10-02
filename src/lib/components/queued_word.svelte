@@ -12,5 +12,6 @@
 	.queued-word {
 		margin: 0.1em 0.1em;
 		border: 1px solid transparent;
+		scroll-snap-align: center;
 	}
 </style>

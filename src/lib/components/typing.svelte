@@ -10,9 +10,15 @@
 
 	let tutor = new Tutor(session);
 	let textbox: HTMLInputElement | undefined;
+	let activeWord: HTMLElement | undefined;
 	let started: boolean = false;
 	let paused: boolean = true;
 	let done: boolean = false;
+
+	$: {
+		console.log(`tutor.word = ${tutor.word.word}`);
+		scroll();
+	}
 
 	onMount(async () => {
 		if (textbox) {
@@ -78,9 +84,18 @@
 	}
 
 	function handleBeforeInput(e: InputEvent) {
-		switch (tutor.handleBeforeInput(e)) {
+		handleAction(tutor.handleBeforeInput(e));
+	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		handleAction(tutor.handleKeydown(e));
+	}
+
+	function handleAction(action: Action) {
+		switch (action) {
 			case Action.Refresh:
 				tutor = tutor;
+				// scroll();
 				break;
 			case Action.lessonCompleted:
 				tutor = tutor;
@@ -89,15 +104,10 @@
 		}
 	}
 
-	function handleKeydown(e: KeyboardEvent) {
-		switch (tutor.handleKeydown(e)) {
-			case Action.Refresh:
-				tutor = tutor;
-				break;
-			case Action.lessonCompleted:
-				tutor = tutor;
-				lessonCompleted();
-				break;
+	async function scroll() {
+		await tick();
+		if (activeWord) {
+			activeWord.scrollIntoView({ behavior: 'smooth' });
 		}
 	}
 </script>
@@ -108,7 +118,9 @@
 	{#each tutor.history as w}
 		<Word word={w.word} state={w.state} />{' '}
 	{/each}
-	<Word word={tutor.word.wordChars} state={tutor.word.state} active={true} />
+
+	<Word bind:span={activeWord} word={tutor.word.wordChars} state={tutor.word.state} active={true} />
+
 	{#each tutor.queue as q}
 		<QueuedWord word={q} />{' '}
 	{/each}
@@ -146,6 +158,18 @@
 {/if}
 
 <style>
+	.tutor {
+		width: 50ch;
+		padding: 1rem;
+		overflow-x: auto;
+		overflow-y: hidden;
+		white-space: nowrap;
+		margin: 2rem 1rem;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: thin;
+		-webkit-overflow-scrolling: touch;
+	}
+
 	.paused {
 		background: #f9f9f9;
 	}

@@ -68,8 +68,8 @@ export class Config {
             CheckMode.WordRepeat,
             BackspaceMode.Accept,
             undefined,
+            5,
             4,
-            2,
             'F4',
             'F4',
             mapLocale(navigator.language)
