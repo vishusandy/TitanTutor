@@ -1,8 +1,8 @@
 // import { qwertyToDvorak } from "./mappings/qwerty_to_dvorak";
-import { Mapping } from "./mappings";
+import type { Mapping } from "./mappings";
 import { NoMap } from "./mappings/no_map";
 import { Audio } from "./audio";
-import { mapLocale } from "./util";
+import { deserializeMapping, mapLocale } from "./util";
 
 export const enum KbTarget {
     Qwerty = 0,
@@ -119,7 +119,7 @@ class StorableConfig {
         return new Config(
             o.version,
             o.kb,
-            Mapping.deserialize(o.mapping),
+            deserializeMapping(o.mapping),
             o.check_mode,
             o.backspace,
             Audio.deserialize(o.tts),

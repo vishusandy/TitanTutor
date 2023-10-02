@@ -1,5 +1,3 @@
-import { NoMap } from "./mappings/no_map";
-import { QwertyToDvorak } from "./mappings/qwerty_to_dvorak";
 
 export abstract class Mapping {
     // Big sad.  https://github.com/microsoft/TypeScript/issues/34516
@@ -11,19 +9,11 @@ export abstract class Mapping {
         return functionKeys.has(key);
     }
 
-    static deserialize(mapping: string): Mapping {
-        switch (mapping) {
-            case QwertyToDvorak.mapName: return new QwertyToDvorak();
-            case NoMap.mapName:
-            default:
-                return new NoMap();
-        }
-    }
-
     serialize(): string {
         return this.getName();
     }
 }
+
 
 export const functionKeys = new Set([
     'Delete',

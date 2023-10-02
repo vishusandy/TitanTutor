@@ -1,4 +1,4 @@
-import { Mapping, functionKeys } from "$lib/mappings";
+import { Mapping } from "$lib/mappings";
 
 export class NoMap extends Mapping {
     static mapName: string = 'no_map';
@@ -9,8 +9,5 @@ export class NoMap extends Mapping {
 
     get(key: string): string | undefined {
         return key;
-    }
-    controlKey(key: string): boolean {
-        return functionKeys.has(key);
     }
 }

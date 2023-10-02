@@ -98,12 +98,12 @@ const qToD: [string, string][] = [
 const qwertyToDvorak: Map<string, string> = new Map(qToD);
 
 export class QwertyToDvorak extends Mapping {
-    static mapName: string = 'qwerty_to_dvorak';
+    static mapName = 'qwerty_to_dvorak';
 
     getName(): string {
         return QwertyToDvorak.mapName;
     }
-    
+
     get(key: string): string | undefined {
         return qwertyToDvorak.get(key);
     }
