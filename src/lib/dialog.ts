@@ -1,22 +1,23 @@
+import type { Audio } from "./audio";
 import Dialog from "./components/dialog.svelte";
 import Voice from "./components/voice.svelte";
 import type { innerDialogComponent, closeFn } from "./types";
 
 export function createVoiceDialog() {
-    return createDialog(Voice);
+    return createDialog<Audio>(Voice);
 }
 
-export function createDialog(innerComponent: innerDialogComponent): Promise<any> {
-    let close: closeFn = () => { };
+export function createDialog<T>(innerComponent: innerDialogComponent<T>): Promise<T> {
+    let close: closeFn<T> = () => { };
 
-    const promise = new Promise((resolve: closeFn) => {
+    const promise = new Promise((resolve: closeFn<T>) => {
         close = resolve;
     });
 
-    const dialogComponent: Dialog = new Dialog({
+    const dialogComponent: Dialog<T> = new Dialog({
         target: document.body,
         props: {
-            close,
+            closeCallback: close,
             content: innerComponent,
         }
     });

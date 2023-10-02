@@ -1,18 +1,18 @@
-<script lang="ts">
+<script lang="ts" generics="T">
 	import type { closeFn, innerDialogComponent } from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
 
-	export let data: any = undefined;
-	export let close: closeFn;
-	export let content: innerDialogComponent;
+	export let data: T | undefined = undefined;
+	export let closeCallback: closeFn<T>;
+	export let content: innerDialogComponent<T>;
 	let dialog: HTMLDialogElement;
 
 	function handleSubmit(e: Event) {
-		if (close !== undefined) close(data);
+		if (data !== undefined) closeCallback(data);
 	}
 
 	function handleClose(e: Event) {
-		if (close !== undefined) close(undefined);
+		if (data !== undefined) closeCallback(data);
 	}
 
 	onMount(() => {
