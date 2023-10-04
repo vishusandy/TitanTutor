@@ -13,11 +13,9 @@ export const enum LetterState {
     Error = 3,
 }
 
-export type closeFn<T> = ((data: T) => void);
+export type closeFn<T> = ((data: T | undefined) => void);
 
-export interface ComponentData extends SvelteComponent { data: any }
+export interface ComponentData extends SvelteComponent { formData: any }
 
-// todo: restrict to only components with a data property
-export type innerDialogComponent<T> = ComponentType<SvelteComponent<{ data?: T }>>;
-
+export type innerDialogComponent<T> = ComponentType<SvelteComponent<{ formData?: T }>>;
 

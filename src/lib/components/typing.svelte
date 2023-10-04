@@ -2,13 +2,20 @@
 	import { onMount, tick } from 'svelte';
 	import { Action } from '$lib/types';
 	import { Tutor } from '$lib/tutor';
-	import type { Session } from '$lib/session';
 	import Word from './word.svelte';
 	import QueuedWord from './queued_word.svelte';
+	import type { Lesson } from '$lib/lessons/lessons';
+	import type { LessonOptions } from '$lib/lessons/options';
+	import type { SessionStats } from '$lib/stats';
+	import type { Config } from '$lib/config';
 
-	export let session: Session;
+    export let config: Config;
+	// export let session: Session;
+	export let lesson: Lesson;
+	export let lessonOpts: LessonOptions;
+	export let sessionStats: SessionStats;
 
-	let tutor = new Tutor(session);
+	let tutor = new Tutor(config, lesson, lessonOpts, sessionStats);
 	let textbox: HTMLInputElement | undefined;
 	let activeWord: HTMLElement | undefined;
 	let started: boolean = false;
@@ -16,7 +23,7 @@
 	let done: boolean = false;
 
 	$: {
-		console.log(`tutor.word = ${tutor.word.word}`);
+		tutor.word.word; // trigger scroll() when word changes
 		scroll();
 	}
 
@@ -29,7 +36,7 @@
 	});
 
 	async function startInput(e: Event) {
-		if ('key' in e && e.key === 'F4') {
+		if ('key' in e && e.key === config.pause) {
 			e.preventDefault();
 			return;
 		}
@@ -42,7 +49,7 @@
 		if (textbox === undefined) return;
 
 		paused = false;
-		session.stats.resume();
+		sessionStats.resume();
 
 		await tick();
 		textbox.focus();
@@ -52,7 +59,7 @@
 		if (textbox === undefined) return;
 
 		paused = true;
-		session.stats.pause();
+		sessionStats.pause();
 	}
 
 	function handleClick(e: Event) {
@@ -70,14 +77,14 @@
 	async function shortcuts(e: KeyboardEvent) {
 		if (!started) return;
 
-		if (e.key === 'F4') {
+		if (e.key === config.pause || e.key === 'Escape') {
 			paused ? unpause(e) : pause(e);
 			e.preventDefault();
-		} else if (e.key === 'F7') {
+		} else if (e.key === config.stop) {
 			e.preventDefault();
 			pause(e);
 
-			if (window.confirm('Are you sure you want to stop?')) {
+			if (window.confirm(config.translations.stopMsg)) {
 				endLesson();
 			}
 		}
@@ -113,61 +120,81 @@
 </script>
 
 <svelte:document on:keydown={shortcuts} />
+<div class="tutor">
+	<div class="tutor-words" class:paused>
+		{#each tutor.history as w}
+			<Word word={w.word} state={w.state} />{' '}
+		{/each}
 
-<div class="tutor" class:paused>
-	{#each tutor.history as w}
-		<Word word={w.word} state={w.state} />{' '}
-	{/each}
+		<Word
+			bind:span={activeWord}
+			word={tutor.word.wordChars}
+			state={tutor.word.state}
+			active={true}
+		/>
 
-	<Word bind:span={activeWord} word={tutor.word.wordChars} state={tutor.word.state} active={true} />
+		{#each tutor.queue as q}
+			<QueuedWord word={q} />{' '}
+		{/each}
+	</div>
 
-	{#each tutor.queue as q}
-		<QueuedWord word={q} />{' '}
-	{/each}
+	<div class="tutor-input">
+		{#if !done}
+			{#if paused && !started}
+				<input
+					class="textbox"
+					bind:this={textbox}
+					placeholder={config.translations.inputNotStarted}
+					on:keydown={startInput}
+				/>
+			{:else if paused && started}
+				<input
+					class="textbox"
+					bind:this={textbox}
+					placeholder={config.translations.inputPaused}
+					on:focus={unpause}
+					on:keydown={unpause}
+				/>
+			{:else}
+				<input
+					class="textbox"
+					bind:this={textbox}
+					value={tutor.word.input}
+					on:blur={pause}
+					on:beforeinput={handleBeforeInput}
+					on:keydown={handleKeydown}
+					on:selectstart|preventDefault={() => {}}
+					on:mousedown|preventDefault={() => {}}
+					on:click|preventDefault={handleClick}
+				/>
+			{/if}
+		{/if}
+	</div>
 </div>
 
-{#if !done}
-	{#if paused && !started}
-		<input
-			class="textbox"
-			bind:this={textbox}
-			placeholder="Press any key to start"
-			on:keydown={startInput}
-		/>
-	{:else if paused && started}
-		<input
-			class="textbox"
-			bind:this={textbox}
-			placeholder="Paused"
-			on:focus={unpause}
-			on:keydown={unpause}
-		/>
-	{:else}
-		<input
-			class="textbox"
-			bind:this={textbox}
-			value={tutor.word.input}
-			on:blur={pause}
-			on:beforeinput={handleBeforeInput}
-			on:keydown={handleKeydown}
-			on:selectstart|preventDefault={() => {}}
-			on:mousedown|preventDefault={() => {}}
-			on:click|preventDefault={handleClick}
-		/>
-	{/if}
-{/if}
-
 <style>
-	.tutor {
+	.tutor-input {
+		text-align: center;
+	}
+	.tutor-words {
 		width: 50ch;
-		padding: 1rem;
+		max-width: 80%;
+		padding: 1rem 0px;
 		overflow-x: auto;
 		overflow-y: hidden;
 		white-space: nowrap;
-		margin: 2rem 1rem;
+		margin: 2rem auto;
+		/* scrollbar-width: thin; */
 		scroll-snap-type: x mandatory;
-		scrollbar-width: thin;
 		-webkit-overflow-scrolling: touch;
+	}
+
+	.tutor-words :global(.word:first-of-type) {
+		margin-left: 4ch;
+	}
+
+	.tutor-words :global(.word:last-of-type) {
+		margin-right: 4ch;
 	}
 
 	.paused {

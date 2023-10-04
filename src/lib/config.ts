@@ -2,7 +2,10 @@
 import type { Mapping } from "./mappings";
 import { NoMap } from "./mappings/no_map";
 import { Audio } from "./audio";
-import { deserializeMapping, mapLocale } from "./util";
+import { deserializeMapping, mapLocale, mapLanguage } from "./util";
+import type { Translations } from "./translations";
+import { en_US } from "./translations/english"
+import type { LessonOptions } from "./lessons/options";
 
 export const enum KbTarget {
     Qwerty = 0,
@@ -21,18 +24,26 @@ export const enum BackspaceMode {
     Ignore = 1,
 }
 
+export type Overrides = {
+    wordBatchSize: number,
+    minQueue: number,
+    checkMode: CheckMode,
+    backspace: BackspaceMode
+};
+
 export class Config {
     version: number;
     kb: KbTarget;
     mapping: Mapping;
-    check_mode: CheckMode;
+    checkMode: CheckMode;
     backspace: BackspaceMode;
     tts?: Audio;
     wordBatchSize: number;
     minQueue: number;
     stop: string;
     pause: string;
-    lang: string[]; // array to match different browsers' languages
+    audioDefaults: string[]; // array to match different browsers' languages
+    translations: Translations;
 
     constructor(
         version: number,
@@ -45,19 +56,21 @@ export class Config {
         minQueue: number,
         stop: string,
         pause: string,
-        lang: string[]
+        audioDefaults: string[],
+        translations: Translations
     ) {
         this.version = version;
         this.kb = kb;
         this.mapping = mapping;
-        this.check_mode = check_mode;
+        this.checkMode = check_mode;
         this.backspace = backspace;
         this.tts = tts;
         this.wordBatchSize = wordBatchSize;
         this.minQueue = minQueue;
         this.stop = stop;
         this.pause = pause;
-        this.lang = lang;
+        this.audioDefaults = audioDefaults;
+        this.translations = translations;
     }
 
     static default() {
@@ -68,11 +81,12 @@ export class Config {
             CheckMode.WordRepeat,
             BackspaceMode.Accept,
             undefined,
-            5,
-            4,
+            10,
+            8,
             'F4',
             'F4',
-            mapLocale(navigator.language)
+            mapLocale(navigator.language),
+            en_US
         );
     }
 
@@ -80,8 +94,27 @@ export class Config {
         return new StorableConfig(this);
     }
 
-    static load(s: string): Config {
+    static deserialize(s: string): Config {
         return StorableConfig.deserialize(s);
+    }
+
+    static load(): Config {
+        let c = localStorage.getItem('config');
+
+        if (c !== null) {
+            return Config.deserialize(c);
+        }
+
+        return Config.default();
+    }
+    
+    getOverrides(opts: LessonOptions) {
+        return {
+            wordBatchSize: opts.wordBatchSize ?? this.wordBatchSize,
+            minQueue: opts.minQueue ?? this.minQueue,
+            checkMode: opts.checkMode ?? this.checkMode,
+            backspace: opts.backspace ?? this.backspace
+        }
     }
 }
 
@@ -97,20 +130,22 @@ class StorableConfig {
     minQueue: number;
     stop: string;
     pause: string;
-    lang: string[];
+    audioDefaults: string[];
+    translations: string;
 
     constructor(config: Config) {
         this.version = config.version;
         this.kb = config.kb;
         this.mapping = config.mapping.serialize();
-        this.check_mode = config.check_mode;
+        this.check_mode = config.checkMode;
         this.backspace = config.backspace;
         this.tts = Audio.serialize(config.tts);
         this.wordBatchSize = config.wordBatchSize;
         this.minQueue = config.minQueue;
         this.stop = config.stop;
         this.pause = config.pause;
-        this.lang = config.lang;
+        this.audioDefaults = config.audioDefaults;
+        this.translations = config.translations.langName;
     }
 
     static deserialize(s: string): Config {
@@ -127,7 +162,8 @@ class StorableConfig {
             o.minQueue,
             o.stop,
             o.pause,
-            o.lang
+            o.audioDefaults,
+            mapLanguage(o.translations)
         );
     }
 }

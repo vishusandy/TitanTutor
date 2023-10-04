@@ -1,0 +1,5 @@
+https://r12a.github.io/app-subtags/
+
+https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang#accessibility
+
+

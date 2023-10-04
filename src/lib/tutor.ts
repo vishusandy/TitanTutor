@@ -1,20 +1,28 @@
 
-import { type Config, CheckMode, BackspaceMode } from './config';
-import type { Session } from './session';
+import { type Config, CheckMode, BackspaceMode, type Overrides } from './config';
+import type { Lesson } from './lessons/lessons';
+import type { LessonOptions } from './lessons/options';
+import type { SessionStats } from './stats';
 import { Action, LetterState } from './types';
 import { WordState, CompletedWord } from './word_state';
 
 export class Tutor {
-    session: Session;
+    // session: Session;
     config: Config;
+    lesson: Lesson;
+    stats: SessionStats;
+    overrides: Overrides;
     word: WordState = new WordState('');
     history: CompletedWord[] = [];
     queue: string[] = [];
     audioPlayed: number = 0;
 
-    constructor(session: Session) {
-        this.session = session;
-        this.config = this.session.config;
+    constructor(config: Config, lesson: Lesson, opts: LessonOptions, stats: SessionStats) {
+        // this.session = session;
+        this.stats = stats;
+        this.config = config;
+        this.lesson = lesson;
+        this.overrides = this.config.getOverrides(opts);
         this.nextWord();
     }
 
@@ -31,7 +39,7 @@ export class Tutor {
             return Action.lessonCompleted;
         }
 
-        this.session.stats.add(this.word);
+        this.stats.add(this.word);
         let w = new WordState(next);
         if (w.state.length > 0) {
             w.state[0] = LetterState.Active;
@@ -43,7 +51,7 @@ export class Tutor {
 
     fillQueue() {
         if (this.queue.length < this.config.minQueue) {
-            this.queue.push(...this.session.lesson.batch(this.config.wordBatchSize - this.queue.length));
+            this.queue.push(...this.lesson.batch(this.config.wordBatchSize - this.queue.length));
         }
     }
 
@@ -71,7 +79,7 @@ export class Tutor {
                 act = this.nextWord();
             } else {
                 act = Action.Refresh;
-                this.session.stats.resetWord(this.word);
+                this.stats.resetWord(this.word);
                 this.word.reset(this.word.getWord());
                 this.word.state[0] = LetterState.Active;
             }
@@ -98,7 +106,7 @@ export class Tutor {
             return Action.Refresh;
         }
 
-        switch (this.config.check_mode) {
+        switch (this.config.checkMode) {
             case CheckMode.Char:
                 return this.modeCharKeydown(e);
             case CheckMode.WordRepeat:

@@ -3,7 +3,7 @@
 </script>
 
 {#if word.length !== 0}
-	<span class="queued-word">
+	<span class="queued-word word">
 		{word}
 	</span>
 {/if}

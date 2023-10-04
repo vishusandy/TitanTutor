@@ -7,7 +7,6 @@
 	export let state: LetterState[];
 	export let active: boolean = false;
 	export let span: HTMLSpanElement | undefined = undefined;
-
 </script>
 
 {#if word.length !== 0}
@@ -24,8 +23,14 @@
 		border: 1px solid transparent;
 		scroll-snap-align: center;
 	}
+
 	.active-word {
+		scroll-snap-stop: always;
 		margin: 0.1em 0.1em;
 		border: 1px solid green;
+	}
+
+	:not(.active-word) :global(.complete) {
+		color: green;
 	}
 </style>

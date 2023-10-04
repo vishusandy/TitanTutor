@@ -4,10 +4,10 @@ import Voice from "./components/voice.svelte";
 import type { innerDialogComponent, closeFn } from "./types";
 
 export function createVoiceDialog() {
-    return createDialog<Audio>(Voice);
+    return createDialog<Audio>('Text To Speech', Voice);
 }
 
-export function createDialog<T>(innerComponent: innerDialogComponent<T>): Promise<T> {
+export function createDialog<T>(title: string, innerComponent: innerDialogComponent<T>): Promise<T | undefined> {
     let close: closeFn<T> = () => { };
 
     const promise = new Promise((resolve: closeFn<T>) => {
@@ -18,6 +18,7 @@ export function createDialog<T>(innerComponent: innerDialogComponent<T>): Promis
         target: document.body,
         props: {
             closeCallback: close,
+            title: title,
             content: innerComponent,
         }
     });

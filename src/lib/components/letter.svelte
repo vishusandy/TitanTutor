@@ -15,6 +15,9 @@
 </span>
 
 <style>
+	.complete {
+		color: grey;
+	}
 	.incomplete {
 		color: black;
 	}

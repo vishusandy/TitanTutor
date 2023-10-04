@@ -12,12 +12,12 @@
 
 	export let defaultLangs: string[] = ['English (America)', 'Google US English'];
 
-	export let data: Audio | undefined = undefined;
+	export let formData: Audio | undefined = undefined;
 	export let text: string = 'Example Text';
 
-	let pitch: number = data !== undefined ? data.pitch : 1;
-	let rate: number = data !== undefined ? data.rate : 1;
-	let volume: number = data !== undefined ? data.volume : 1;
+	let pitch: number = formData !== undefined ? formData.pitch : 1;
+	let rate: number = formData !== undefined ? formData.rate : 1;
+	let volume: number = formData !== undefined ? formData.volume : 1;
 
 	let voiceIdx: number = 0;
 	let langs: Map<string, SpeechSynthesisVoice[]> = new Map();
@@ -30,7 +30,7 @@
 	let voice: SpeechSynthesisVoice | undefined = undefined;
 	$: voice = voiceList ? voiceList[0] : undefined;
 
-	$: data = voice ? new Audio(voice, rate, pitch, volume) : undefined;
+	$: formData = voice ? new Audio(voice, rate, pitch, volume) : undefined;
 
 	onMount(() => {
 		// Chrome browsers are weird.  You cannot convince me otherwise.
@@ -149,14 +149,6 @@
 	.btn-cont {
 		grid-column: span 2;
 		text-align: center;
-	}
-
-	select {
-		padding: 0.3rem 0.2rem;
-	}
-
-	input {
-		padding: 0.3rem 0.4rem;
 	}
 
 	.play {

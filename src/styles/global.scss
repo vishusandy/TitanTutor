@@ -1,12 +1,25 @@
-:not(.active) .complete {
-    color: green;
-}
+// :not(.active) .complete {
+//     color: green;
+// }
 
-.active .complete {
-    color: grey;
-}
+// .active .complete {
+//     color: grey;
+// }
 
 
 // .paused .word {
 //     background: #eee;
 // }
+
+select {
+    padding: 0.3rem 0.2rem;
+}
+
+input[type="text"],
+input:not([type]) {
+    padding: 0.3rem 0.4rem;
+}
+
+button {
+    padding: 0.3rem 0.4rem;
+}
