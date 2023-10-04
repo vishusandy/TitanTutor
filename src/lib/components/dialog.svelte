@@ -1,7 +1,9 @@
 <script lang="ts" generics="T">
+	import type { Language } from '$lib/language';
 	import type { closeFn, innerDialogComponent } from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
 
+	export let lang: Language;
 	export let formData: T | undefined = undefined;
 	export let title: string = '';
 	export let closeCallback: closeFn<T>;
@@ -37,11 +39,11 @@
 			<h1>{title}</h1>
 		</header>
 		<div class="content">
-			<svelte:component this={content} bind:formData={formData} />
+			<svelte:component this={content} bind:formData bind:lang />
 		</div>
 		<footer>
-			<button type="submit">Submit</button>
-			<button type="button" on:click={handleClose}>Cancel</button>
+			<button type="submit">{lang.submit}</button>
+			<button type="button" on:click={handleClose}>{lang.cancel}</button>
 		</footer>
 	</form>
 </dialog>

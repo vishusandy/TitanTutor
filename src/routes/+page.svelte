@@ -1,18 +1,20 @@
 <script lang="ts">
-	import Typing from '$lib/components/typing.svelte';
-	import { Config } from '$lib/config';
-	import { SessionStats } from '$lib/stats';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
+	import Typing from '$lib/components/typing.svelte';
+	import { Config } from '$lib/config';
+	import { SessionStats } from '$lib/stats';
+
 	export let data: PageData;
-    let config = Config.load();
+	let lang = data.lang;
+	let config = Config.load();
 	let lesson = data.lesson;
 	let lessonOpts = data.lessonOpts;
 	let sessionStats = new SessionStats();
 
 	onMount(() => {
-		document.documentElement.setAttribute('lang', config.translations.lang);
+		document.documentElement.setAttribute('lang', data.lang.lang);
 	});
 </script>
 
@@ -20,4 +22,4 @@
 	<title>Keyboard Tutor</title>
 </svelte:head>
 
-<Typing {config} {lesson} {lessonOpts} {sessionStats} />
+<Typing {config} {lesson} {lessonOpts} {sessionStats} {lang} />

@@ -1,10 +1,7 @@
-// import { qwertyToDvorak } from "./mappings/qwerty_to_dvorak";
 import type { Mapping } from "./mappings";
 import { NoMap } from "./mappings/no_map";
 import { Audio } from "./audio";
-import { deserializeMapping, mapLocale, mapLanguage } from "./util";
-import type { Translations } from "./translations";
-import { en_US } from "./translations/english"
+import { deserializeMapping, mapLocale } from "./util";
 import type { LessonOptions } from "./lessons/options";
 
 export const enum KbTarget {
@@ -16,7 +13,6 @@ export const enum CheckMode {
     Char = 0,
     WordRepeat = 1, // redo current word if wrong
 }
-
 
 // ignores or accepts backspace
 export const enum BackspaceMode {
@@ -43,7 +39,6 @@ export class Config {
     stop: string;
     pause: string;
     audioDefaults: string[]; // array to match different browsers' languages
-    translations: Translations;
 
     constructor(
         version: number,
@@ -57,7 +52,6 @@ export class Config {
         stop: string,
         pause: string,
         audioDefaults: string[],
-        translations: Translations
     ) {
         this.version = version;
         this.kb = kb;
@@ -70,7 +64,6 @@ export class Config {
         this.stop = stop;
         this.pause = pause;
         this.audioDefaults = audioDefaults;
-        this.translations = translations;
     }
 
     static default() {
@@ -86,7 +79,6 @@ export class Config {
             'F4',
             'F4',
             mapLocale(navigator.language),
-            en_US
         );
     }
 
@@ -107,7 +99,7 @@ export class Config {
 
         return Config.default();
     }
-    
+
     getOverrides(opts: LessonOptions) {
         return {
             wordBatchSize: opts.wordBatchSize ?? this.wordBatchSize,
@@ -131,7 +123,6 @@ class StorableConfig {
     stop: string;
     pause: string;
     audioDefaults: string[];
-    translations: string;
 
     constructor(config: Config) {
         this.version = config.version;
@@ -145,7 +136,6 @@ class StorableConfig {
         this.stop = config.stop;
         this.pause = config.pause;
         this.audioDefaults = config.audioDefaults;
-        this.translations = config.translations.langName;
     }
 
     static deserialize(s: string): Config {
@@ -162,8 +152,7 @@ class StorableConfig {
             o.minQueue,
             o.stop,
             o.pause,
-            o.audioDefaults,
-            mapLanguage(o.translations)
+            o.audioDefaults
         );
     }
 }

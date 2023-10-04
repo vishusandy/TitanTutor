@@ -2,8 +2,6 @@
 import type { Mapping } from "./mappings";
 import { NoMap } from "./mappings/no_map";
 import { QwertyToDvorak } from "./mappings/qwerty_to_dvorak";
-import { en_US } from "./translations/english";
-import type { Translations } from "./translations";
 import type { Lesson } from "./lessons/lessons";
 
 // Create a new shuffled array
@@ -34,17 +32,10 @@ const map: Map<string, string[]> = new Map([
     ['en-US', ['English (America)']],
 ]);
 
-const langMap: Map<string, Translations> = new Map([
-    ['en-US', en_US]
-]);
-
 export function mapLocale(locale: string): string[] {
     return map.get(locale) ?? ['English (America)'];
 }
 
-export function mapLanguage(locale: string): Translations {
-    return langMap.get(locale) ?? en_US;
-}
 
 
 export function deserializeMapping(mapping: string): Mapping {

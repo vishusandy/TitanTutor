@@ -8,9 +8,10 @@
 	import type { LessonOptions } from '$lib/lessons/options';
 	import type { SessionStats } from '$lib/stats';
 	import type { Config } from '$lib/config';
+	import type { Language } from '$lib/language';
 
-    export let config: Config;
-	// export let session: Session;
+	export let config: Config;
+	export let lang: Language;
 	export let lesson: Lesson;
 	export let lessonOpts: LessonOptions;
 	export let sessionStats: SessionStats;
@@ -84,7 +85,7 @@
 			e.preventDefault();
 			pause(e);
 
-			if (window.confirm(config.translations.stopMsg)) {
+			if (window.confirm(lang.stopMsg)) {
 				endLesson();
 			}
 		}
@@ -144,14 +145,14 @@
 				<input
 					class="textbox"
 					bind:this={textbox}
-					placeholder={config.translations.inputNotStarted}
+					placeholder={lang.inputNotStarted}
 					on:keydown={startInput}
 				/>
 			{:else if paused && started}
 				<input
 					class="textbox"
 					bind:this={textbox}
-					placeholder={config.translations.inputPaused}
+					placeholder={lang.inputPaused}
 					on:focus={unpause}
 					on:keydown={unpause}
 				/>

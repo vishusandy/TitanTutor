@@ -3,5 +3,16 @@
     "langName": "English",
     "stopMsg": "Are you sure you want to stop?",
     "inputNotStarted": "Press any key to start",
-    "inputPaused": "Paused"
+    "inputPaused": "Paused",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "ttsDialogTitle": "Text To Speech",
+    "ttsLanguageLabel": "Language",
+    "ttsVoiceLabel": "Voice",
+    "ttsPitchLabel": "Pitch",
+    "ttsRateLabel": "Rate",
+    "ttsVolumeLabel": "Volume",
+    "ttsTextLabel": "Text",
+    "ttsPreview": "Preview",
+    "ttsExampleText": "The birch canoe slid on the smooth planks."
 }

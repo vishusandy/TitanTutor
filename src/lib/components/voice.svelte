@@ -9,26 +9,28 @@
 	import { getLanguages, displayVoice, getDefaultLang } from '$lib/audio';
 	import { onMount } from 'svelte';
 	import { Audio } from '$lib/audio';
+	import type { Language } from '$lib/language';
 
 	export let defaultLangs: string[] = ['English (America)', 'Google US English'];
 
+	export let lang: Language;
 	export let formData: Audio | undefined = undefined;
-	export let text: string = 'Example Text';
+	export let text: string = lang.ttsExampleText;
 
 	let pitch: number = formData !== undefined ? formData.pitch : 1;
 	let rate: number = formData !== undefined ? formData.rate : 1;
 	let volume: number = formData !== undefined ? formData.volume : 1;
-
 	let voiceIdx: number = 0;
 	let langs: Map<string, SpeechSynthesisVoice[]> = new Map();
-	let lang: string | null = null;
+	let chosenLang: string | null = null;
+
 	voiceListLoaded(); // this initial load will not work for chrome (see onMount)
 
 	let voiceList: SpeechSynthesisVoice[] | undefined = undefined;
-	$: voiceList = lang ? langs.get(lang) : undefined;
+	$: voiceList = chosenLang ? langs.get(chosenLang) : undefined;
 
 	let voice: SpeechSynthesisVoice | undefined = undefined;
-	$: voice = voiceList ? voiceList[0] : undefined;
+	$: voice = voiceList && voiceList.length !== 0 ? voiceList[voiceIdx] : undefined;
 
 	$: formData = voice ? new Audio(voice, rate, pitch, volume) : undefined;
 
@@ -38,22 +40,22 @@
 	});
 
 	function voiceListLoaded() {
-		if (lang !== null) return;
+		if (chosenLang !== null) return;
 
 		langs = getLanguages();
 		if (langs.size === 0) return;
 
-		lang = getDefaultLang(defaultLangs, langs);
+		chosenLang = getDefaultLang(defaultLangs, langs);
 
-		if (lang === null) {
-			lang = langs.keys().next().value;
+		if (chosenLang === null) {
+			chosenLang = langs.keys().next().value;
 		}
 	}
 
 	function langChoiceUpdated() {
 		let v: SpeechSynthesisVoice[] | undefined;
 
-		if (lang !== null && !(v = langs.get(lang))) {
+		if (chosenLang !== null && !(v = langs.get(chosenLang))) {
 			voiceIdx = 0;
 		}
 	}
@@ -70,46 +72,47 @@
 
 <form>
 	<div class="grid">
-		<label for="lang">Language: </label>
-		<select id="lang" bind:value={lang} on:change={langChoiceUpdated}>
+		<label for="lang">{lang.ttsLanguageLabel}</label>
+		<select id="lang" bind:value={chosenLang} on:change={langChoiceUpdated}>
 			{#each langs.keys() as l, i}
-				<option selected={(lang !== undefined && l === lang) || (lang === undefined && i == 0)}
-					>{l}</option
+				<option
+					selected={(chosenLang !== undefined && l === chosenLang) ||
+						(chosenLang === undefined && i == 0)}>{l}</option
 				>
 			{/each}
 		</select>
 
-		{#if lang && voiceList}
-			<label for="voice">Voice: </label>
+		{#if chosenLang && voiceList}
+			<label for="voice">{lang.ttsVoiceLabel}</label>
 			<select id="voice" bind:value={voiceIdx}>
 				{#each voiceList as v, i}
-					<option value={i}>{displayVoice(v.name, lang)}</option>
+					<option value={i}>{displayVoice(v.name, chosenLang)}</option>
 				{/each}
 			</select>
 		{/if}
 
-		<label for="pitch">Pitch</label>
+		<label for="pitch">{lang.ttsPitchLabel}</label>
 		<div class="input-cell">
 			<input type="range" min="0" max="2" bind:value={pitch} step="0.1" id="pitch" />
 			<span>{pitch.toFixed(1)}</span>
 		</div>
 
-		<label for="rate">Rate</label>
+		<label for="rate">{lang.ttsRateLabel}</label>
 		<div class="input-cell">
 			<input type="range" min="0.5" max="2" bind:value={rate} step="0.1" id="rate" />
 			<span>{rate.toFixed(1)}</span>
 		</div>
 
-		<label for="volume">Volume</label>
+		<label for="volume">{lang.ttsVolumeLabel}</label>
 		<div class="input-cell">
 			<input type="range" min="0" max="1" bind:value={volume} step="0.01" id="volume" />
 			<span>{volume.toFixed(2)}</span>
 		</div>
 
-		<label for="text">Text: </label>
+		<label for="text">{lang.ttsTextLabel}</label>
 		<input id="text" bind:value={text} />
 		<div class="btn-cont">
-			<button class="play" type="button" on:click={play}>Test</button>
+			<button class="play" type="button" on:click={play}>{lang.ttsPreview}</button>
 		</div>
 	</div>
 </form>

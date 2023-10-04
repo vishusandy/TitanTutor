@@ -7,7 +7,6 @@ import { Action, LetterState } from './types';
 import { WordState, CompletedWord } from './word_state';
 
 export class Tutor {
-    // session: Session;
     config: Config;
     lesson: Lesson;
     stats: SessionStats;
@@ -115,51 +114,4 @@ export class Tutor {
                 return Action.None;
         }
     }
-
-    // processKey(e: KeyboardEvent): Action {
-    //     if (!this.word.isBackspace(this.config, e)) {
-    //         this.word.isChar(this.config, e);
-    //     }
-
-    //     return Action.Refresh;
-    // }
-
-    // modeChar(e: KeyboardEvent): Action {
-    //     let act = this.processKey(e);
-
-    //     if (this.word.atEnd()) {
-    //         return this.nextWord();
-    //     }
-
-    //     return act;
-    // }
-
-    // modeWord(e: KeyboardEvent): Action {
-    //     let act = Action.None;
-    //     if (e.key === ' ' || e.key === 'Enter') {
-    //         if (this.word.completed()) {
-    //             act = this.nextWord();
-    //         } else {
-    //             act = Action.Refresh;
-    //             this.word.reset(this.word.getWord());
-    //             this.word.state[0] = LetterState.Active;
-    //         }
-
-    //         e.preventDefault();
-    //         return act;
-    //     }
-
-    //     return this.processKey(e);
-    // }
-
-    // handleInput(e: KeyboardEvent): Action {
-    //     switch (this.config.check_mode) {
-    //         case CheckMode.Char:
-    //             return this.modeChar(e);
-    //         case CheckMode.WordRepeat:
-    //             return this.modeWord(e);
-    //         default:
-    //             return Action.None;
-    //     }
-    // }
 }

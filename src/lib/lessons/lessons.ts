@@ -23,8 +23,7 @@ export class LessonData {
 
     static async loadCurrentLesson(): Promise<[Lesson, LessonOptions]> {
         const name = localStorage.getItem('lesson') ?? defaultLesson;
-        const lesson = lessons.get(name) ?? lessons.get(defaultLesson);
-        if (!lesson) throw ('Default lesson could not be found');
+        const lesson = lessons.get(name) ?? <LessonData>lessons.get(defaultLesson);
         return lesson.loadLesson();
     }
 

@@ -1,4 +1,5 @@
 import type { ComponentType, SvelteComponent } from 'svelte';
+import type { Language } from './language';
 
 export const enum Action {
     None = 0,
@@ -15,7 +16,7 @@ export const enum LetterState {
 
 export type closeFn<T> = ((data: T | undefined) => void);
 
-export interface ComponentData extends SvelteComponent { formData: any }
+export interface ComponentData extends SvelteComponent { formData: any, lang: Language }
 
-export type innerDialogComponent<T> = ComponentType<SvelteComponent<{ formData?: T }>>;
+export type innerDialogComponent<T> = ComponentType<SvelteComponent<{ formData?: T, lang: Language }>>;
 
