@@ -80,12 +80,19 @@
 	}
 
 	async function shortcuts(e: KeyboardEvent) {
-		if (!started) return;
+		// if (!started) return;
 
 		if (e.key === config.pause || e.key === 'Escape') {
-			paused ? unpause(e) : pause(e);
+			if (paused) {
+				unpause(e);
+				textbox?.focus();
+			} else {
+				pause(e);
+			}
+
+			if (!started) started = true;
 			e.preventDefault();
-		} else if (e.key === config.stop) {
+		} else if (e.key === config.stop && started) {
 			e.preventDefault();
 			pause(e);
 
@@ -124,6 +131,7 @@
 </script>
 
 <svelte:document on:keydown={shortcuts} />
+
 <div class="tutor">
 	<div class="tutor-words" class:paused>
 		{#each tutor.history as w}
