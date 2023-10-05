@@ -59,9 +59,11 @@ export class Tutor {
     handleBeforeInput(e: InputEvent): Action {
         if (e.inputType === 'deleteContentBackward' && this.config.backspace === BackspaceMode.Accept) {
             e.preventDefault();
+
             if (this.word.addBackspace(this.config)) {
                 return Action.Refresh;
             }
+
             return Action.None;
         }
 
@@ -77,20 +79,21 @@ export class Tutor {
         let act = Action.None;
         if (e.key === ' ' || e.key === 'Enter') {
             if (this.word.completed()) {
-                act = this.nextWord();
+                e.preventDefault();
+                return this.nextWord();
             } else {
-                act = Action.Refresh;
                 this.stats.resetWord(this.word);
                 this.word.reset(this.word.getWord());
                 this.word.state[0] = LetterState.Active;
+                e.preventDefault();
+                return Action.Refresh;
             }
-
-            e.preventDefault();
         }
 
         if (controlKeys.has(e.key)) {
             e.preventDefault();
         }
+
         return act;
     }
 
@@ -98,6 +101,7 @@ export class Tutor {
         if (this.word.atEnd()) {
             return this.nextWord();
         }
+
         return Action.None;
     }
 

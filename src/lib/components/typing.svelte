@@ -39,11 +39,13 @@
 	});
 
 	async function startInput(e: Event) {
-		if ('key' in e && e.key === config.pause) {
-			e.preventDefault();
-			return;
+		if ('key' in e) {
+			if (e.key === 'Tab') return;
+			if (e.key === config.pause) {
+				e.preventDefault();
+				return;
+			}
 		}
-
 		started = true;
 		unpause(e);
 	}
@@ -105,7 +107,6 @@
 		switch (action) {
 			case Action.Refresh:
 				tutor = tutor;
-				// scroll();
 				break;
 			case Action.lessonCompleted:
 				tutor = tutor;
