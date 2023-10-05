@@ -5,10 +5,12 @@ import type { LessonOptions } from './lessons/options';
 import type { SessionStats } from './stats';
 import { Action, LetterState } from './types';
 import { WordState, CompletedWord } from './word_state';
+import { controlKeys, type KbMapping } from './mappings';
 
 export class Tutor {
     config: Config;
     lesson: Lesson;
+    kbmap: KbMapping;
     stats: SessionStats;
     overrides: Overrides;
     word: WordState = new WordState('');
@@ -16,10 +18,10 @@ export class Tutor {
     queue: string[] = [];
     audioPlayed: number = 0;
 
-    constructor(config: Config, lesson: Lesson, opts: LessonOptions, stats: SessionStats) {
-        // this.session = session;
+    constructor(config: Config, kbmap: KbMapping, lesson: Lesson, opts: LessonOptions, stats: SessionStats) {
         this.stats = stats;
         this.config = config;
+        this.kbmap = kbmap;
         this.lesson = lesson;
         this.overrides = this.config.getOverrides(opts);
         this.nextWord();
@@ -68,7 +70,7 @@ export class Tutor {
             return Action.None;
         }
 
-        return this.word.isChar(this.config, e);
+        return this.word.isChar(this.config, this.kbmap, e);
     }
 
     modeWordKeydown(e: KeyboardEvent) {
@@ -86,7 +88,7 @@ export class Tutor {
             e.preventDefault();
         }
 
-        if (this.config.mapping.controlKey(e.key)) {
+        if (controlKeys.has(e.key)) {
             e.preventDefault();
         }
         return act;
@@ -98,6 +100,7 @@ export class Tutor {
         }
         return Action.None;
     }
+
     // https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/inputType
     // https://rawgit.com/w3c/input-events/v1/index.html#interface-InputEvent-Attributes
     handleKeydown(e: KeyboardEvent): Action {

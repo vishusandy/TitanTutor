@@ -8,6 +8,7 @@
 
 	export let data: PageData;
 	let lang = data.lang;
+	let kbmap = data.kbmap;
 	let config = Config.load();
 	let lesson = data.lesson;
 	let lessonOpts = data.lessonOpts;
@@ -22,4 +23,4 @@
 	<title>Keyboard Tutor</title>
 </svelte:head>
 
-<Typing {config} {lesson} {lessonOpts} {sessionStats} {lang} />
+<Typing {config} {kbmap} {lesson} {lessonOpts} {sessionStats} {lang} />

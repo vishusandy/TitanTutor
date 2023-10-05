@@ -1,7 +1,6 @@
 
-import type { Mapping } from "./mappings";
-import { NoMap } from "./mappings/no_map";
-import { QwertyToDvorak } from "./mappings/qwerty_to_dvorak";
+import type { KbMapping } from "./mappings";
+import { NoMap } from "./mappings";
 import type { Lesson } from "./lessons/lessons";
 
 // Create a new shuffled array
@@ -38,11 +37,11 @@ export function mapLocale(locale: string): string[] {
 
 
 
-export function deserializeMapping(mapping: string): Mapping {
-    switch (mapping) {
-        case QwertyToDvorak.mapName: return new QwertyToDvorak();
-        case NoMap.mapName:
-        default:
-            return new NoMap();
-    }
-}
+// export function deserializeMapping(mapping: string): Mapping {
+//     switch (mapping) {
+//         case QwertyToDvorak.mapName: return new QwertyToDvorak();
+//         case NoMap.mapName:
+//         default:
+//             return NoMap;
+//     }
+// }

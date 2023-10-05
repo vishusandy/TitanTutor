@@ -1,21 +1,32 @@
+import { base } from '$app/paths';
 
-export abstract class Mapping {
-    // Big sad.  https://github.com/microsoft/TypeScript/issues/34516
-    abstract getName(): string;
+const defaultMap: string = 'no_map';
 
-    abstract get(key: string): string | undefined;
-
-    controlKey(key: string): boolean {
-        return functionKeys.has(key);
-    }
-
-    serialize(): string {
-        return this.getName();
-    }
+export async function loadUserKbMap(): Promise<KbMapping> {
+    return loadKbMap(localStorage.getItem('kbmap') ?? defaultMap);
 }
 
+export async function loadKbMap(name: string): Promise<KbMapping> {
+    if (name !== 'no_map') {
+        const req = new Request(`${base}/data/kbmaps/${name}.json`);
+        return fetch(req)
+            .then((resp) => {
+                if (!resp.ok)
+                    return NoMap;
+                return resp.json();
+            })
+            .then((arr: [string, string][]) => new KbMapLoaded(name, new Map(arr)))
+    }
 
-export const functionKeys = new Set([
+    return new Promise((resolve) => resolve(NoMap));
+}
+
+export interface KbMapping {
+    getName(): string;
+    get(key: string): string | undefined;
+}
+
+export const controlKeys = new Set([
     'Delete',
     'Enter',
     'ArrowDown',
@@ -32,32 +43,28 @@ export const functionKeys = new Set([
 ]);
 
 
-// export type KbRows = {
-//     bottomLeft: string[],
-//     topLeft: string[],
-//     homeLeft: string[],
-//     bottomCenter: string[],
-//     topCenter: string[],
-//     homeCenter: string[],
-//     bottomRight: string[],
-//     topRight: string[],
-//     homeRight: string[],
-// }
+export const NoMap: KbMapping = {
+    getName(): string {
+        return 'no_map';
+    },
+    get(key: string): string | undefined {
+        return key;
+    }
+}
 
+export class KbMapLoaded implements KbMapping {
+    mapName: string;
+    map: Map<string, string>;
 
+    constructor(name: string, map: Map<string, string>) {
+        this.mapName = name
+        this.map = map;
+    }
+    getName(): string {
+        return this.mapName;
+    }
 
-/*
-Alt
-Compose
-Shift
-Delete
-Home
-End
-PageUp
-PageDown
-Control
-Shift
-Tab
-Alt
-F1-12
-*/
+    get(key: string): string | undefined {
+        return this.map.get(key);
+    }
+}

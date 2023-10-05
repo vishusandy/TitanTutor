@@ -1,6 +1,7 @@
 import { LetterState } from './types';
 import { type Config, BackspaceMode } from './config';
 import { Action } from './types';
+import type { KbMapping } from './mappings';
 
 export class CompletedWord {
     word: string[];
@@ -66,14 +67,14 @@ export class WordState {
         return true;
     }
 
-    isChar(config: Config, e: InputEvent): Action {
+    isChar(config: Config, kbmap: KbMapping, e: InputEvent): Action {
         if (!e.data) return Action.None;
 
         let act = Action.None;
 
         // allow multiple chars (eg mobile input)
         for (const c of e.data) {
-            const mapped = config.mapping.get(c);
+            const mapped = kbmap.get(c);
             if (mapped !== undefined) {
                 act = Action.Refresh;
                 this.addChar(mapped);

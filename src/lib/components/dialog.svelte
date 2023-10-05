@@ -50,15 +50,12 @@
 
 <style>
 	.close-btn {
-		/* border-radius: 2rem; */
-		/* border: 1px solid #c0c0c0; */
 		border: 0px;
 		line-height: 0px;
 		padding: 0.5rem;
 		position: absolute;
 		right: 0.7rem;
 		top: 0.7rem;
-		/* box-shadow: 0px 0px 3px #b0b0b0; */
 		background-color: transparent;
 	}
 
@@ -68,7 +65,6 @@
 	}
 
 	.line {
-		/* fill: #000; */
 		stroke: #333;
 		stroke-width: 0.2rem;
 	}
@@ -95,7 +91,6 @@
 	footer {
 		margin: 2rem 0rem 0rem 0rem;
 		padding: 1rem 1.5rem 1.5rem 1.5rem;
-		/* padding: 0px 1rem; */
 		text-align: right;
 		background-color: #f5f5f5;
 	}
@@ -103,7 +98,6 @@
 	dialog {
 		border-radius: 0.5rem;
 		border: 0px;
-		/* padding: 0.8rem 1rem 1.5rem; */
 		padding: 0px;
 		box-shadow: 3px 3px 10px #888;
 	}

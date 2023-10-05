@@ -9,14 +9,16 @@
 	import type { SessionStats } from '$lib/stats';
 	import type { Config } from '$lib/config';
 	import type { Language } from '$lib/language';
+	import type { KbMapping } from '$lib/mappings';
 
 	export let config: Config;
+	export let kbmap: KbMapping;
 	export let lang: Language;
 	export let lesson: Lesson;
 	export let lessonOpts: LessonOptions;
 	export let sessionStats: SessionStats;
 
-	let tutor = new Tutor(config, lesson, lessonOpts, sessionStats);
+	let tutor = new Tutor(config, kbmap, lesson, lessonOpts, sessionStats);
 	let textbox: HTMLInputElement | undefined;
 	let activeWord: HTMLElement | undefined;
 	let started: boolean = false;
