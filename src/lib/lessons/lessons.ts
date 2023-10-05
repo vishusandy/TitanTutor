@@ -21,16 +21,16 @@ export class LessonData {
         this.prevLesson = prevLesson;
     }
 
-    static async loadCurrentLesson(): Promise<[Lesson, LessonOptions]> {
+    static async loadUserLesson(fetchFn: typeof fetch): Promise<[Lesson, LessonOptions]> {
         const name = localStorage.getItem('lesson') ?? defaultLesson;
-        const lesson = lessons.get(name) ?? <LessonData>lessons.get(defaultLesson);
-        return lesson.loadLesson();
+        const lessonData = lessons.get(name) ?? <LessonData>lessons.get(defaultLesson);
+        return lessonData.loadLesson(fetchFn);
     }
 
-    async loadLesson(): Promise<[Lesson, LessonOptions]> {
+    async loadLesson(fetchFn: typeof fetch): Promise<[Lesson, LessonOptions]> {
         const req = new Request(`${base}/data/words/${this.path}.json`);
 
-        return fetch(req)
+        return fetchFn(req)
             .then((resp) => resp.json())
             .then((words: string[]) => {
                 const opts = LessonOptions.loadOptions(this.lessonName);

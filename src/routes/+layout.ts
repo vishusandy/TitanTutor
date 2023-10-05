@@ -5,10 +5,10 @@ import { Config } from "$lib/config";
 import { Language } from "$lib/language";
 import { loadUserKbMap } from "$lib/mappings";
 
-export async function load() {
-    let config = Config.load();
-    let lang = await Language.loadUserLang();
-    let kbmap = await loadUserKbMap();
+export async function load({ fetch }) {
+    let config = Config.loadUserConfig();
+    let lang = await Language.loadUserLang(fetch);
+    let kbmap = await loadUserKbMap(fetch);
 
     return {
         config,

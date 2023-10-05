@@ -29,17 +29,17 @@ export class Language {
         }
     }
 
-    static async loadLang(file: string): Promise<Language> {
+    static async loadLang(file: string, fetchFn: typeof fetch): Promise<Language> {
         const req = new Request(`${base}/data/lang/${file}.json`);
 
-        return fetch(req)
+        return fetchFn(req)
             .then((resp) => resp.json())
             .then((lang: Object) => new Language(lang))
     }
 
-    static async loadUserLang() {
+    static async loadUserLang(fetchFn: typeof fetch) {
         const lang = localStorage.getItem('language') ?? defaultLang;
-        return this.loadLang(languagePaths.get(lang) ?? <string>languagePaths.get(defaultLang));
+        return this.loadLang(languagePaths.get(lang) ?? <string>languagePaths.get(defaultLang), fetchFn);
     }
 }
 

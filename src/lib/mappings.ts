@@ -2,14 +2,14 @@ import { base } from '$app/paths';
 
 const defaultMap: string = 'no_map';
 
-export async function loadUserKbMap(): Promise<KbMapping> {
-    return loadKbMap(localStorage.getItem('kbmap') ?? defaultMap);
+export async function loadUserKbMap(fetchFn: typeof fetch): Promise<KbMapping> {
+    return loadKbMap(localStorage.getItem('kbmap') ?? defaultMap, fetchFn);
 }
 
-export async function loadKbMap(name: string): Promise<KbMapping> {
+export async function loadKbMap(name: string, fetchFn: typeof fetch): Promise<KbMapping> {
     if (name !== 'no_map') {
         const req = new Request(`${base}/data/kbmaps/${name}.json`);
-        return fetch(req)
+        return fetchFn(req)
             .then((resp) => {
                 if (!resp.ok)
                     return NoMap;

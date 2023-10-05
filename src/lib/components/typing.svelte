@@ -80,8 +80,6 @@
 	}
 
 	async function shortcuts(e: KeyboardEvent) {
-		// if (!started) return;
-
 		if (e.key === config.pause || e.key === 'Escape') {
 			if (paused) {
 				unpause(e);

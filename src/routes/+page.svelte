@@ -9,7 +9,7 @@
 	export let data: PageData;
 	let lang = data.lang;
 	let kbmap = data.kbmap;
-	let config = Config.load();
+	let config = Config.loadUserConfig();
 	let lesson = data.lesson;
 	let lessonOpts = data.lessonOpts;
 	let sessionStats = new SessionStats();

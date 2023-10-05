@@ -1,5 +1,3 @@
-import type { KbMapping } from "./mappings";
-import { NoMap } from "./mappings";
 import { Audio } from "./audio";
 import { mapLocale } from "./util";
 import type { LessonOptions } from "./lessons/options";
@@ -30,7 +28,6 @@ export type Overrides = {
 export class Config {
     version: number;
     kb: KbTarget;
-    // mapping: Mapping;
     checkMode: CheckMode;
     backspace: BackspaceMode;
     tts?: Audio;
@@ -43,7 +40,6 @@ export class Config {
     constructor(
         version: number,
         kb: KbTarget,
-        // mapping: Mapping,
         check_mode: CheckMode,
         backspace: BackspaceMode,
         tts: Audio | undefined,
@@ -55,7 +51,6 @@ export class Config {
     ) {
         this.version = version;
         this.kb = kb;
-        // this.mapping = mapping;
         this.checkMode = check_mode;
         this.backspace = backspace;
         this.tts = tts;
@@ -70,7 +65,6 @@ export class Config {
         return new Config(
             1,
             KbTarget.Dvorak,
-            // new NoMap(),
             CheckMode.WordRepeat,
             BackspaceMode.Accept,
             undefined,
@@ -90,7 +84,7 @@ export class Config {
         return StorableConfig.deserialize(s);
     }
 
-    static load(): Config {
+    static loadUserConfig(): Config {
         let c = localStorage.getItem('config');
 
         if (c !== null) {
@@ -114,7 +108,6 @@ export class Config {
 class StorableConfig {
     version: number;
     kb: number;
-    // mapping: string;
     check_mode: number;
     backspace: number;
     tts: string;
@@ -127,7 +120,6 @@ class StorableConfig {
     constructor(config: Config) {
         this.version = config.version;
         this.kb = config.kb;
-        // this.mapping = config.mapping.serialize();
         this.check_mode = config.checkMode;
         this.backspace = config.backspace;
         this.tts = Audio.serialize(config.tts);
@@ -144,7 +136,6 @@ class StorableConfig {
         return new Config(
             o.version,
             o.kb,
-            // deserializeMapping(o.mapping),
             o.check_mode,
             o.backspace,
             Audio.deserialize(o.tts),
