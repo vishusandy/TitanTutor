@@ -1,38 +1,26 @@
-import type { BackspaceMode, CheckMode } from "../config";
+import type { LessonConfig } from "../config";
 
 
 export class LessonOptions {
     until?: number;
     random: boolean;
-    wordBatchSize?: number;
-    minQueue?: number;
-    checkMode?: CheckMode;
-    backspace?: BackspaceMode;
+    config: Partial<LessonConfig>;
 
     constructor(
+        config: Partial<LessonConfig> = {},
         random: boolean = true,
         until?: number,
-        wordBatchSize?: number,
-        minQueue?: number,
-        checkMode?: CheckMode,
-        backspace?: BackspaceMode
     ) {
         this.until = until;
         this.random = random;
-        this.wordBatchSize = wordBatchSize;
-        this.minQueue = minQueue;
-        this.checkMode = checkMode;
-        this.backspace = backspace;
+        this.config = config;
     }
 
     serialize() {
         return JSON.stringify({
-            random: this.random,
             until: this.until,
-            wordBatchSize: this.wordBatchSize,
-            minQueue: this.minQueue,
-            checkMode: this.checkMode,
-            backspace: this.backspace,
+            random: this.random,
+            config: this.config,
         });
     }
 

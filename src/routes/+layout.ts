@@ -3,7 +3,7 @@ export const ssr = false;
 
 import { Config } from "$lib/config";
 import { Language } from "$lib/language";
-import { loadUserKbMap } from "$lib/mappings";
+import { loadUserKbMap } from "$lib/remap";
 
 export async function load({ fetch }) {
     let config = Config.loadUserConfig();

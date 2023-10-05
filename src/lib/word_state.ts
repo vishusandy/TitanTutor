@@ -1,7 +1,7 @@
 import { LetterState } from './types';
 import { type Config, BackspaceMode } from './config';
 import { Action } from './types';
-import type { KbMapping } from './mappings';
+import type { Remap } from './remap';
 
 export class CompletedWord {
     word: string[];
@@ -67,7 +67,7 @@ export class WordState {
         return true;
     }
 
-    isChar(config: Config, kbmap: KbMapping, e: InputEvent): Action {
+    isChar(config: Config, kbmap: Remap, e: InputEvent): Action {
         if (!e.data) return Action.None;
 
         let act = Action.None;

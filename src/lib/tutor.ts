@@ -1,24 +1,24 @@
 
-import { type Config, CheckMode, BackspaceMode, type Overrides } from './config';
+import { type Config, CheckMode, BackspaceMode, type LessonConfig } from './config';
 import type { Lesson } from './lessons/lessons';
 import type { LessonOptions } from './lessons/options';
 import type { SessionStats } from './stats';
 import { Action, LetterState } from './types';
 import { WordState, CompletedWord } from './word_state';
-import { controlKeys, type KbMapping } from './mappings';
+import { controlKeys, type Remap } from './remap';
 
 export class Tutor {
     config: Config;
     lesson: Lesson;
-    kbmap: KbMapping;
+    kbmap: Remap;
     stats: SessionStats;
-    overrides: Overrides;
+    overrides: LessonConfig;
     word: WordState = new WordState('');
     history: CompletedWord[] = [];
     queue: string[] = [];
     audioPlayed: number = 0;
 
-    constructor(config: Config, kbmap: KbMapping, lesson: Lesson, opts: LessonOptions, stats: SessionStats) {
+    constructor(config: Config, kbmap: Remap, lesson: Lesson, opts: LessonOptions, stats: SessionStats) {
         this.stats = stats;
         this.config = config;
         this.kbmap = kbmap;

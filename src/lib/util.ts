@@ -1,6 +1,6 @@
 
-import type { KbMapping } from "./mappings";
-import { NoMap } from "./mappings";
+import type { Remap } from "./remap";
+import { NoRemap } from "./remap";
 import type { Lesson } from "./lessons/lessons";
 
 // Create a new shuffled array

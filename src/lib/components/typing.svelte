@@ -9,10 +9,10 @@
 	import type { SessionStats } from '$lib/stats';
 	import type { Config } from '$lib/config';
 	import type { Language } from '$lib/language';
-	import type { KbMapping } from '$lib/mappings';
+	import type { Remap } from '$lib/remap';
 
 	export let config: Config;
-	export let kbmap: KbMapping;
+	export let kbmap: Remap;
 	export let lang: Language;
 	export let lesson: Lesson;
 	export let lessonOpts: LessonOptions;

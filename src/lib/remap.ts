@@ -2,26 +2,26 @@ import { base } from '$app/paths';
 
 const defaultMap: string = 'no_map';
 
-export async function loadUserKbMap(fetchFn: typeof fetch): Promise<KbMapping> {
+export async function loadUserKbMap(fetchFn: typeof fetch): Promise<Remap> {
     return loadKbMap(localStorage.getItem('kbmap') ?? defaultMap, fetchFn);
 }
 
-export async function loadKbMap(name: string, fetchFn: typeof fetch): Promise<KbMapping> {
+export async function loadKbMap(name: string, fetchFn: typeof fetch): Promise<Remap> {
     if (name !== 'no_map') {
         const req = new Request(`${base}/data/kbmaps/${name}.json`);
         return fetchFn(req)
             .then((resp) => {
                 if (!resp.ok)
-                    return NoMap;
+                    return NoRemap;
                 return resp.json();
             })
-            .then((arr: [string, string][]) => new KbMapLoaded(name, new Map(arr)))
+            .then((arr: [string, string][]) => new KbRemap(name, new Map(arr)))
     }
 
-    return new Promise((resolve) => resolve(NoMap));
+    return new Promise((resolve) => resolve(NoRemap));
 }
 
-export interface KbMapping {
+export interface Remap {
     getName(): string;
     get(key: string): string | undefined;
 }
@@ -43,7 +43,7 @@ export const controlKeys = new Set([
 ]);
 
 
-export const NoMap: KbMapping = {
+export const NoRemap: Remap = {
     getName(): string {
         return 'no_map';
     },
@@ -52,7 +52,7 @@ export const NoMap: KbMapping = {
     }
 }
 
-export class KbMapLoaded implements KbMapping {
+export class KbRemap implements Remap {
     mapName: string;
     map: Map<string, string>;
 
@@ -60,6 +60,7 @@ export class KbMapLoaded implements KbMapping {
         this.mapName = name
         this.map = map;
     }
+
     getName(): string {
         return this.mapName;
     }

@@ -18,11 +18,18 @@ export const enum BackspaceMode {
     Ignore = 1,
 }
 
-export type Overrides = {
+export type LessonConfig = {
     wordBatchSize: number,
     minQueue: number,
     checkMode: CheckMode,
     backspace: BackspaceMode
+};
+
+export const defaultLessonConfig = {
+    wordBatchSize: 10,
+    minQueue: 4,
+    checkMode: CheckMode.WordRepeat,
+    backspace: BackspaceMode.Accept,
 };
 
 export class Config {
@@ -96,10 +103,10 @@ export class Config {
 
     getOverrides(opts: LessonOptions) {
         return {
-            wordBatchSize: opts.wordBatchSize ?? this.wordBatchSize,
-            minQueue: opts.minQueue ?? this.minQueue,
-            checkMode: opts.checkMode ?? this.checkMode,
-            backspace: opts.backspace ?? this.backspace
+            wordBatchSize: opts.config.wordBatchSize ?? this.wordBatchSize,
+            minQueue: opts.config.minQueue ?? this.minQueue,
+            checkMode: opts.config.checkMode ?? this.checkMode,
+            backspace: opts.config.backspace ?? this.backspace
         }
     }
 }
