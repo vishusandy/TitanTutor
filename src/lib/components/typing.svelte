@@ -200,11 +200,11 @@
 	}
 
 	.tutor-words :global(.word:first-of-type) {
-		margin-left: 4ch;
+		margin-left: calc(min(25ch, 40%));
 	}
 
 	.tutor-words :global(.word:last-of-type) {
-		margin-right: 4ch;
+		margin-right: calc(min(25ch, 40%));
 	}
 
 	.paused {
