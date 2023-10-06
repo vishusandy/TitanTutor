@@ -3,6 +3,7 @@ import { BaseLesson } from './base';
 import { RandomList } from './wrappers/random';
 import { UntilN } from './wrappers/until_n';
 import { LessonOptions } from './options';
+import { lessonMap, defaultLessonData, getUserLessonName } from '$lib/locales';
 
 export interface Lesson extends Iterator<string>, Iterable<string> {
     batch(n: number): string[];
@@ -22,8 +23,9 @@ export class LessonData {
     }
 
     static async loadUserLesson(fetchFn: typeof fetch): Promise<[Lesson, LessonOptions]> {
-        const name = localStorage.getItem('lesson') ?? defaultLesson;
-        const lessonData = lessons.get(name) ?? <LessonData>lessons.get(defaultLesson);
+        const userLesson = getUserLessonName();
+        const lessonData = lessons.get(userLesson) ?? new LessonData(...defaultLessonData);
+
         return lessonData.loadLesson(fetchFn);
     }
 
@@ -46,8 +48,11 @@ export class LessonData {
     }
 }
 
-const defaultLesson: string = 'en-test-words';
+const lessons: Map<string, LessonData> = new Map((() => {
+    let arr: [string, LessonData][] = []
+    for (let [_, val] of lessonMap) {
+        arr.push([val[0], new LessonData(val[0], val[1])])
+    }
+    return arr;
+})());
 
-export const lessons: Map<string, LessonData> = new Map([
-    ['en-test-words', new LessonData('en-test-words', 'test_words')],
-]);

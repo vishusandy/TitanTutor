@@ -1,4 +1,5 @@
 import { base } from '$app/paths';
+import { getUserInterfaceLang } from './locales';
 
 export class Language {
     lang: string = '';
@@ -38,13 +39,7 @@ export class Language {
     }
 
     static async loadUserLang(fetchFn: typeof fetch) {
-        const lang = localStorage.getItem('language') ?? defaultLang;
-        return this.loadLang(languagePaths.get(lang) ?? <string>languagePaths.get(defaultLang), fetchFn);
+        return this.loadLang(getUserInterfaceLang(), fetchFn);
     }
 }
 
-const defaultLang: string = 'en-US';
-
-const languagePaths: Map<string, string> = new Map([
-    ['en-US', 'en-US']
-]);

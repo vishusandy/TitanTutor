@@ -1,5 +1,5 @@
 import { Audio } from "./audio";
-import { mapLocale } from "./util";
+import { getDefaultTtsLangsFromLocale, ttsDefaultsMap } from "./locales";
 import type { LessonOptions } from "./lessons/options";
 
 export const enum KbTarget {
@@ -68,7 +68,7 @@ export class Config {
         this.audioDefaults = audioDefaults;
     }
 
-    static default() {
+    static default(): Config {
         return new Config(
             1,
             KbTarget.Dvorak,
@@ -79,12 +79,12 @@ export class Config {
             8,
             'F4',
             'F4',
-            mapLocale(navigator.language),
+            getDefaultTtsLangsFromLocale(navigator.language),
         );
     }
 
-    storable(): StorableConfig {
-        return new StorableConfig(this);
+    serialize(): string {
+        return JSON.stringify(new StorableConfig(this))
     }
 
     static deserialize(s: string): Config {
@@ -93,7 +93,7 @@ export class Config {
 
     static loadUserConfig(): Config {
         let c = localStorage.getItem('config');
-
+        // console.log('loading user config = ', c)
         if (c !== null) {
             return Config.deserialize(c);
         }
@@ -101,7 +101,11 @@ export class Config {
         return Config.default();
     }
 
-    getOverrides(opts: LessonOptions) {
+    saveUserConfig() {
+        localStorage.setItem('config', this.serialize())
+    }
+
+    getOverrides(opts: LessonOptions): LessonConfig {
         return {
             wordBatchSize: opts.config.wordBatchSize ?? this.wordBatchSize,
             minQueue: opts.config.minQueue ?? this.minQueue,
@@ -154,3 +158,4 @@ class StorableConfig {
         );
     }
 }
+

@@ -1,6 +1,3 @@
-
-import type { Remap } from "./remap";
-import { NoRemap } from "./remap";
 import type { Lesson } from "./lessons/lessons";
 
 // Create a new shuffled array
@@ -27,21 +24,4 @@ export function defaultBatch(lesson: Lesson, n: number) {
     return words;
 }
 
-const map: Map<string, string[]> = new Map([
-    ['en-US', ['English (America)']],
-]);
 
-export function mapLocale(locale: string): string[] {
-    return map.get(locale) ?? ['English (America)'];
-}
-
-
-
-// export function deserializeMapping(mapping: string): Mapping {
-//     switch (mapping) {
-//         case QwertyToDvorak.mapName: return new QwertyToDvorak();
-//         case NoMap.mapName:
-//         default:
-//             return NoMap;
-//     }
-// }

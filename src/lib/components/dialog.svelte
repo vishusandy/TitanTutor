@@ -52,7 +52,7 @@
 	.close-btn {
 		border: 0px;
 		line-height: 0px;
-		padding: 0.5rem;
+		padding: 0.2rem;
 		position: absolute;
 		right: 0.7rem;
 		top: 0.7rem;
@@ -73,8 +73,13 @@
 	.close-btn:focus-within .line {
 		stroke: red;
 	}
+    
+    .close-btn:active .line {
+        stroke: #cc0000;
+    }
 
 	header {
+        margin-bottom: 2.5rem;
 		padding: 2rem 0px 1rem;
 		text-align: center;
 		background-color: #f5f5f5;
