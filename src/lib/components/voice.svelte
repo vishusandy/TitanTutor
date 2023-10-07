@@ -9,7 +9,7 @@
 	import { loadVoiceLangMap, displayVoice, getLangFromVoice } from '$lib/audio';
 	import { getDefaultTtsLangsFromLocale } from '$lib/locales';
 	import { onMount } from 'svelte';
-	import { Audio } from '$lib/audio';
+	import { Audio, pitchClamp, rateClamp, volumeClamp } from '$lib/audio';
 	import type { Config } from '$lib/config';
 
 	export let config: Config;
@@ -20,6 +20,7 @@
 	let rate: number = config.tts !== undefined ? config.tts.rate : 1;
 	let volume: number = config.tts !== undefined ? config.tts.volume : 1;
 	let mute: boolean = config.tts !== undefined ? config.tts.mute : true;
+	let queueSize: number = config.tts !== undefined ? config.tts.queueSize : 1;
 
 	let langs: Map<string, SpeechSynthesisVoice[]> = new Map();
 	let voices: SpeechSynthesisVoice[] | undefined = undefined;
@@ -38,7 +39,7 @@
 	});
 
 	export function getData(): Audio | undefined {
-		return voice ? new Audio(voice, rate, pitch, volume, mute) : undefined;
+		return voice ? new Audio(voice, rate, pitch, volume, mute, queueSize) : undefined;
 	}
 
 	function setChosenLang(choice: string) {
@@ -164,8 +165,8 @@
 				<div class="input-cell">
 					<input
 						type="range"
-						min="0"
-						max="2"
+						min={pitchClamp[0]}
+						max={pitchClamp[1]}
 						bind:value={pitch}
 						step="0.1"
 						id="pitch"
@@ -178,8 +179,8 @@
 				<div class="input-cell">
 					<input
 						type="range"
-						min="0.5"
-						max="2"
+						min={rateClamp[0]}
+						max={rateClamp[1]}
 						bind:value={rate}
 						step="0.1"
 						id="rate"
@@ -192,8 +193,8 @@
 				<div class="input-cell">
 					<input
 						type="range"
-						min="0"
-						max="1"
+						min={volumeClamp[0]}
+						max={volumeClamp[1]}
 						bind:value={volume}
 						step="0.01"
 						id="volume"
@@ -215,13 +216,12 @@
 {/if}
 
 <style>
-	/* .mute {
-		text-align: center;
-		margin-bottom: 1.5rem;
-	} */
-
 	fieldset {
 		border-radius: 0.4rem;
+	}
+
+	legend label {
+		font-size: 1.1rem;
 	}
 
 	.mute-group {

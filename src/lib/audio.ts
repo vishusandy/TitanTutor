@@ -1,20 +1,44 @@
+
+function clamp(n: number, min: number, max: number): number {
+    return Math.min(max, Math.max(min, n));
+}
+
+export const rateClamp: [number, number] = [0.5, 2.0];
+export const pitchClamp: [number, number] = [0.0, 2.0];
+export const volumeClamp: [number, number] = [0.0, 1.0];
+
 export class Audio {
     rate: number = 1.0; // 0.5 to 2.0
     pitch: number = 1.0; // 0.0 to 2.0
     volume: number = 1.0; // 0.0 to 1.0
     voice: SpeechSynthesisVoice;
     mute: boolean;
+    queueSize: number = 1;
 
-    constructor(voice: SpeechSynthesisVoice, rate: number, pitch: number, volume: number, mute: boolean) {
-        this.rate = rate;
-        this.pitch = pitch;
-        this.volume = volume;
+    constructor(voice: SpeechSynthesisVoice, rate: number, pitch: number, volume: number, mute: boolean, queueSize: number) {
+        this.rate = clamp(rate, ...rateClamp);
+        this.pitch = clamp(pitch, ...pitchClamp);
+        this.volume = clamp(volume, ...volumeClamp);
         this.voice = voice;
         this.mute = mute;
+        this.queueSize = queueSize;
     }
 
-    play(text: string) {
-        const utter = new SpeechSynthesisUtterance(text);
+    play(text: string | string[]) {
+        if (this.mute) return;
+
+        let t: string;
+        if (Array.isArray(text)) {
+            if (text.length > this.queueSize) {
+                t = text.slice(0, this.queueSize).join(' ')
+            } else {
+                t = text.join(' ');
+            }
+        } else {
+            t = text
+        }
+
+        const utter = new SpeechSynthesisUtterance(t);
         utter.voice = this.voice;
         utter.rate = this.rate;
         utter.pitch = this.pitch;
@@ -31,7 +55,8 @@ export class Audio {
             pitch: audio.pitch,
             volume: audio.volume,
             voice: audio.voice.name,
-            mute: audio.mute
+            mute: audio.mute,
+            queueSize: audio.queueSize
         });
     }
 
@@ -42,7 +67,7 @@ export class Audio {
         const voice = speechSynthesis.getVoices().find((v: SpeechSynthesisVoice) => v.name === o.voice);
 
         if (voice === undefined) return undefined;
-        return new Audio(voice, o.rate, o.pitch, o.volume, o.mute);
+        return new Audio(voice, o.rate, o.pitch, o.volume, o.mute, o.queueSize);
     }
 }
 

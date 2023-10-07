@@ -5,7 +5,7 @@ import type { LessonOptions } from './lessons/options';
 import type { SessionStats } from './stats';
 import { Action, LetterState } from './types';
 import { WordState, CompletedWord } from './word_state';
-import { controlKeys, type Remap } from './remap';
+import { controlKeys } from './remap';
 
 export class Tutor {
     config: Config;
@@ -15,7 +15,7 @@ export class Tutor {
     word: WordState = new WordState('');
     history: CompletedWord[] = [];
     queue: string[] = [];
-    audioPlayed: number = 0;
+    audioQueue: number = 0;
 
     constructor(config: Config, lesson: Lesson, opts: LessonOptions, stats: SessionStats) {
         this.stats = stats;
@@ -25,13 +25,26 @@ export class Tutor {
         this.nextWord();
     }
 
+    checkAudioQueue() {
+        if (this.config.tts === undefined || this.config.tts.mute) return;
+
+        this.audioQueue -= 1;
+        console.log('checking audio queue')
+        if (this.audioQueue <= 0) {
+            this.audioQueue = this.config.tts.queueSize;
+            // console.log(`playing 0-${this.audioQueue}`, [...this.queue.slice(0, this.audioQueue)])
+            // this.config.tts.play([...this.queue.slice(0, this.audioQueue)]);
+            this.config.tts.play([...this.queue]);
+        }
+    }
+
     nextWord(): Action {
         if (!this.word.empty()) {
             this.history.push(new CompletedWord(this.word.wordChars, this.word.state));
-            // console.log(`${this.word.word}: `, this.word.state);
         }
 
         this.fillQueue();
+        this.checkAudioQueue();
 
         let next = this.queue.shift();
         if (next === undefined) {
@@ -50,7 +63,6 @@ export class Tutor {
     }
 
     fillQueue() {
-        // console.log('checking queue')
         if (this.queue.length < this.config.minQueue) {
             this.queue.push(...this.lesson.batch(this.config.wordBatchSize - this.queue.length));
         }
