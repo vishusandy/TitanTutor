@@ -15,6 +15,6 @@
     "ttsTextLabel": "Text",
     "ttsPreview": "Preview",
     "ttsExampleText": "The birch canoe slid on the smooth planks.",
-    "ttsNotEnabled": "Text-to-Speech is not enabled.  If you are using Chromium please try launching with `chromium-browser --enable-speech-synthesis` from the console.  See <a href='https://askubuntu.com/questions/761975/chromium-is-not-generating-voice'>https://askubuntu.com/questions/761975/chromium-is-not-generating-voice</a> for more information.",
+    "ttsNotEnabled": "Text-to-Speech is not enabled.  If you are using Chromium see <a href='https://askubuntu.com/questions/761975/chromium-is-not-generating-voice'>https://askubuntu.com/questions/761975/chromium-is-not-generating-voice</a> for more information.",
     "openTtsDialog": "Audio"
 }
