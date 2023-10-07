@@ -1,5 +1,3 @@
-import { getDefaultTtsLangsFromLocale } from "./locales";
-
 export class Audio {
     rate: number = 1.0; // 0.5 to 2.0
     pitch: number = 1.0; // 0.0 to 2.0

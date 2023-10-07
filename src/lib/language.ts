@@ -17,6 +17,8 @@ export class Language {
     ttsTextLabel: string = '';
     ttsPreview: string = '';
     ttsExampleText: string = '';
+    ttsNotEnabled: string = '';
+    openTtsDialog: string = '';
 
     constructor(
         lang: Object,

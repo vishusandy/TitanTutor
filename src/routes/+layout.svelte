@@ -18,7 +18,7 @@
 <nav>
 	<ul>
 		<li>
-			<button type="button" on:click={showAudioDialog}>Audio</button>
+			<button type="button" on:click={showAudioDialog}>{data.config.lang.openTtsDialog}</button>
 		</li>
 	</ul>
 </nav>

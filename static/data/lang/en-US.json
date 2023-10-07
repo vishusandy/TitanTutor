@@ -14,5 +14,7 @@
     "ttsVolumeLabel": "Volume",
     "ttsTextLabel": "Text",
     "ttsPreview": "Preview",
-    "ttsExampleText": "The birch canoe slid on the smooth planks."
+    "ttsExampleText": "The birch canoe slid on the smooth planks.",
+    "ttsNotEnabled": "Text-to-Speech is not enabled.  If you are using Chromium please try launching with `chromium-browser --enable-speech-dispatcher` from the console.  See <a href='https://stackoverflow.com/questions/44013933/how-to-use-web-speech-api-at-chromium'>https://stackoverflow.com/questions/44013933/how-to-use-web-speech-api-at-chromium</a> for more information.",
+    "openTtsDialog": "Audio"
 }
