@@ -34,9 +34,18 @@
 	voiceListLoaded(); // this initial load will not work for chrome (see onMount)
 
 	onMount(() => {
+		speechSynthesis.cancel();
+
 		// Chrome browsers are weird.  You cannot convince me otherwise.
 		speechSynthesis.addEventListener('voiceschanged', voiceListLoaded);
 	});
+
+	$: {
+		pitch;
+		rate;
+		volume;
+		speechSynthesis.cancel();
+	}
 
 	export function getData(): Audio | undefined {
 		return voice ? new Audio(voice, rate, pitch, volume, mute, queueSize) : undefined;
@@ -117,6 +126,7 @@
 	}
 
 	function langChange(_: Event) {
+		speechSynthesis.cancel();
 		if (chosenLang === langSelector.value) return;
 
 		setChosenLang(langSelector.value);
@@ -124,6 +134,7 @@
 	}
 
 	function voiceChange(_: Event) {
+		speechSynthesis.cancel();
 		if (chosenVoice === voiceSelector.value) return;
 
 		findVoiceAndSet(voiceSelector.value);
