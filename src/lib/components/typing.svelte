@@ -182,9 +182,12 @@
 	.tutor-input {
 		text-align: center;
 	}
+
 	.tutor-words {
-		width: 50ch;
-		max-width: 80%;
+		--tutorWidth: 70ch;
+		--tutorMaxWidth: 80%;
+		width: var(--tutorWidth);
+		max-width: var(--tutorMaxWidth);
 		padding: 1rem 0px;
 		overflow-x: auto;
 		overflow-y: hidden;
@@ -196,11 +199,11 @@
 	}
 
 	.tutor-words :global(.word:first-of-type) {
-		margin-left: calc(min(25ch, 40%));
+		margin-left: min(calc(var(--tutorWidth) / 2), calc(var(--tutorMaxWidth) / 2));
 	}
 
 	.tutor-words :global(.word:last-of-type) {
-		margin-right: calc(min(25ch, 40%));
+		margin-right: min(calc(var(--tutorWidth) / 2), calc(var(--tutorMaxWidth) / 2));
 	}
 
 	.paused {
