@@ -44,6 +44,7 @@
 		pitch;
 		rate;
 		volume;
+		text;
 		speechSynthesis.cancel();
 	}
 

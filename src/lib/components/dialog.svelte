@@ -31,22 +31,24 @@
 
 <dialog bind:this={dialog}>
 	<form on:submit|preventDefault={handleSubmit}>
-		<header>
-			<button type="button" class="close-btn" on:click={handleClose}>
-				<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-					<path class="line" d="M 0 20 L 20 0" />
-					<path class="line" d="M 0 0 L 20 20" />
-				</svg>
-			</button>
-			<h1>{title}</h1>
-		</header>
-		<div class="content">
-			<svelte:component this={content} bind:getData={submitData} bind:config {...passProps} />
+		<div>
+			<header>
+				<button type="button" class="close-btn" on:click={handleClose}>
+					<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+						<path class="line" d="M 0 20 L 20 0" />
+						<path class="line" d="M 0 0 L 20 20" />
+					</svg>
+				</button>
+				<h1>{title}</h1>
+			</header>
+			<div class="content">
+				<svelte:component this={content} bind:getData={submitData} bind:config {...passProps} />
+			</div>
+			<footer>
+				<button type="submit">{config.lang.submit}</button>
+				<button type="button" on:click={handleClose}>{config.lang.cancel}</button>
+			</footer>
 		</div>
-		<footer>
-			<button type="submit">{config.lang.submit}</button>
-			<button type="button" on:click={handleClose}>{config.lang.cancel}</button>
-		</footer>
 	</form>
 </dialog>
 
@@ -82,9 +84,11 @@
 
 	header {
 		margin-bottom: 2.5rem;
-		padding: 2rem 0px 1rem;
+		padding: 1rem 0px 0.6rem;
 		text-align: center;
 		background-color: #f5f5f5;
+		position: sticky;
+		top: 0px;
 	}
 
 	header h1 {
@@ -100,6 +104,11 @@
 		padding: 1rem 1.5rem 1.5rem 1.5rem;
 		text-align: right;
 		background-color: #f5f5f5;
+	}
+
+	footer button {
+		font-weight: bold;
+		font-size: 0.9rem;
 	}
 
 	dialog {
