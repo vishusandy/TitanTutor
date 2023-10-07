@@ -1,5 +1,7 @@
 import { storagePrefix } from "./config";
 
+const fallbackLocale = 'en';
+
 export const defaultTtsList = ['English (America)', 'Google US English'];
 export const ttsDefaultsMap: Map<string, string[]> = new Map([
     // locale   array of acceptable default languages for tts
@@ -27,16 +29,6 @@ const exampleTextMap: Map<string, string> = new Map([
 ]);
 
 
-export function recurseLocale<T>(locale: string, map: Map<string, T>, mapDefault: string, fallback: T): T {
-    const d = map.get(locale);
-    if (d !== undefined) return d;
-
-    const pos = locale.lastIndexOf('-');
-    if (pos === -1) return map.get(mapDefault) ?? fallback;
-
-    return recurseLocale(locale.substring(0, pos), map, mapDefault, fallback)
-}
-
 export function recurseLocaleArray<T, U>(locale: string[], map: Map<string, T>, fallback: U): T | U {
     if (locale.length === 0) return fallback;
 
@@ -51,14 +43,14 @@ export function recurseLocaleArray<T, U>(locale: string[], map: Map<string, T>, 
 }
 
 export function getDefaultTtsLangsFromLocale(locale: string): string[] {
-    return recurseLocale(locale, ttsDefaultsMap, navigator.language, defaultTtsList);
+    return recurseLocaleArray([locale, navigator.language, fallbackLocale], ttsDefaultsMap, defaultTtsList);
 }
 
 export function getInterfaceLangFromLocale(locale: string): string {
-    return recurseLocale(locale, interfaceLanguagePaths, navigator.language, defaultInterfaceLanguage);
+    return recurseLocaleArray([locale, navigator.language, fallbackLocale], interfaceLanguagePaths, defaultInterfaceLanguage);
 }
 
 export function getUserLessonName(): string {
     const lang = localStorage.getItem(storagePrefix + 'lesson') ?? navigator.language;
-    return recurseLocale(lang, lessonMap, navigator.language, defaultLessonData)[0];
+    return recurseLocaleArray([lang, navigator.language, fallbackLocale], lessonMap, defaultLessonData)[0];
 }
