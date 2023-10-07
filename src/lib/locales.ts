@@ -22,7 +22,9 @@ export const lessonMap: Map<string, [string, string]> = new Map([
     ['en', ['en-test-words', 'test_words']],
 ]);
 
-
+const exampleTextMap: Map<string, string> = new Map([
+    ['en', 'The boy was there when the sun rose.'],
+]);
 
 
 export function recurseLocale<T>(locale: string, map: Map<string, T>, mapDefault: string, fallback: T): T {

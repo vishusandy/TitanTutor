@@ -6,7 +6,8 @@
 	// chromium-browser --enable-speech-dispatcher
 	// https://stackoverflow.com/questions/44013933/how-to-use-web-speech-api-at-chromium
 
-	import { getLanguages, displayVoice, getDefaultLang } from '$lib/audio';
+	import { loadVoiceLangMap, displayVoice, getLangFromVoice } from '$lib/audio';
+	import { getDefaultTtsLangsFromLocale } from '$lib/locales';
 	import { onMount } from 'svelte';
 	import { Audio } from '$lib/audio';
 	import type { Config } from '$lib/config';
@@ -39,33 +40,70 @@
 		speechSynthesis.addEventListener('voiceschanged', voiceListLoaded);
 	});
 
+	function setChosenLang(choice: string) {
+		chosenLang = getLangFromVoice(choice);
+		voices = langs.get(chosenLang);
+	}
+
+	function setVoice(v: SpeechSynthesisVoice) {
+		voice = v;
+		chosenVoice = v.name;
+	}
+
+	function useFirstVoice() {
+		if (voices === undefined || voices.length === 0) return;
+		chosenVoice = voices[0].name;
+		voice = voices[0];
+	}
+
+	function useFirstLang() {
+		const first: string | undefined = langs.keys().next().value;
+		if (first) {
+			setChosenLang(first);
+		}
+	}
+
+	function findVoiceAndSet(s: string): boolean {
+		const v = voices?.find((v) => v.name === s);
+		if (v) {
+			setVoice(v);
+			return true;
+		}
+		return false;
+	}
+
+	function matchLang(arr: string[]) {
+		let choice: string | undefined;
+
+		while ((choice = arr.shift())) {
+			const c = getLangFromVoice(choice);
+			const a = langs.get(c);
+
+			if (a === undefined) continue;
+
+			setChosenLang(c);
+			if (!findVoiceAndSet(choice)) useFirstVoice();
+			break;
+		}
+	}
+
 	function voiceListLoaded() {
 		if (langs.size !== 0) return;
-
-		langs = getLanguages();
+		langs = loadVoiceLangMap();
 		if (langs.size === 0) return;
 
-		if (config.tts && config.tts.voice.name !== '') {
-			const pos = config.tts.voice.name.indexOf('+');
-			chosenLang = pos !== -1 ? config.tts.voice.name.substring(0, pos) : config.tts.voice.name;
-			voices = langs.get(chosenLang);
-
-			voice = config.tts.voice;
-			chosenVoice = voice.name;
-
+		if (config.tts !== undefined && config.tts.voice.name !== '') {
+			setChosenLang(config.tts.voice.name);
+			setVoice(config.tts.voice);
 			return;
 		}
 
-		chosenLang = getDefaultLang(config.audioDefaults, langs);
+		matchLang(getDefaultTtsLangsFromLocale(config.lang.lang));
 
-		if (chosenLang === null) {
-			chosenLang = langs.keys().next().value;
-		}
+		if (chosenLang !== null) return;
 
-		if (chosenLang === null) return;
-		voices = langs.get(chosenLang);
-
-		voice = voices && voices.length !== 0 ? voices[0] : null;
+		useFirstLang();
+		useFirstVoice();
 	}
 
 	function play() {
@@ -80,20 +118,14 @@
 	function langChange(e: Event) {
 		if (chosenLang === langSelector.value) return;
 
-		chosenLang = langSelector.value;
-		voices = langs.get(chosenLang);
-
-		if (voices && voices.length !== 0) {
-			chosenVoice = voices[0].name;
-			voice = voices[0];
-		}
+		setChosenLang(langSelector.value);
+		useFirstVoice();
 	}
 
 	function voiceChange(e: Event) {
 		if (chosenVoice === voiceSelector.value) return;
 
-		voice = voices?.find((v) => v.name === voiceSelector.value) ?? null;
-		if (voice) chosenVoice = voice.name;
+		findVoiceAndSet(voiceSelector.value);
 	}
 </script>
 

@@ -1,4 +1,4 @@
-import { defaultTtsList, getDefaultTtsLangsFromLocale, recurseLocale, recurseLocaleArray } from "./locales";
+import { getDefaultTtsLangsFromLocale } from "./locales";
 
 export class Audio {
     rate: number = 1.0; // 0.5 to 2.0
@@ -11,21 +11,6 @@ export class Audio {
         this.pitch = pitch;
         this.volume = volume;
         this.voice = voice;
-    }
-
-    static defaultVoice(locale: string, map: Map<string, SpeechSynthesisVoice[]>): SpeechSynthesisVoice[] | undefined {
-        let lang = getDefaultTtsLangsFromLocale(locale);
-
-        return recurseLocaleArray(lang, map, undefined);
-    }
-
-    static default(locale: string, map: Map<string, SpeechSynthesisVoice[]>): Audio | undefined {
-        let voice = Audio.defaultVoice(locale, map);
-
-        if (voice === undefined || voice.length === 0)
-            return undefined;
-
-        return new Audio(voice[0], 1, 1, 1);
     }
 
     play(text: string) {
@@ -56,19 +41,17 @@ export class Audio {
         const voice = speechSynthesis.getVoices().find((v: SpeechSynthesisVoice) => v.name === o.voice);
 
         if (voice === undefined) return undefined;
-
         return new Audio(voice, o.rate, o.pitch, o.volume);
     }
 }
 
-export function getLanguages(): Map<string, SpeechSynthesisVoice[]> {
-
+export function loadVoiceLangMap(): Map<string, SpeechSynthesisVoice[]> {
     let list = speechSynthesis.getVoices().sort(sortVoices);
     let voices: Map<string, SpeechSynthesisVoice[]> = new Map();
 
     let entry;
     for (const v of list) {
-        const lang = v.name.split('+')[0];
+        const lang = getLangFromVoice(v.name);
         if ((entry = voices.get(lang))) {
             entry.push(v);
         } else {
@@ -82,26 +65,20 @@ export function getLanguages(): Map<string, SpeechSynthesisVoice[]> {
 export function displayVoice(s: string, lang: string): string {
     if (s === lang)
         return "Default";
-
-    const idx = s.indexOf("+");
-    if (idx !== -1)
-        return s.substring(idx + 1);
-
-    return s;
+    return getVoiceName(s);
 }
 
-export function getDefaultLang(defaultLangs: string[], langs: Map<string, SpeechSynthesisVoice[]>): string | null {
-    let v;
 
-    for (const d of defaultLangs) {
-        if ((v = langs.get(d)) && v.length !== 0) {
-            return d;
-        }
-    }
-
-    return null;
-}
-
-function sortVoices(a: SpeechSynthesisVoice, b: SpeechSynthesisVoice) {
+function sortVoices(a: SpeechSynthesisVoice, b: SpeechSynthesisVoice): number {
     return a.name.toUpperCase().localeCompare(b.name.toUpperCase());
+}
+
+export function getLangFromVoice(s: string): string {
+    const pos = s.indexOf('+');
+    return (pos !== -1) ? s.substring(0, pos) : s;
+}
+
+export function getVoiceName(s: string): string {
+    const pos = s.indexOf('+');
+    return (pos !== -1) ? s.substring(pos + 1) : s;
 }
