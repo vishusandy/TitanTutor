@@ -47,7 +47,6 @@ export class Config {
     stop: string;
     pause: string;
     audioDefaults: string[]; // array to match different browsers' languages
-    mute: boolean;
     remap: Remap;
     lang: Language;
 
@@ -62,7 +61,6 @@ export class Config {
         stop: string,
         pause: string,
         audioDefaults: string[],
-        mute: boolean,
         remap: Remap,
         lang: Language
     ) {
@@ -76,7 +74,6 @@ export class Config {
         this.stop = stop;
         this.pause = pause;
         this.audioDefaults = audioDefaults;
-        this.mute = mute;
         this.remap = remap;
         this.lang = lang;
     }
@@ -97,7 +94,6 @@ export class Config {
             'F4',
             'F4',
             getDefaultTtsLangsFromLocale(navigator.language),
-            false,
             remap,
             lang
         );
@@ -119,7 +115,6 @@ export class Config {
             stop: this.stop,
             pause: this.pause,
             audioDefaults: this.audioDefaults,
-            mute: this.mute,
             remap: this.remap.getName(),
             lang: this.lang.lang,
         };
@@ -141,7 +136,6 @@ export class Config {
             o.stop,
             o.pause,
             o.audioDefaults,
-            o.mute,
             remap,
             lang
         );

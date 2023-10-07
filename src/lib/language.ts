@@ -15,6 +15,7 @@ export class Language {
     ttsRateLabel: string = '';
     ttsVolumeLabel: string = '';
     ttsTextLabel: string = '';
+    ttsMuteLabel: string = '';
     ttsPreview: string = '';
     ttsExampleText: string = '';
     ttsNotEnabled: string = '';

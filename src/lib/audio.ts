@@ -3,12 +3,14 @@ export class Audio {
     pitch: number = 1.0; // 0.0 to 2.0
     volume: number = 1.0; // 0.0 to 1.0
     voice: SpeechSynthesisVoice;
+    mute: boolean;
 
-    constructor(voice: SpeechSynthesisVoice, rate: number, pitch: number, volume: number) {
+    constructor(voice: SpeechSynthesisVoice, rate: number, pitch: number, volume: number, mute: boolean) {
         this.rate = rate;
         this.pitch = pitch;
         this.volume = volume;
         this.voice = voice;
+        this.mute = mute;
     }
 
     play(text: string) {
@@ -29,6 +31,7 @@ export class Audio {
             pitch: audio.pitch,
             volume: audio.volume,
             voice: audio.voice.name,
+            mute: audio.mute
         });
     }
 
@@ -39,7 +42,7 @@ export class Audio {
         const voice = speechSynthesis.getVoices().find((v: SpeechSynthesisVoice) => v.name === o.voice);
 
         if (voice === undefined) return undefined;
-        return new Audio(voice, o.rate, o.pitch, o.volume);
+        return new Audio(voice, o.rate, o.pitch, o.volume, o.mute);
     }
 }
 

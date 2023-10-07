@@ -14,15 +14,12 @@
 
 	export let config: Config;
 
-	export function getData(): Audio | undefined {
-		return voice ? new Audio(voice, rate, pitch, volume) : undefined;
-	}
-
 	export let text: string = config.lang.ttsExampleText;
 
 	let pitch: number = config.tts !== undefined ? config.tts.pitch : 1;
 	let rate: number = config.tts !== undefined ? config.tts.rate : 1;
 	let volume: number = config.tts !== undefined ? config.tts.volume : 1;
+	let mute: boolean = config.tts !== undefined ? config.tts.mute : true;
 
 	let langs: Map<string, SpeechSynthesisVoice[]> = new Map();
 	let voices: SpeechSynthesisVoice[] | undefined = undefined;
@@ -39,6 +36,10 @@
 		// Chrome browsers are weird.  You cannot convince me otherwise.
 		speechSynthesis.addEventListener('voiceschanged', voiceListLoaded);
 	});
+
+	export function getData(): Audio | undefined {
+		return voice ? new Audio(voice, rate, pitch, volume, mute) : undefined;
+	}
 
 	function setChosenLang(choice: string) {
 		chosenLang = getLangFromVoice(choice);
@@ -132,53 +133,101 @@
 	<div>{@html config.lang.ttsNotEnabled}</div>
 {:else}
 	<form>
-		<div class="grid">
-			<label for="lang">{config.lang.ttsLanguageLabel}</label>
-			<select id="lang" bind:this={langSelector} on:change={langChange}>
-				{#each langs.keys() as l}
-					<option selected={chosenLang === l} value={l}>{l}</option>
-				{/each}
-			</select>
+		<!-- <div class="mute"> -->
+		<fieldset class:mute-group={mute}>
+			<legend>
+				<input id="muted" type="checkbox" bind:checked={mute} />
+				<label for="muted">{config.lang.ttsMuteLabel}</label>
+			</legend>
+			<!-- </div> -->
 
-			{#if chosenLang !== undefined && voices !== undefined}
-				<label for="voice">{config.lang.ttsVoiceLabel}</label>
-				<select id="voice" bind:this={voiceSelector} on:change={voiceChange}>
-					{#each voices as v}
-						<option value={v.name} selected={chosenVoice == v.name}
-							>{displayVoice(v.name, chosenLang)}</option
-						>
+			<div class="grid">
+				<label for="lang">{config.lang.ttsLanguageLabel}</label>
+				<select id="lang" bind:this={langSelector} on:change={langChange} disabled={mute}>
+					{#each langs.keys() as l}
+						<option selected={chosenLang === l} value={l}>{l}</option>
 					{/each}
 				</select>
-			{/if}
 
-			<label for="pitch">{config.lang.ttsPitchLabel}</label>
-			<div class="input-cell">
-				<input type="range" min="0" max="2" bind:value={pitch} step="0.1" id="pitch" />
-				<span>{pitch.toFixed(1)}</span>
-			</div>
+				{#if chosenLang !== undefined && voices !== undefined}
+					<label for="voice">{config.lang.ttsVoiceLabel}</label>
+					<select id="voice" bind:this={voiceSelector} on:change={voiceChange} disabled={mute}>
+						{#each voices as v}
+							<option value={v.name} selected={chosenVoice == v.name}
+								>{displayVoice(v.name, chosenLang)}</option
+							>
+						{/each}
+					</select>
+				{/if}
 
-			<label for="rate">{config.lang.ttsRateLabel}</label>
-			<div class="input-cell">
-				<input type="range" min="0.5" max="2" bind:value={rate} step="0.1" id="rate" />
-				<span>{rate.toFixed(1)}</span>
-			</div>
+				<label for="pitch">{config.lang.ttsPitchLabel}</label>
+				<div class="input-cell">
+					<input
+						type="range"
+						min="0"
+						max="2"
+						bind:value={pitch}
+						step="0.1"
+						id="pitch"
+						disabled={mute}
+					/>
+					<span>{pitch.toFixed(1)}</span>
+				</div>
 
-			<label for="volume">{config.lang.ttsVolumeLabel}</label>
-			<div class="input-cell">
-				<input type="range" min="0" max="1" bind:value={volume} step="0.01" id="volume" />
-				<span>{volume.toFixed(2)}</span>
-			</div>
+				<label for="rate">{config.lang.ttsRateLabel}</label>
+				<div class="input-cell">
+					<input
+						type="range"
+						min="0.5"
+						max="2"
+						bind:value={rate}
+						step="0.1"
+						id="rate"
+						disabled={mute}
+					/>
+					<span>{rate.toFixed(1)}</span>
+				</div>
 
-			<label for="text">{config.lang.ttsTextLabel}</label>
-			<input id="text" bind:value={text} />
-			<div class="btn-cont">
-				<button class="play" type="button" on:click={play}>{config.lang.ttsPreview}</button>
+				<label for="volume">{config.lang.ttsVolumeLabel}</label>
+				<div class="input-cell">
+					<input
+						type="range"
+						min="0"
+						max="1"
+						bind:value={volume}
+						step="0.01"
+						id="volume"
+						disabled={mute}
+					/>
+					<span>{volume.toFixed(2)}</span>
+				</div>
+
+				<label for="text">{config.lang.ttsTextLabel}</label>
+				<input id="text" bind:value={text} disabled={mute} />
+				<div class="btn-cont">
+					<button class="play" type="button" on:click={play} disabled={mute}
+						>{config.lang.ttsPreview}</button
+					>
+				</div>
 			</div>
-		</div>
+		</fieldset>
 	</form>
 {/if}
 
 <style>
+	/* .mute {
+		text-align: center;
+		margin-bottom: 1.5rem;
+	} */
+
+	fieldset {
+		border-radius: 0.4rem;
+	}
+
+	.mute-group {
+		background-color: #f9f9f9;
+	}
+
 	.grid {
 		display: grid;
 		grid-template-columns: min-content auto;
