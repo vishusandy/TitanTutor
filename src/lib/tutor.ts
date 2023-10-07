@@ -10,7 +10,6 @@ import { controlKeys, type Remap } from './remap';
 export class Tutor {
     config: Config;
     lesson: Lesson;
-    kbmap: Remap;
     stats: SessionStats;
     overrides: LessonConfig;
     word: WordState = new WordState('');
@@ -18,10 +17,9 @@ export class Tutor {
     queue: string[] = [];
     audioPlayed: number = 0;
 
-    constructor(config: Config, kbmap: Remap, lesson: Lesson, opts: LessonOptions, stats: SessionStats) {
+    constructor(config: Config, lesson: Lesson, opts: LessonOptions, stats: SessionStats) {
         this.stats = stats;
         this.config = config;
-        this.kbmap = kbmap;
         this.lesson = lesson;
         this.overrides = this.config.getOverrides(opts);
         this.nextWord();
@@ -30,6 +28,7 @@ export class Tutor {
     nextWord(): Action {
         if (!this.word.empty()) {
             this.history.push(new CompletedWord(this.word.wordChars, this.word.state));
+            // console.log(`${this.word.word}: `, this.word.state);
         }
 
         this.fillQueue();
@@ -51,6 +50,7 @@ export class Tutor {
     }
 
     fillQueue() {
+        // console.log('checking queue')
         if (this.queue.length < this.config.minQueue) {
             this.queue.push(...this.lesson.batch(this.config.wordBatchSize - this.queue.length));
         }
@@ -72,7 +72,7 @@ export class Tutor {
             return Action.None;
         }
 
-        return this.word.isChar(this.config, this.kbmap, e);
+        return this.word.isChar(this.config, this.config.remap, e);
     }
 
     modeWordKeydown(e: KeyboardEvent) {

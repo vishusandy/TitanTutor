@@ -9,30 +9,30 @@
 	import { getLanguages, displayVoice, getDefaultLang } from '$lib/audio';
 	import { onMount } from 'svelte';
 	import { Audio } from '$lib/audio';
-	import type { Language } from '$lib/language';
+	import type { Config } from '$lib/config';
 
-	export let defaultLangs: string[] = ['English (America)', 'Google US English'];
+	export let config: Config;
 
-	export let lang: Language;
-	export let formData: Audio | undefined = undefined;
-	export let text: string = lang.ttsExampleText;
+	export function getData(): Audio | undefined {
+		return voice ? new Audio(voice, rate, pitch, volume) : undefined;
+	}
 
-	let pitch: number = formData !== undefined ? formData.pitch : 1;
-	let rate: number = formData !== undefined ? formData.rate : 1;
-	let volume: number = formData !== undefined ? formData.volume : 1;
-	let voiceIdx: number = 0;
+	export let text: string = config.lang.ttsExampleText;
+
+	let pitch: number = config.tts !== undefined ? config.tts.pitch : 1;
+	let rate: number = config.tts !== undefined ? config.tts.rate : 1;
+	let volume: number = config.tts !== undefined ? config.tts.volume : 1;
+
 	let langs: Map<string, SpeechSynthesisVoice[]> = new Map();
+	let voices: SpeechSynthesisVoice[] | undefined = undefined;
 	let chosenLang: string | null = null;
+	let chosenVoice: string | null = null;
+	let voice: SpeechSynthesisVoice | null = null;
+
+	let langSelector: HTMLSelectElement;
+	let voiceSelector: HTMLSelectElement;
 
 	voiceListLoaded(); // this initial load will not work for chrome (see onMount)
-
-	let voiceList: SpeechSynthesisVoice[] | undefined = undefined;
-	$: voiceList = chosenLang ? langs.get(chosenLang) : undefined;
-
-	let voice: SpeechSynthesisVoice | undefined = undefined;
-	$: voice = voiceList && voiceList.length !== 0 ? voiceList[voiceIdx] : undefined;
-
-	$: formData = voice ? new Audio(voice, rate, pitch, volume) : undefined;
 
 	onMount(() => {
 		// Chrome browsers are weird.  You cannot convince me otherwise.
@@ -40,24 +40,32 @@
 	});
 
 	function voiceListLoaded() {
-		if (chosenLang !== null) return;
+		if (langs.size !== 0) return;
 
 		langs = getLanguages();
 		if (langs.size === 0) return;
 
-		chosenLang = getDefaultLang(defaultLangs, langs);
+		if (config.tts && config.tts.voice.name !== '') {
+			const pos = config.tts.voice.name.indexOf('+');
+			chosenLang = pos !== -1 ? config.tts.voice.name.substring(0, pos) : config.tts.voice.name;
+			voices = langs.get(chosenLang);
+
+			voice = config.tts.voice;
+			chosenVoice = voice.name;
+
+			return;
+		}
+
+		chosenLang = getDefaultLang(config.audioDefaults, langs);
 
 		if (chosenLang === null) {
 			chosenLang = langs.keys().next().value;
 		}
-	}
 
-	function langChoiceUpdated() {
-		let v: SpeechSynthesisVoice[] | undefined;
+		if (chosenLang === null) return;
+		voices = langs.get(chosenLang);
 
-		if (chosenLang !== null && !(v = langs.get(chosenLang))) {
-			voiceIdx = 0;
-		}
+		voice = voices && voices.length !== 0 ? voices[0] : null;
 	}
 
 	function play() {
@@ -68,54 +76,76 @@
 		utter.pitch = pitch;
 		speechSynthesis.speak(utter);
 	}
+
+	function langChange(e: Event) {
+		if (chosenLang === langSelector.value) return;
+
+		chosenLang = langSelector.value;
+		voices = langs.get(chosenLang);
+
+		if (voices && voices.length !== 0) {
+			chosenVoice = voices[0].name;
+			voice = voices[0];
+		}
+	}
+
+	function voiceChange(e: Event) {
+		if (chosenVoice === voiceSelector.value) return;
+
+		voice = voices?.find((v) => v.name === voiceSelector.value) ?? null;
+		if (voice) chosenVoice = voice.name;
+	}
 </script>
 
-<form>
-	<div class="grid">
-		<label for="lang">{lang.ttsLanguageLabel}</label>
-		<select id="lang" bind:value={chosenLang} on:change={langChoiceUpdated}>
-			{#each langs.keys() as l, i}
-				<option
-					selected={(chosenLang !== undefined && l === chosenLang) ||
-						(chosenLang === undefined && i == 0)}>{l}</option
-				>
-			{/each}
-		</select>
-
-		{#if chosenLang && voiceList}
-			<label for="voice">{lang.ttsVoiceLabel}</label>
-			<select id="voice" bind:value={voiceIdx}>
-				{#each voiceList as v, i}
-					<option value={i}>{displayVoice(v.name, chosenLang)}</option>
+{#if langs === null}
+	<div>Text-to-Speech not supported</div>
+{:else}
+	<form>
+		<div class="grid">
+			<label for="lang">{config.lang.ttsLanguageLabel}</label>
+			<select id="lang" bind:this={langSelector} on:change={langChange}>
+				{#each langs.keys() as l}
+					<option selected={chosenLang === l} value={l}>{l}</option>
 				{/each}
 			</select>
-		{/if}
 
-		<label for="pitch">{lang.ttsPitchLabel}</label>
-		<div class="input-cell">
-			<input type="range" min="0" max="2" bind:value={pitch} step="0.1" id="pitch" />
-			<span>{pitch.toFixed(1)}</span>
-		</div>
+			{#if chosenLang !== null && voices !== undefined}
+				<label for="voice">{config.lang.ttsVoiceLabel}</label>
+				<select id="voice" bind:this={voiceSelector} on:change={voiceChange}>
+					{#each voices as v}
+						<option value={v.name} selected={chosenVoice == v.name}
+							>{displayVoice(v.name, chosenLang)}</option
+						>
+					{/each}
+				</select>
+			{/if}
 
-		<label for="rate">{lang.ttsRateLabel}</label>
-		<div class="input-cell">
-			<input type="range" min="0.5" max="2" bind:value={rate} step="0.1" id="rate" />
-			<span>{rate.toFixed(1)}</span>
-		</div>
+			<label for="pitch">{config.lang.ttsPitchLabel}</label>
+			<div class="input-cell">
+				<input type="range" min="0" max="2" bind:value={pitch} step="0.1" id="pitch" />
+				<span>{pitch.toFixed(1)}</span>
+			</div>
 
-		<label for="volume">{lang.ttsVolumeLabel}</label>
-		<div class="input-cell">
-			<input type="range" min="0" max="1" bind:value={volume} step="0.01" id="volume" />
-			<span>{volume.toFixed(2)}</span>
-		</div>
+			<label for="rate">{config.lang.ttsRateLabel}</label>
+			<div class="input-cell">
+				<input type="range" min="0.5" max="2" bind:value={rate} step="0.1" id="rate" />
+				<span>{rate.toFixed(1)}</span>
+			</div>
 
-		<label for="text">{lang.ttsTextLabel}</label>
-		<input id="text" bind:value={text} />
-		<div class="btn-cont">
-			<button class="play" type="button" on:click={play}>{lang.ttsPreview}</button>
+			<label for="volume">{config.lang.ttsVolumeLabel}</label>
+			<div class="input-cell">
+				<input type="range" min="0" max="1" bind:value={volume} step="0.01" id="volume" />
+				<span>{volume.toFixed(2)}</span>
+			</div>
+
+			<label for="text">{config.lang.ttsTextLabel}</label>
+			<input id="text" bind:value={text} />
+			<div class="btn-cont">
+				<button class="play" type="button" on:click={play}>{config.lang.ttsPreview}</button>
+			</div>
 		</div>
-	</div>
-</form>
+	</form>
+{/if}
 
 <style>
 	.grid {

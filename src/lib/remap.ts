@@ -1,30 +1,28 @@
 import { base } from '$app/paths';
 
-const defaultMap: string = 'no_map';
-
-export async function loadUserKbMap(fetchFn: typeof fetch): Promise<Remap> {
-    return loadKbMap(localStorage.getItem('kbmap') ?? defaultMap, fetchFn);
-}
-
-export async function loadKbMap(name: string, fetchFn: typeof fetch): Promise<Remap> {
-    if (name !== 'no_map') {
-        const req = new Request(`${base}/data/kbmaps/${name}.json`);
-        return fetchFn(req)
-            .then((resp) => {
-                if (!resp.ok)
-                    return NoRemap;
-                return resp.json();
-            })
-            .then((arr: [string, string][]) => new KbRemap(name, new Map(arr)))
-    }
-
-    return new Promise((resolve) => resolve(NoRemap));
-}
+export const defaultMap: string = 'no_map';
 
 export interface Remap {
     getName(): string;
     get(key: string): string | undefined;
 }
+
+export async function loadKbMap(name: string, fetchFn: typeof fetch): Promise<Remap> {
+    if (name === 'no_map') {
+        return new Promise((resolve) => resolve(NoRemap));
+    }
+
+    const req = new Request(`${base}/data/kbmaps/${name}.json`);
+    return fetchFn(req)
+        .then((resp) => {
+            if (!resp.ok)
+                return NoRemap;
+            return resp.json();
+        })
+        .then((arr: [string, string][]) => new KbRemap(name, new Map(arr)))
+
+}
+
 
 export const controlKeys = new Set([
     'Delete',

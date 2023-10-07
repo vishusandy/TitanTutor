@@ -1,6 +1,10 @@
 import { Audio } from "./audio";
-import { getDefaultTtsLangsFromLocale, ttsDefaultsMap } from "./locales";
+import { getDefaultTtsLangsFromLocale, getInterfaceLangFromLocale } from "./locales";
 import type { LessonOptions } from "./lessons/options";
+import { defaultMap, loadKbMap, type Remap } from "./remap";
+import { Language } from "./language";
+
+export const storagePrefix = 'vkTutor_'
 
 export const enum KbTarget {
     Qwerty = 0,
@@ -37,12 +41,15 @@ export class Config {
     kb: KbTarget;
     checkMode: CheckMode;
     backspace: BackspaceMode;
-    tts?: Audio;
+    tts: Audio | undefined;
     wordBatchSize: number;
     minQueue: number;
     stop: string;
     pause: string;
     audioDefaults: string[]; // array to match different browsers' languages
+    mute: boolean;
+    remap: Remap;
+    lang: Language;
 
     constructor(
         version: number,
@@ -55,6 +62,9 @@ export class Config {
         stop: string,
         pause: string,
         audioDefaults: string[],
+        mute: boolean,
+        remap: Remap,
+        lang: Language
     ) {
         this.version = version;
         this.kb = kb;
@@ -66,9 +76,16 @@ export class Config {
         this.stop = stop;
         this.pause = pause;
         this.audioDefaults = audioDefaults;
+        this.mute = mute;
+        this.remap = remap;
+        this.lang = lang;
     }
 
-    static default(): Config {
+    static async default(fetchFn: typeof fetch = fetch): Promise<Config> {
+        const locale = getInterfaceLangFromLocale(navigator.language);
+        const lang = await Language.loadLang(locale, fetchFn)
+        const remap = await loadKbMap(defaultMap, fetchFn);
+
         return new Config(
             1,
             KbTarget.Dvorak,
@@ -80,29 +97,67 @@ export class Config {
             'F4',
             'F4',
             getDefaultTtsLangsFromLocale(navigator.language),
+            false,
+            remap,
+            lang
         );
     }
 
     serialize(): string {
-        return JSON.stringify(new StorableConfig(this))
+        return JSON.stringify(this)
     }
 
-    static deserialize(s: string): Config {
-        return StorableConfig.deserialize(s);
+    toJSON(): Object {
+        return {
+            version: this.version,
+            kb: this.kb,
+            checkMode: this.checkMode,
+            backspace: this.backspace,
+            tts: Audio.serialize(this.tts),
+            wordBatchSize: this.wordBatchSize,
+            minQueue: this.minQueue,
+            stop: this.stop,
+            pause: this.pause,
+            audioDefaults: this.audioDefaults,
+            mute: this.mute,
+            remap: this.remap.getName(),
+            lang: this.lang.lang,
+        };
     }
 
-    static loadUserConfig(): Config {
-        let c = localStorage.getItem('config');
-        // console.log('loading user config = ', c)
+    static async deserialize(s: string, fetchFn: typeof fetch = fetch): Promise<Config> {
+        const o = JSON.parse(s);
+        const lang = await Language.loadLang(o.lang, fetchFn);
+        const remap = await loadKbMap(o.remap, fetchFn);
+
+        return new Config(
+            o.version,
+            o.kb,
+            o.checkMode,
+            o.backspace,
+            Audio.deserialize(o.tts),
+            o.wordBatchSize,
+            o.minQueue,
+            o.stop,
+            o.pause,
+            o.audioDefaults,
+            o.mute,
+            remap,
+            lang
+        );
+    }
+
+    static async loadUserConfig(fetchFn: typeof fetch = fetch): Promise<Config> {
+        let c = localStorage.getItem(storagePrefix + 'config');
         if (c !== null) {
-            return Config.deserialize(c);
+            return Config.deserialize(c, fetchFn);
         }
 
-        return Config.default();
+        return Config.default(fetchFn);
     }
 
     saveUserConfig() {
-        localStorage.setItem('config', this.serialize())
+        localStorage.setItem(storagePrefix + 'config', this.serialize())
     }
 
     getOverrides(opts: LessonOptions): LessonConfig {
@@ -112,50 +167,6 @@ export class Config {
             checkMode: opts.config.checkMode ?? this.checkMode,
             backspace: opts.config.backspace ?? this.backspace
         }
-    }
-}
-
-
-class StorableConfig {
-    version: number;
-    kb: number;
-    check_mode: number;
-    backspace: number;
-    tts: string;
-    wordBatchSize: number;
-    minQueue: number;
-    stop: string;
-    pause: string;
-    audioDefaults: string[];
-
-    constructor(config: Config) {
-        this.version = config.version;
-        this.kb = config.kb;
-        this.check_mode = config.checkMode;
-        this.backspace = config.backspace;
-        this.tts = Audio.serialize(config.tts);
-        this.wordBatchSize = config.wordBatchSize;
-        this.minQueue = config.minQueue;
-        this.stop = config.stop;
-        this.pause = config.pause;
-        this.audioDefaults = config.audioDefaults;
-    }
-
-    static deserialize(s: string): Config {
-        const o: StorableConfig = JSON.parse(s);
-
-        return new Config(
-            o.version,
-            o.kb,
-            o.check_mode,
-            o.backspace,
-            Audio.deserialize(o.tts),
-            o.wordBatchSize,
-            o.minQueue,
-            o.stop,
-            o.pause,
-            o.audioDefaults
-        );
     }
 }
 

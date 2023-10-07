@@ -8,17 +8,13 @@
 	import type { LessonOptions } from '$lib/lessons/options';
 	import type { SessionStats } from '$lib/stats';
 	import type { Config } from '$lib/config';
-	import type { Language } from '$lib/language';
-	import type { Remap } from '$lib/remap';
 
 	export let config: Config;
-	export let kbmap: Remap;
-	export let lang: Language;
 	export let lesson: Lesson;
 	export let lessonOpts: LessonOptions;
 	export let sessionStats: SessionStats;
 
-	let tutor = new Tutor(config, kbmap, lesson, lessonOpts, sessionStats);
+	let tutor = new Tutor(config, lesson, lessonOpts, sessionStats);
 	let textbox: HTMLInputElement | undefined;
 	let activeWord: HTMLElement | undefined;
 	let started: boolean = false;
@@ -94,7 +90,7 @@
 			e.preventDefault();
 			pause(e);
 
-			if (window.confirm(lang.stopMsg)) {
+			if (window.confirm(config.lang.stopMsg)) {
 				endLesson();
 			}
 		}
@@ -154,14 +150,14 @@
 				<input
 					class="textbox"
 					bind:this={textbox}
-					placeholder={lang.inputNotStarted}
+					placeholder={config.lang.inputNotStarted}
 					on:keydown={startInput}
 				/>
 			{:else if paused && started}
 				<input
 					class="textbox"
 					bind:this={textbox}
-					placeholder={lang.inputPaused}
+					placeholder={config.lang.inputPaused}
 					on:focus={unpause}
 					on:keydown={unpause}
 				/>

@@ -1,5 +1,4 @@
 import { base } from '$app/paths';
-import { getUserInterfaceLang } from './locales';
 
 export class Language {
     lang: string = '';
@@ -30,16 +29,12 @@ export class Language {
         }
     }
 
-    static async loadLang(file: string, fetchFn: typeof fetch): Promise<Language> {
-        const req = new Request(`${base}/data/lang/${file}.json`);
+    static async loadLang(lang: string, fetchFn: typeof fetch): Promise<Language> {
+        const req = new Request(`${base}/data/lang/${lang}.json`);
 
         return fetchFn(req)
             .then((resp) => resp.json())
             .then((lang: Object) => new Language(lang))
-    }
-
-    static async loadUserLang(fetchFn: typeof fetch) {
-        return this.loadLang(getUserInterfaceLang(), fetchFn);
     }
 }
 

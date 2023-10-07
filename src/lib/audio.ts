@@ -1,3 +1,4 @@
+import { defaultTtsList, getDefaultTtsLangsFromLocale, recurseLocale, recurseLocaleArray } from "./locales";
 
 export class Audio {
     rate: number = 1.0; // 0.5 to 2.0
@@ -10,6 +11,21 @@ export class Audio {
         this.pitch = pitch;
         this.volume = volume;
         this.voice = voice;
+    }
+
+    static defaultVoice(locale: string, map: Map<string, SpeechSynthesisVoice[]>): SpeechSynthesisVoice[] | undefined {
+        let lang = getDefaultTtsLangsFromLocale(locale);
+
+        return recurseLocaleArray(lang, map, undefined);
+    }
+
+    static default(locale: string, map: Map<string, SpeechSynthesisVoice[]>): Audio | undefined {
+        let voice = Audio.defaultVoice(locale, map);
+
+        if (voice === undefined || voice.length === 0)
+            return undefined;
+
+        return new Audio(voice[0], 1, 1, 1);
     }
 
     play(text: string) {
@@ -38,9 +54,9 @@ export class Audio {
 
         const o: any = JSON.parse(s);
         const voice = speechSynthesis.getVoices().find((v: SpeechSynthesisVoice) => v.name === o.voice);
-        
+
         if (voice === undefined) return undefined;
-        
+
         return new Audio(voice, o.rate, o.pitch, o.volume);
     }
 }

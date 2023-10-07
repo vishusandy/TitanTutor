@@ -6,10 +6,8 @@
 	export let data: PageData;
 
 	async function showAudioDialog(e: MouseEvent) {
-		console.log('audio:', data.config.tts);
-		createVoiceDialog(data.lang, data.config.tts).then((audio?: Audio) => {
+		createVoiceDialog(data.config).then((audio?: Audio) => {
 			if (audio !== undefined) {
-				console.log('submitted: ', audio);
 				data.config.tts = audio;
 				data.config.saveUserConfig();
 			}

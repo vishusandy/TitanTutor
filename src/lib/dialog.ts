@@ -1,14 +1,14 @@
 import type { Audio } from "./audio";
 import Dialog from "./components/dialog.svelte";
 import Voice from "./components/voice.svelte";
-import type { Language } from "./language";
+import type { Config } from "./config";
 import type { innerDialogComponent, closeFn } from "./types";
 
-export function createVoiceDialog(lang: Language, audio: Audio | undefined) {
-    return createDialog<Audio>(lang.ttsDialogTitle, Voice, lang, audio);
+export function createVoiceDialog(config: Config) {
+    return createDialog<Audio>(config.lang.ttsDialogTitle, Voice, config);
 }
 
-export function createDialog<T>(title: string, content: innerDialogComponent<T>, lang: Language, formData?: T, props?: Object): Promise<T | undefined> {
+export function createDialog<T>(title: string, content: innerDialogComponent, config: Config, props?: Object): Promise<T | undefined> {
     let closeCallback: closeFn<T> = () => { };
 
     const promise = new Promise((resolve: closeFn<T>) => {
@@ -21,9 +21,8 @@ export function createDialog<T>(title: string, content: innerDialogComponent<T>,
             closeCallback,
             title,
             content,
-            lang,
-            formData,
-            ...props
+            config,
+            passProps: props
         }
     });
 

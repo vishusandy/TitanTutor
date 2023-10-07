@@ -1,21 +1,21 @@
 <script lang="ts" generics="T">
-	import type { Language } from '$lib/language';
+	import type { Config } from '$lib/config';
 	import type { closeFn, innerDialogComponent } from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
 
-	export let lang: Language;
-	export let formData: T | undefined = undefined;
+	export let passProps: any;
+	export let config: Config;
 	export let title: string = '';
 	export let closeCallback: closeFn<T>;
-	export let content: innerDialogComponent<T>;
+	export let content: innerDialogComponent;
 	let dialog: HTMLDialogElement;
 
 	function handleSubmit(e: Event) {
-		if (formData !== undefined) closeCallback(formData);
+		closeCallback(submitData());
 	}
 
 	function handleClose(e: Event) {
-		if (formData !== undefined) closeCallback(undefined);
+		closeCallback(undefined);
 	}
 
 	onMount(() => {
@@ -25,6 +25,8 @@
 	onDestroy(() => {
 		dialog.close();
 	});
+
+	let submitData: () => T | undefined;
 </script>
 
 <dialog bind:this={dialog}>
@@ -39,11 +41,11 @@
 			<h1>{title}</h1>
 		</header>
 		<div class="content">
-			<svelte:component this={content} bind:formData bind:lang />
+			<svelte:component this={content} bind:getData={submitData} bind:config {...passProps} />
 		</div>
 		<footer>
-			<button type="submit">{lang.submit}</button>
-			<button type="button" on:click={handleClose}>{lang.cancel}</button>
+			<button type="submit">{config.lang.submit}</button>
+			<button type="button" on:click={handleClose}>{config.lang.cancel}</button>
 		</footer>
 	</form>
 </dialog>
@@ -73,13 +75,13 @@
 	.close-btn:focus-within .line {
 		stroke: red;
 	}
-    
-    .close-btn:active .line {
-        stroke: #cc0000;
-    }
+
+	.close-btn:active .line {
+		stroke: #cc0000;
+	}
 
 	header {
-        margin-bottom: 2.5rem;
+		margin-bottom: 2.5rem;
 		padding: 2rem 0px 1rem;
 		text-align: center;
 		background-color: #f5f5f5;

@@ -7,6 +7,10 @@
 	export let state: LetterState[];
 	export let active: boolean = false;
 	export let span: HTMLSpanElement | undefined = undefined;
+
+	// onMount(() => {
+	// 	console.log(`mounting ${word}. State:`, state);
+	// });
 </script>
 
 {#if word.length !== 0}

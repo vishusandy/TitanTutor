@@ -1,5 +1,4 @@
-import type { LessonConfig } from "../config";
-
+import { storagePrefix, type LessonConfig } from "../config";
 
 export class LessonOptions {
     until?: number;
@@ -39,6 +38,6 @@ export class LessonOptions {
     }
 
     saveOptions(lessonName: string) {
-        localStorage.setItem(`options_${lessonName}`, this.serialize());
+        localStorage.setItem(`${storagePrefix}options_${lessonName}`, this.serialize());
     }
 }
