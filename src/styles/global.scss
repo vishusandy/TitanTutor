@@ -23,3 +23,22 @@ input:not([type]) {
 button {
     padding: 0.3rem 0.4rem;
 }
+
+
+button.link {
+    border: 0px;
+    background-color: transparent;
+    font-size: 1rem;
+    padding: 0px;
+    margin: 0.2rem 0.6rem;
+}
+
+button.link:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+button.link:active {
+    color: #555;
+}
+    

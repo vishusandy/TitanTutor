@@ -8,6 +8,16 @@ export class Language {
     inputPaused: string = '';
     submit: string = '';
     cancel: string = '';
+    close: string = '';
+    day: string = '';
+    days: string = '';
+    hour: string = '';
+    hours: string = '';
+    minute: string = '';
+    minutes: string = '';
+    second: string = '';
+    seconds: string = '';
+    notAvailable: string = '';
     ttsDialogTitle: string = '';
     ttsLanguageLabel: string = '';
     ttsVoiceLabel: string = '';
@@ -20,6 +30,17 @@ export class Language {
     ttsExampleText: string = '';
     ttsNotEnabled: string = '';
     openTtsDialog: string = '';
+    openStatsDialog: string = '';
+    statsDialogTitle: string = '';
+    statsDialogDuration: string = '';
+    statsDialogKeystrokes: string = '';
+    statsDialogWords: string = '';
+    statsDialogChars: string = '';
+    statsDialogUncorrectedErrors: string = '';
+    statsDialogCorrectedErrors: string = '';
+    statsDialogGrossWpm: string = '';
+    statsDialogNetWpm: string = '';
+    statsDialogAccuracy: string = '';
 
     constructor(
         lang: Object,
@@ -31,6 +52,8 @@ export class Language {
             }
         }
     }
+
+    [index: string]: string;
 
     static async loadLang(lang: string, fetchFn: typeof fetch): Promise<Language> {
         const req = new Request(`${base}/data/lang/${lang}.json`);

@@ -3,7 +3,7 @@
 
 import type { WordState } from "./word_state";
 
-const wordLen: number = 5;
+export const wordLen: number = 5;
 
 // https://www.speedtypingonline.com/typing-equations
 export class UserStats {
@@ -37,6 +37,7 @@ export class UserStats {
 
     getNetWpm(): number {
         // todo: not accurate for word mode
+        // fix: this appears to be wrong
         return ((this.keystrokes / wordLen) - this.uncorrectedErrors) / this.duration / 60_000;
     }
 

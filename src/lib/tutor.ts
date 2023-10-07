@@ -41,6 +41,7 @@ export class Tutor {
     nextWord(): Action {
         if (!this.word.empty()) {
             this.history.push(new CompletedWord(this.word.wordChars, this.word.state));
+            this.stats.add(this.word);
         }
 
         this.fillQueue();
@@ -52,7 +53,6 @@ export class Tutor {
             return Action.lessonCompleted;
         }
 
-        this.stats.add(this.word);
         let w = new WordState(next);
         if (w.state.length > 0) {
             w.state[0] = LetterState.Active;

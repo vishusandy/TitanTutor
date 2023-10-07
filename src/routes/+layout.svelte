@@ -18,8 +18,14 @@
 <nav>
 	<ul>
 		<li>
-			<button type="button" on:click={showAudioDialog}>{data.config.lang.openTtsDialog}</button>
+			<button class="link" type="button" on:click={showAudioDialog}
+				>{data.config.lang.openTtsDialog}</button
+			>
 		</li>
+
+		<!-- <li>
+			<button type="button" on:click={showAudioDialog}>{data.config.lang.openStatsDialog}</button>
+		</li> -->
 	</ul>
 </nav>
 
@@ -35,22 +41,5 @@
 
 	li {
 		list-style: none;
-	}
-
-	nav button {
-		border: 0px;
-		background-color: transparent;
-		font-size: 1rem;
-		padding: 0px;
-		margin: 0.2rem 0.6rem;
-	}
-
-	nav button:hover {
-		color: #333;
-		text-decoration: underline;
-	}
-
-	nav button:active {
-		color: #555;
 	}
 </style>

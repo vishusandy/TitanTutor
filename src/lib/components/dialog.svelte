@@ -6,6 +6,7 @@
 	export let passProps: any;
 	export let config: Config;
 	export let title: string = '';
+	export let hasSubmit: boolean;
 	export let closeCallback: closeFn<T>;
 	export let content: innerDialogComponent;
 	let dialog: HTMLDialogElement;
@@ -33,7 +34,7 @@
 	<form on:submit|preventDefault={handleSubmit}>
 		<div>
 			<header>
-				<button type="button" class="close-btn" on:click={handleClose}>
+				<button type="button" class="close-btn" on:click={handleClose} title={config.lang.close}>
 					<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
 						<path class="line" d="M 0 20 L 20 0" />
 						<path class="line" d="M 0 0 L 20 20" />
@@ -42,11 +43,19 @@
 				<h1>{title}</h1>
 			</header>
 			<div class="content">
-				<svelte:component this={content} bind:getData={submitData} bind:config {...passProps} />
+				{#if hasSubmit}
+					<svelte:component this={content} bind:getData={submitData} bind:config {...passProps} />
+				{:else}
+					<svelte:component this={content} bind:config {...passProps} />
+				{/if}
 			</div>
 			<footer>
-				<button type="submit">{config.lang.submit}</button>
-				<button type="button" on:click={handleClose}>{config.lang.cancel}</button>
+				{#if hasSubmit}
+					<button type="submit">{config.lang.submit}</button>
+				{/if}
+				<button type="button" on:click={handleClose}
+					>{#if hasSubmit}{config.lang.cancel}{:else}{config.lang.close}{/if}</button
+				>
 			</footer>
 		</div>
 	</form>
