@@ -26,9 +26,9 @@
 
 	let langs: Map<string, SpeechSynthesisVoice[]> = new Map();
 	let voices: SpeechSynthesisVoice[] | undefined = undefined;
-	let chosenLang: string | null = null;
-	let chosenVoice: string | null = null;
-	let voice: SpeechSynthesisVoice | null = null;
+	let chosenLang: string | undefined = undefined;
+	let chosenVoice: string | undefined = undefined;
+	let voice: SpeechSynthesisVoice | undefined = undefined;
 
 	let langSelector: HTMLSelectElement;
 	let voiceSelector: HTMLSelectElement;
@@ -75,10 +75,9 @@
 	function matchLang(arr: string[]) {
 		let choice: string | undefined;
 
-		while ((choice = arr.shift())) {
+		for (choice of arr) {
 			const c = getLangFromVoice(choice);
 			const a = langs.get(c);
-
 			if (a === undefined) continue;
 
 			setChosenLang(c);
@@ -99,9 +98,9 @@
 		}
 
 		matchLang(getDefaultTtsLangsFromLocale(config.lang.lang));
+		if (chosenLang !== undefined) return;
 
-		if (chosenLang !== null) return;
-
+		console.log('use first fallback');
 		useFirstLang();
 		useFirstVoice();
 	}
@@ -115,22 +114,22 @@
 		speechSynthesis.speak(utter);
 	}
 
-	function langChange(e: Event) {
+	function langChange(_: Event) {
 		if (chosenLang === langSelector.value) return;
 
 		setChosenLang(langSelector.value);
 		useFirstVoice();
 	}
 
-	function voiceChange(e: Event) {
+	function voiceChange(_: Event) {
 		if (chosenVoice === voiceSelector.value) return;
 
 		findVoiceAndSet(voiceSelector.value);
 	}
 </script>
 
-{#if langs === null}
-	<div>Text-to-Speech not supported</div>
+{#if langs.size === 0}
+	<div>{@html config.lang.ttsNotEnabled}</div>
 {:else}
 	<form>
 		<div class="grid">
@@ -141,7 +140,7 @@
 				{/each}
 			</select>
 
-			{#if chosenLang !== null && voices !== undefined}
+			{#if chosenLang !== undefined && voices !== undefined}
 				<label for="voice">{config.lang.ttsVoiceLabel}</label>
 				<select id="voice" bind:this={voiceSelector} on:change={voiceChange}>
 					{#each voices as v}
