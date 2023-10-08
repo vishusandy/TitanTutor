@@ -6,20 +6,18 @@
 	export let stats: T;
 	export let config: Config;
 
-	let _grossWpm = stats.getGrossWpm();
-	const grossWpm = Number.isNaN(_grossWpm)
-		? config.lang.notAvailable
-		: Intl.NumberFormat(navigator.language, { style: 'decimal', maximumFractionDigits: 2 }).format(
-				_grossWpm
-		  );
+	// Inspired by:
+	// https://carl-topham.com/articles/intl-number-formatting-percentage
+	function formatNaN(fn: () => number, options?: Intl.NumberFormatOptions) {
+		const n = fn.bind(stats)();
+		return Number.isNaN(n)
+			? config.lang.notAvailable
+			: Intl.NumberFormat(navigator.language, options).format(n);
+	}
 
-	let _netWpm = stats.getNetWpm();
-	const netWpm = Number.isNaN(_netWpm) ? config.lang.notAvailable : _netWpm;
-
-	let _accuracy = stats.getAccuracy();
-	const accuracy = Number.isNaN(_accuracy)
-		? config.lang.notAvailable
-		: Intl.NumberFormat(navigator.language, { style: 'percent' }).format(_accuracy);
+	const grossWpm = formatNaN(stats.getGrossWpm, { style: 'decimal', maximumFractionDigits: 2 });
+	const netWpm = formatNaN(stats.getNetWpm, { style: 'decimal', maximumFractionDigits: 2 });
+	const accuracy = formatNaN(stats.getAccuracy, { style: 'percent' });
 </script>
 
 <div class="grid">

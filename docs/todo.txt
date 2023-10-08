@@ -1,7 +1,7 @@
-audio play queue
-stats
-  session
-  overall
-stats dialog
-dialog takes lang
+
+stats - overall
+max word history
+
+multilingual example text
+
 
