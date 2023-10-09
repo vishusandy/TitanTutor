@@ -184,6 +184,7 @@
 	}
 
 	.tutor-words {
+		/* font-family: var(--font-system); */
 		--tutorWidth: 70ch;
 		--tutorMaxWidth: 80%;
 		width: var(--tutorWidth);

@@ -147,7 +147,7 @@
 {:else}
 	<form>
 		<!-- <div class="mute"> -->
-		<fieldset class:mute-group={mute}>
+		<fieldset class:mute-group={mute} disabled={mute}>
 			<legend>
 				<input id="muted" type="checkbox" bind:checked={mute} />
 				<label for="muted">{config.lang.ttsMuteLabel}</label>
@@ -155,7 +155,7 @@
 			<!-- </div> -->
 
 			<div class="grid">
-				<label for="lang">{config.lang.ttsLanguageLabel}</label>
+				<label for="lang" class:disabled={mute}>{config.lang.ttsLanguageLabel}</label>
 				<select id="lang" bind:this={langSelector} on:change={langChange} disabled={mute}>
 					{#each langs.keys() as l}
 						<option selected={chosenLang === l} value={l}>{l}</option>
@@ -163,7 +163,7 @@
 				</select>
 
 				{#if chosenLang !== undefined && voices !== undefined}
-					<label for="voice">{config.lang.ttsVoiceLabel}</label>
+					<label for="voice" class:disabled={mute}>{config.lang.ttsVoiceLabel}</label>
 					<select id="voice" bind:this={voiceSelector} on:change={voiceChange} disabled={mute}>
 						{#each voices as v}
 							<option value={v.name} selected={chosenVoice == v.name}
@@ -173,7 +173,7 @@
 					</select>
 				{/if}
 
-				<label for="pitch">{config.lang.ttsPitchLabel}</label>
+				<label for="pitch" class:disabled={mute}>{config.lang.ttsPitchLabel}</label>
 				<div class="input-cell">
 					<input
 						type="range"
@@ -187,7 +187,7 @@
 					<span>{pitch.toFixed(1)}</span>
 				</div>
 
-				<label for="rate">{config.lang.ttsRateLabel}</label>
+				<label for="rate" class:disabled={mute}>{config.lang.ttsRateLabel}</label>
 				<div class="input-cell">
 					<input
 						type="range"
@@ -201,7 +201,7 @@
 					<span>{rate.toFixed(1)}</span>
 				</div>
 
-				<label for="volume">{config.lang.ttsVolumeLabel}</label>
+				<label for="volume" class:disabled={mute}>{config.lang.ttsVolumeLabel}</label>
 				<div class="input-cell">
 					<input
 						type="range"
@@ -215,7 +215,7 @@
 					<span>{volume.toFixed(2)}</span>
 				</div>
 
-				<label for="text">{config.lang.ttsTextLabel}</label>
+				<label for="text" class:disabled={mute}>{config.lang.ttsTextLabel}</label>
 				<input id="text" bind:value={text} disabled={mute} />
 				<div class="btn-cont">
 					<button class="play" type="button" on:click={play} disabled={mute}
@@ -228,14 +228,6 @@
 {/if}
 
 <style>
-	fieldset {
-		border-radius: 0.4rem;
-	}
-
-	legend label {
-		font-size: 1.1rem;
-	}
-
 	.mute-group {
 		background-color: #f9f9f9;
 	}
@@ -249,14 +241,6 @@
 		width: min-content;
 	}
 
-	label {
-		align-self: center;
-		color: #353535;
-		font-style: italic;
-		font-weight: 600;
-		font-size: 95%;
-	}
-
 	.input-cell {
 		display: flex;
 		align-content: baseline;
@@ -267,8 +251,13 @@
 	}
 
 	.input-cell span {
-		width: 3.5ch;
+		background-color: #e4e5e9;
+		border-radius: 0.2rem;
+		padding: 0.1rem 0.3rem;
+		width: 4ch;
 		text-align: center;
+		font-family: var(--font-slab);
+		font-size: 95%;
 	}
 
 	.btn-cont {
@@ -276,8 +265,10 @@
 		text-align: center;
 	}
 
+	label.disabled {
+		color: #888;
+	}
+
 	.play {
-		padding: 0.375rem 0.75rem;
-		font-weight: 600;
 	}
 </style>

@@ -55,16 +55,8 @@
 		grid-template-columns: min-content auto;
 		column-gap: 2rem;
 		row-gap: 1.3rem;
-		margin: 1rem auto;
+		margin: 0px auto;
 		width: min-content;
 		white-space: nowrap;
-	}
-
-	.label {
-		align-self: center;
-		color: #353535;
-		font-style: italic;
-		font-weight: 600;
-		font-size: 95%;
 	}
 </style>
