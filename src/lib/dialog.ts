@@ -11,7 +11,7 @@ export function createVoiceDialog(config: Config) {
 }
 
 export function createStatsDialog<T extends UserStats>(config: Config, stats: T) {
-    return createDialog<undefined>(config.lang.statsDialogTitle, Stats, false, config, { stats });
+    return createDialog<undefined>(config.lang.statsDialogSessionTitle, Stats, false, config, { stats });
 }
 
 export function createDialog<T>(title: string, content: innerDialogComponent, submit: boolean, config: Config, props?: Object): Promise<T | undefined> {

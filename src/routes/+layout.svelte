@@ -22,7 +22,7 @@
 				>{data.config.lang.openTtsDialog}</button
 			>
 		</li>
-
+        <slot name="nav"></slot>
 		<!-- <li>
 			<button type="button" on:click={showAudioDialog}>{data.config.lang.openStatsDialog}</button>
 		</li> -->

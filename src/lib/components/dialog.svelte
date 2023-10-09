@@ -67,7 +67,7 @@
 		border-radius: 0.5rem;
 		border: 1px solid var(--border-color);
 		padding: 0px;
-		box-shadow: 0px 0px 10px #c4c6c7;
+		box-shadow: 0px 0px 15px #939596;
 	}
 
 	header {

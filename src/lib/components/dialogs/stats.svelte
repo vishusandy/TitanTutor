@@ -59,4 +59,9 @@
 		width: min-content;
 		white-space: nowrap;
 	}
+
+	/* .grid :nth-child(4n + 1),
+	.grid :nth-child(4n + 2) {
+		background-color: red;
+	} */
 </style>

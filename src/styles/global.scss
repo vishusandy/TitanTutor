@@ -112,6 +112,7 @@ input[type="submit"]:active {
 }
 
 button.link {
+    font-family: var(--font-sans-serif);
     border: 0px;
     --button-bg: transparent;
     font-size: 1rem;
@@ -126,6 +127,11 @@ button.link:hover {
 
 button.link:active {
     color: #555;
+    text-decoration: underline;
+}
+
+button.link:focus {
+    text-decoration: underline;
 }
 
 label,
@@ -135,6 +141,10 @@ label,
     color: #353535;
     font-style: italic;
     // font-weight: 600;
+}
+
+label.disabled {
+    color: #888;
 }
 
 :root {

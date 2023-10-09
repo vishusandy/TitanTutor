@@ -265,10 +265,6 @@
 		text-align: center;
 	}
 
-	label.disabled {
-		color: #888;
-	}
-
 	.play {
 	}
 </style>

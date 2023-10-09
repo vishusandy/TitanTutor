@@ -2,8 +2,8 @@
 	import { onMount, tick } from 'svelte';
 	import { Action } from '$lib/types';
 	import { Tutor } from '$lib/tutor';
-	import Word from './word.svelte';
-	import QueuedWord from './queued_word.svelte';
+	import Word from './typing/word.svelte';
+	import QueuedWord from './typing/queued_word.svelte';
 	import type { Lesson } from '$lib/lessons/lessons';
 	import type { LessonOptions } from '$lib/lessons/options';
 	import type { SessionStats } from '$lib/stats';
@@ -158,7 +158,6 @@
 					class="textbox"
 					bind:this={textbox}
 					placeholder={config.lang.inputPaused}
-					on:focus={unpause}
 					on:keydown={unpause}
 				/>
 			{:else}
@@ -179,35 +178,42 @@
 </div>
 
 <style>
-	.tutor-input {
-		text-align: center;
-	}
-
-	.tutor-words {
-		/* font-family: var(--font-system); */
+	.tutor {
 		--tutorWidth: 70ch;
 		--tutorMaxWidth: 80%;
 		width: var(--tutorWidth);
 		max-width: var(--tutorMaxWidth);
-		padding: 1rem 0px;
+		margin: 4rem auto 2rem;
+	}
+
+	.tutor-words {
+		font-family: var(--font-system);
+		padding: 2rem 0px;
 		overflow-x: auto;
 		overflow-y: hidden;
 		white-space: nowrap;
+		border-radius: 0.3rem;
 		margin: 2rem auto;
+		box-shadow: inset 0px -1px 7px rgba(31, 155, 0, 0.445);
 		/* scrollbar-width: thin; */
 		scroll-snap-type: x mandatory;
 		-webkit-overflow-scrolling: touch;
+		background-color: #faf8f2;
+	}
+
+	.tutor-input {
+		text-align: center;
 	}
 
 	.tutor-words :global(.word:first-of-type) {
-		margin-left: min(calc(var(--tutorWidth) / 2), calc(var(--tutorMaxWidth) / 2));
+		margin-left: calc(min(var(--tutorWidth), 100%) / 2);
 	}
 
 	.tutor-words :global(.word:last-of-type) {
-		margin-right: min(calc(var(--tutorWidth) / 2), calc(var(--tutorMaxWidth) / 2));
+		margin-right: calc(min(var(--tutorWidth), 100%) / 2);
 	}
 
 	.paused {
-		background: #f9f9f9;
+		box-shadow: inset 0px -1px 7px rgba(148, 137, 120, 0.445);
 	}
 </style>

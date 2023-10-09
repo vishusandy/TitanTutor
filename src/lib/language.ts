@@ -31,7 +31,8 @@ export class Language {
     ttsNotEnabled: string = '';
     openTtsDialog: string = '';
     openStatsDialog: string = '';
-    statsDialogTitle: string = '';
+    statsDialogSessionTitle: string = '';
+    statsDialogUserTitle: string = '';
     statsDialogDuration: string = '';
     statsDialogKeystrokes: string = '';
     statsDialogWords: string = '';
