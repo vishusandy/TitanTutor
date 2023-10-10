@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../styles/typing.scss';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 

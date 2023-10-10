@@ -1,0 +1,30 @@
+.word {
+    margin: 0.1em 0.1em;
+    border: 1px solid transparent;
+    scroll-snap-align: center;
+}
+
+.word.active {
+    scroll-snap-stop: always;
+    border: 1px solid green;
+}
+
+.word:not(.active) .complete {
+    color: green;
+}
+
+.letter.complete {
+    color: grey;
+}
+
+.letter.incomplete {
+    color: black;
+}
+
+.letter.active {
+    color: #0be2e2;
+}
+
+.letter.error {
+    color: #d43f3f;
+}

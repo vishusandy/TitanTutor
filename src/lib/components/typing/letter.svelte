@@ -7,24 +7,10 @@
 <span
 	class="letter"
 	class:incomplete={state === LetterState.Incomplete}
-	class:active-letter={state === LetterState.Active}
+	class:active={state === LetterState.Active}
 	class:complete={state === LetterState.Complete}
-	class:error={state === LetterState.Error}
+	class:error={state === LetterState.Error}>{letter}</span
 >
-	{letter}
-</span>
 
 <style>
-	.complete {
-		color: grey;
-	}
-	.incomplete {
-		color: black;
-	}
-	.active-letter {
-		color: #0be2e2;
-	}
-	.error {
-		color: #d43f3f;
-	}
 </style>

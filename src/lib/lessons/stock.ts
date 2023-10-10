@@ -1,6 +1,6 @@
-import type { Lesson } from "$lib/lessons/lessons";
+import type { BaseLesson } from "$lib/lessons/lessons";
 
-export class BaseLesson implements Lesson {
+export class StockWords implements BaseLesson {
     words: string[];
     pos: number = 0;
 
@@ -30,6 +30,8 @@ export class BaseLesson implements Lesson {
         for (let i = 0, p = this.pos; i < n; i++, p = p + 1 % this.words.length) {
             words.push(this.words[p]);
         }
+
+        this.pos += n;
 
         return words;
     }

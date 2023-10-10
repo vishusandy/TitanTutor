@@ -1,6 +1,5 @@
 legend {
     display: flex;
-    // column-gap: 0.5rem;
 }
 
 fieldset {
@@ -140,7 +139,6 @@ label,
     align-self: center;
     color: #353535;
     font-style: italic;
-    // font-weight: 600;
 }
 
 label.disabled {
@@ -162,8 +160,4 @@ label.disabled {
     --button-bg: #cdced1;
     --button-bg-disabled: #e3e3e3;
     --button-bg-focus: #b3b3b6;
-}
-
-body {
-    // font-family: var(--font-sans-serif);
 }

@@ -21,7 +21,7 @@ export class Tutor {
         this.stats = stats;
         this.config = config;
         this.lesson = lesson;
-        this.overrides = this.config.getOverrides(opts);
+        this.overrides = this.config.lessonConfigOverrides(opts);
         this.nextWord();
     }
 

@@ -3,13 +3,9 @@ import { getDefaultTtsLangsFromLocale, getInterfaceLangFromLocale } from "./loca
 import type { LessonOptions } from "./lessons/options";
 import { defaultMap, loadKbMap, type Remap } from "./remap";
 import { Language } from "./language";
+import { UserStats } from "./stats";
 
 export const storagePrefix = 'vkTutor_'
-
-export const enum KbTarget {
-    Qwerty = 0,
-    Dvorak = 1,
-}
 
 export const enum CheckMode {
     Char = 0,
@@ -36,9 +32,8 @@ export const defaultLessonConfig = {
     backspace: BackspaceMode.Accept,
 };
 
-export class Config {
+type ConfigProps = {
     version: number;
-    kb: KbTarget;
     checkMode: CheckMode;
     backspace: BackspaceMode;
     tts: Audio | undefined;
@@ -46,106 +41,103 @@ export class Config {
     minQueue: number;
     stop: string;
     pause: string;
-    audioDefaults: string[]; // array to match different browsers' languages
+    audioDefaults: string[]; // array to match different browsers' tts languages
     remap: Remap;
     lang: Language;
+    userStats: UserStats;
+}
 
-    constructor(
-        version: number,
-        kb: KbTarget,
-        check_mode: CheckMode,
-        backspace: BackspaceMode,
-        tts: Audio | undefined,
-        wordBatchSize: number,
-        minQueue: number,
-        stop: string,
-        pause: string,
-        audioDefaults: string[],
-        remap: Remap,
-        lang: Language
-    ) {
-        this.version = version;
-        this.kb = kb;
-        this.checkMode = check_mode;
-        this.backspace = backspace;
-        this.tts = tts;
-        this.wordBatchSize = wordBatchSize;
-        this.minQueue = minQueue;
-        this.stop = stop;
-        this.pause = pause;
-        this.audioDefaults = audioDefaults;
-        this.remap = remap;
-        this.lang = lang;
+type ConfigStorable = Omit<ConfigProps, "tts" | "lang" | "remap" | "audio"> & { tts: string, lang: string, remap: string, audio: string };
+
+export class Config implements ConfigProps {
+    version: number;
+    checkMode: CheckMode;
+    backspace: BackspaceMode;
+    tts: Audio | undefined;
+    wordBatchSize: number;
+    minQueue: number;
+    stop: string;
+    pause: string;
+    audioDefaults: string[]; // array to match different browsers' tts languages
+    remap: Remap;
+    lang: Language;
+    userStats: UserStats;
+
+    constructor(c: ConfigProps) {
+        this.version = c.version;
+        this.checkMode = c.checkMode;
+        this.backspace = c.backspace;
+        this.tts = c.tts;
+        this.wordBatchSize = c.wordBatchSize;
+        this.minQueue = c.minQueue;
+        this.stop = c.stop;
+        this.pause = c.pause;
+        this.audioDefaults = c.audioDefaults;
+        this.remap = c.remap;
+        this.lang = c.lang;
+        this.userStats = c.userStats;
     }
 
     static async default(fetchFn: typeof fetch = fetch): Promise<Config> {
-        const locale = getInterfaceLangFromLocale(navigator.language);
-        const lang = await Language.loadLang(locale, fetchFn)
+        const interfacePath = getInterfaceLangFromLocale(navigator.language);
+        const audioDefaults = getDefaultTtsLangsFromLocale(navigator.language);
+        const userStats = new UserStats();
+
+        const lang = await Language.loadLang(interfacePath, fetchFn)
         const remap = await loadKbMap(defaultMap, fetchFn);
+        const tts = undefined;
 
-        return new Config(
-            1,
-            KbTarget.Dvorak,
-            CheckMode.WordRepeat,
-            BackspaceMode.Accept,
-            undefined,
-            10,
-            8,
-            'F4',
-            'F4',
-            getDefaultTtsLangsFromLocale(navigator.language),
+        return new Config({
+            version: 1,
+            checkMode: CheckMode.WordRepeat,
+            backspace: BackspaceMode.Accept,
+            wordBatchSize: 10,
+            minQueue: 8,
+            stop: 'F7',
+            pause: 'F4',
+            tts,
+            audioDefaults,
             remap,
-            lang
-        );
-    }
-
-    serialize(): string {
-        return JSON.stringify(this)
+            lang,
+            userStats
+        });
     }
 
     toJSON(): Object {
-        return {
-            version: this.version,
-            kb: this.kb,
-            checkMode: this.checkMode,
-            backspace: this.backspace,
-            tts: Audio.serialize(this.tts),
-            wordBatchSize: this.wordBatchSize,
-            minQueue: this.minQueue,
-            stop: this.stop,
-            pause: this.pause,
-            audioDefaults: this.audioDefaults,
-            remap: this.remap.getName(),
-            lang: this.lang.lang,
-        };
+        const obj: any = {};
+        for (const key in this) {
+            if (!Object.hasOwn(this, key)) continue;
+
+            if (key === 'tts') obj[key] = Audio.serialize(this.tts);
+            else if (key === 'remap') obj[key] = this.remap.getName();
+            else if (key === 'lang') obj[key] = this.lang.lang;
+            else obj[key] = this[key];
+        }
+
+        return obj;
+    }
+
+    serialize(): string {
+        return JSON.stringify(this);
     }
 
     static async deserialize(s: string, fetchFn: typeof fetch = fetch): Promise<Config> {
-        const o = JSON.parse(s);
+        const o: ConfigStorable = JSON.parse(s);
+
         const lang = await Language.loadLang(o.lang, fetchFn);
         const remap = await loadKbMap(o.remap, fetchFn);
+        const tts = Audio.deserialize(o.tts);
 
-        return new Config(
-            o.version,
-            o.kb,
-            o.checkMode,
-            o.backspace,
-            Audio.deserialize(o.tts),
-            o.wordBatchSize,
-            o.minQueue,
-            o.stop,
-            o.pause,
-            o.audioDefaults,
-            remap,
-            lang
-        );
+        const c: ConfigProps = { ...o, lang: lang, remap, tts };
+
+        return new Config(c);
     }
 
     static async loadUserConfig(fetchFn: typeof fetch = fetch): Promise<Config> {
-        let c = localStorage.getItem(storagePrefix + 'config');
-        if (c !== null) {
-            return Config.deserialize(c, fetchFn);
-        }
+        const s = localStorage.getItem(storagePrefix + 'config');
+
+        if (s !== null)
+            return Config.deserialize(s, fetchFn);
 
         return Config.default(fetchFn);
     }
@@ -154,7 +146,7 @@ export class Config {
         localStorage.setItem(storagePrefix + 'config', this.serialize())
     }
 
-    getOverrides(opts: LessonOptions): LessonConfig {
+    lessonConfigOverrides(opts: LessonOptions): LessonConfig {
         return {
             wordBatchSize: opts.config.wordBatchSize ?? this.wordBatchSize,
             minQueue: opts.config.minQueue ?? this.minQueue,

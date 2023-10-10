@@ -30,6 +30,8 @@
 
 	let langSelector: HTMLSelectElement;
 	let voiceSelector: HTMLSelectElement;
+	let enabled = !mute;
+	$: mute = !enabled;
 
 	voiceListLoaded(); // this initial load will not work for chrome (see onMount)
 
@@ -146,13 +148,11 @@
 	<div>{@html config.lang.ttsNotEnabled}</div>
 {:else}
 	<form>
-		<!-- <div class="mute"> -->
 		<fieldset class:mute-group={mute} disabled={mute}>
 			<legend>
-				<input id="muted" type="checkbox" bind:checked={mute} />
-				<label for="muted">{config.lang.ttsMuteLabel}</label>
+				<input id="muted" type="checkbox" bind:checked={enabled} />
+				<label for="muted">{config.lang.enable}</label>
 			</legend>
-			<!-- </div> -->
 
 			<div class="grid">
 				<label for="lang" class:disabled={mute}>{config.lang.ttsLanguageLabel}</label>
@@ -263,8 +263,5 @@
 	.btn-cont {
 		grid-column: span 2;
 		text-align: center;
-	}
-
-	.play {
 	}
 </style>

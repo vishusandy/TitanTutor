@@ -1,16 +1,11 @@
-import type { Lesson } from "$lib/lessons/lessons";
+import type { BaseLesson, Lesson } from "$lib/lessons/lessons";
 import { shuffle, defaultBatch } from "$lib/util";
 
 export class RandomList implements Lesson {
-    words: string[];
-    pos: number = 0;
+    base: BaseLesson;
 
-    constructor(words: string[]) {
-        if (words.length === 0) {
-            throw new Error("Invalid pregenerated random word list: the list must contain at least one element");
-        }
-
-        this.words = words;
+    constructor(base: BaseLesson) {
+        this.base = base;
     }
 
     [Symbol.iterator]() {
@@ -18,12 +13,12 @@ export class RandomList implements Lesson {
     }
 
     next(): IteratorResult<string> {
-        if (this.pos >= this.words.length) {
-            this.pos = 0;
-            this.words = shuffle(this.words);
+        if (this.base.pos >= this.base.words.length) {
+            this.base.pos = 0;
+            this.base.words = shuffle(this.base.words);
         }
 
-        return { done: false, value: this.words[this.pos++] }
+        return { done: false, value: this.base.words[this.base.pos++] }
     }
 
     batch(n: number): string[] {

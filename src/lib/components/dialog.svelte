@@ -59,9 +59,6 @@
 <style>
 	dialog {
 		--border-color: var(--form-border-color);
-		/* --header-footer-color: #f5f5f5; */
-		/* --header-footer-color: #eceff0; */
-		/* --header-footer-color: #f0f3f5; */
 		--header-footer-color: #f0f0f5;
 		background-color: #f7f9fa;
 		border-radius: 0.5rem;
@@ -72,11 +69,8 @@
 
 	header {
 		font-family: var(--font-title);
-		/* margin-bottom: 2rem; */
 		padding: 1rem 1rem 1rem 1rem;
 		text-align: center;
-		/* background-color: var(--header-footer-color); */
-		/* background-color: #eceff0; */
 		background-color: var(--header-footer-color);
 		position: sticky;
 		top: 0px;

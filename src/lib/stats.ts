@@ -1,12 +1,12 @@
 
-// https://www.speedtypingonline.com/typing-equations
-
+// https://www.speedtypingonline.com/typing-equations]
 import type { WordState } from "./word_state";
 
 export const wordLen: number = 5;
 
 // https://www.speedtypingonline.com/typing-equations
-export class UserStats {
+
+export class BaseStats {
     duration: number = 0;
     keystrokes: number = 0;
     wordErrors: number = 0;
@@ -16,19 +16,6 @@ export class UserStats {
     uncorrectedErrors: number = 0;
     correctedErrors: number = 0;
 
-    add(word: WordState) {
-        this.words += 1;
-        this.keystrokes += word.keystrokes;
-        this.correctedErrors += word.correctedErrors;
-        this.uncorrectedErrors += word.uncorrectedErrors;
-        this.backspaces += word.backspaces;
-        this.chars += word.wordChars.length;
-        this.wordErrors += word.wordAttempts;
-    }
-
-    resetWord(word: WordState) {
-        // todo
-    }
 
     getGrossWpm(): number {
         // todo: not accurate for word mode
@@ -46,8 +33,36 @@ export class UserStats {
     }
 }
 
-export class SessionStats extends UserStats {
+export class UserStats extends BaseStats {
+    sessions: number = 0;
+
+    add(session: SessionStats) {
+        this.words += 1;
+        this.keystrokes += session.keystrokes;
+        this.correctedErrors += session.correctedErrors;
+        this.uncorrectedErrors += session.uncorrectedErrors;
+        this.backspaces += session.backspaces;
+        this.chars += session.chars;
+        this.wordErrors += session.wordErrors;
+    }
+}
+
+export class SessionStats extends BaseStats {
     started: DOMHighResTimeStamp | undefined = undefined;
+
+    add(word: WordState) {
+        this.words += 1;
+        this.keystrokes += word.keystrokes;
+        this.correctedErrors += word.correctedErrors;
+        this.uncorrectedErrors += word.uncorrectedErrors;
+        this.backspaces += word.backspaces;
+        this.chars += word.wordChars.length;
+        this.wordErrors += word.wordAttempts;
+    }
+
+    resetWord(word: WordState) {
+        // todo
+    }
 
     pause() {
         if (this.started !== undefined) {

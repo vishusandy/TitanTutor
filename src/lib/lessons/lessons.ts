@@ -1,5 +1,5 @@
 import { base } from '$app/paths';
-import { BaseLesson } from './base';
+import { StockWords } from './stock';
 import { RandomList } from './wrappers/random';
 import { UntilN } from './wrappers/until_n';
 import { LessonOptions } from './options';
@@ -7,6 +7,11 @@ import { lessonMap, defaultLessonData, getUserLessonName } from '$lib/locales';
 
 export interface Lesson extends Iterator<string>, Iterable<string> {
     batch(n: number): string[];
+}
+
+export interface BaseLesson extends Lesson {
+    words: string[];
+    pos: number;
 }
 
 export class LessonData {
@@ -37,7 +42,8 @@ export class LessonData {
             .then((words: string[]) => {
                 const opts = LessonOptions.loadOptions(this.lessonName);
 
-                let lesson: Lesson = (opts.random) ? new RandomList(words) : new BaseLesson(words);
+                // let lesson: Lesson = (opts.random) ? new RandomList(words) : new StockWords(words);
+                let lesson: Lesson = new StockWords(words);
 
                 if (opts.until !== undefined) {
                     lesson = new UntilN(lesson, opts.until);

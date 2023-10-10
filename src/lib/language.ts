@@ -18,6 +18,7 @@ export class Language {
     second: string = '';
     seconds: string = '';
     notAvailable: string = '';
+    enable: string = '';
     ttsDialogTitle: string = '';
     ttsLanguageLabel: string = '';
     ttsVoiceLabel: string = '';
@@ -56,8 +57,8 @@ export class Language {
 
     [index: string]: string;
 
-    static async loadLang(lang: string, fetchFn: typeof fetch): Promise<Language> {
-        const req = new Request(`${base}/data/lang/${lang}.json`);
+    static async loadLang(path: string, fetchFn: typeof fetch): Promise<Language> {
+        const req = new Request(`${base}/data/lang/${path}.json`);
 
         return fetchFn(req)
             .then((resp) => resp.json())
