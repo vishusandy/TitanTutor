@@ -1,5 +1,6 @@
 <script lang="ts">
-	import '../styles/typing.scss';
+	import '$lib/../styles/typing.scss';
+	import '$lib/../styles/global.scss';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
@@ -10,7 +11,6 @@
 	export let data: PageData;
 	let config = data.config;
 	let lesson = data.lesson;
-	let lessonOpts = data.lessonOpts;
 	let sessionStats = new SessionStats();
 
 	onMount(() => {
@@ -32,7 +32,7 @@
 	>
 </div>
 
-<Typing {config} {lesson} {lessonOpts} {sessionStats} />
+<Typing {config} {lesson} {sessionStats} />
 
 <style>
 	.tutor-bar {

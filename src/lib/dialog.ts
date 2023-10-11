@@ -3,14 +3,14 @@ import Dialog from "./components/dialog.svelte";
 import Voice from "./components/dialogs/voice.svelte";
 import Stats from "./components/dialogs/stats.svelte";
 import type { Config } from "./config";
-import type { UserStats } from "./stats";
+import type { BaseStats, UserStats } from "./stats";
 import type { innerDialogComponent, closeFn } from "./types";
 
 export function createVoiceDialog(config: Config) {
     return createDialog<Audio>(config.lang.ttsDialogTitle, Voice, true, config);
 }
 
-export function createStatsDialog<T extends UserStats>(config: Config, stats: T) {
+export function createStatsDialog<T extends BaseStats>(config: Config, stats: T) {
     return createDialog<undefined>(config.lang.statsDialogSessionTitle, Stats, false, config, { stats });
 }
 

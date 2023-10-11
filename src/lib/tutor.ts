@@ -1,7 +1,6 @@
 
-import { type Config, CheckMode, BackspaceMode, type LessonConfig } from './config';
-import type { Lesson } from './lessons/lessons';
-import type { LessonOptions } from './lessons/options';
+import { type Config, CheckMode, BackspaceMode, type LessonTypingConfig } from './config';
+import { getLessonConfig, type Lesson } from './lessons/lessons';
 import type { SessionStats } from './stats';
 import { Action, LetterState } from './types';
 import { WordState, CompletedWord } from './word_state';
@@ -11,17 +10,17 @@ export class Tutor {
     config: Config;
     lesson: Lesson;
     stats: SessionStats;
-    overrides: LessonConfig;
+    overrides: LessonTypingConfig;
     word: WordState = new WordState('');
     history: CompletedWord[] = [];
     queue: string[] = [];
     audioQueue: number = 0;
 
-    constructor(config: Config, lesson: Lesson, opts: LessonOptions, stats: SessionStats) {
+    constructor(config: Config, lesson: Lesson, stats: SessionStats) {
         this.stats = stats;
         this.config = config;
         this.lesson = lesson;
-        this.overrides = this.config.lessonConfigOverrides(opts);
+        this.overrides = getLessonConfig(lesson.getLessonName(), config);;
         this.nextWord();
     }
 
@@ -32,8 +31,6 @@ export class Tutor {
         console.log('checking audio queue')
         if (this.audioQueue <= 0) {
             this.audioQueue = this.config.tts.queueSize;
-            // console.log(`playing 0-${this.audioQueue}`, [...this.queue.slice(0, this.audioQueue)])
-            // this.config.tts.play([...this.queue.slice(0, this.audioQueue)]);
             this.config.tts.play([...this.queue]);
         }
     }

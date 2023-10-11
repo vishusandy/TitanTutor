@@ -1,6 +1,5 @@
 import { Audio } from "./audio";
 import { getDefaultTtsLangsFromLocale, getInterfaceLangFromLocale } from "./locales";
-import type { LessonOptions } from "./lessons/options";
 import { defaultMap, loadKbMap, type Remap } from "./remap";
 import { Language } from "./language";
 import { UserStats } from "./stats";
@@ -18,7 +17,7 @@ export const enum BackspaceMode {
     Ignore = 1,
 }
 
-export type LessonConfig = {
+export type LessonTypingConfig = {
     wordBatchSize: number,
     minQueue: number,
     checkMode: CheckMode,
@@ -146,12 +145,12 @@ export class Config implements ConfigProps {
         localStorage.setItem(storagePrefix + 'config', this.serialize())
     }
 
-    lessonConfigOverrides(opts: LessonOptions): LessonConfig {
+    lessonConfigOverrides(opts: Partial<LessonTypingConfig>): LessonTypingConfig {
         return {
-            wordBatchSize: opts.config.wordBatchSize ?? this.wordBatchSize,
-            minQueue: opts.config.minQueue ?? this.minQueue,
-            checkMode: opts.config.checkMode ?? this.checkMode,
-            backspace: opts.config.backspace ?? this.backspace
+            wordBatchSize: opts.wordBatchSize ?? this.wordBatchSize,
+            minQueue: opts.minQueue ?? this.minQueue,
+            checkMode: opts.checkMode ?? this.checkMode,
+            backspace: opts.backspace ?? this.backspace
         }
     }
 }

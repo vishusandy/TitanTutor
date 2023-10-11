@@ -5,16 +5,14 @@
 	import Word from './typing/word.svelte';
 	import QueuedWord from './typing/queued_word.svelte';
 	import type { Lesson } from '$lib/lessons/lessons';
-	import type { LessonOptions } from '$lib/lessons/options';
 	import type { SessionStats } from '$lib/stats';
 	import type { Config } from '$lib/config';
 
 	export let config: Config;
 	export let lesson: Lesson;
-	export let lessonOpts: LessonOptions;
 	export let sessionStats: SessionStats;
 
-	let tutor = new Tutor(config, lesson, lessonOpts, sessionStats);
+	let tutor = new Tutor(config, lesson, sessionStats);
 	let textbox: HTMLInputElement | undefined;
 	let activeWord: HTMLElement | undefined;
 	let started: boolean = false;
