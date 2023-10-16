@@ -37,6 +37,7 @@ export const controlKeys = new Set([
     'PageDown',
     'Escape',
     'Insert',
+    'Shift',
     // 'Tab',
 ]);
 

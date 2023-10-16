@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../styles/global.scss';
 	import type { PageData } from './$types';
-	import { createVoiceDialog } from '$lib/dialog';
+	import { createStatsDialog, createVoiceDialog } from '$lib/dialog';
 	import type { Audio } from '$lib/audio';
 	export let data: PageData;
 
@@ -13,6 +13,10 @@
 			}
 		});
 	}
+
+	async function showUserStatsDialog() {
+		createStatsDialog(data.config.lang.statsDialogUserTitle, data.config, data.config.userStats);
+	}
 </script>
 
 <nav>
@@ -20,6 +24,11 @@
 		<li>
 			<button class="link" type="button" on:click={showAudioDialog}
 				>{data.config.lang.openTtsDialog}</button
+			>
+		</li>
+		<li>
+			<button class="link" type="button" on:click={showUserStatsDialog}
+				>{data.config.lang.openUserStatsDialog}</button
 			>
 		</li>
 	</ul>

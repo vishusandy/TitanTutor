@@ -1,5 +1,6 @@
 
 // https://www.speedtypingonline.com/typing-equations]
+import type { CheckMode } from "./config";
 import type { WordState } from "./word_state";
 
 export const wordLen: number = 5;
@@ -33,22 +34,14 @@ export class BaseStats {
     }
 }
 
-export class UserStats extends BaseStats {
-    sessions: number = 0;
-
-    add(session: SessionStats) {
-        this.words += 1;
-        this.keystrokes += session.keystrokes;
-        this.correctedErrors += session.correctedErrors;
-        this.uncorrectedErrors += session.uncorrectedErrors;
-        this.backspaces += session.backspaces;
-        this.chars += session.chars;
-        this.wordErrors += session.wordErrors;
-    }
-}
-
 export class SessionStats extends BaseStats {
     started: DOMHighResTimeStamp | undefined = undefined;
+    mode: CheckMode;
+
+    constructor(mode: CheckMode) {
+        super();
+        this.mode = mode;
+    }
 
     add(word: WordState) {
         this.words += 1;
@@ -75,5 +68,32 @@ export class SessionStats extends BaseStats {
         if (this.started === undefined) {
             this.started = performance.now();
         }
+    }
+}
+
+export class UserStats extends BaseStats {
+    sessions: number = 0;
+
+    static deserialize(o: Object) {
+        const stats = new UserStats();
+        for (const key in o) {
+            if (stats.hasOwnProperty(key)) {
+                // @ts-ignore
+                stats[key] = o[key];
+            }
+        }
+        return stats;
+    }
+
+    add(session: SessionStats) {
+        this.duration += session.duration;
+        this.words += session.words;
+        this.keystrokes += session.keystrokes;
+        this.correctedErrors += session.correctedErrors;
+        this.uncorrectedErrors += session.uncorrectedErrors;
+        this.backspaces += session.backspaces;
+        this.chars += session.chars;
+        this.wordErrors += session.wordErrors;
+        this.sessions += 1;
     }
 }

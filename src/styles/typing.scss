@@ -1,30 +1,87 @@
 .word {
+    display: inline-block;
+    font-size: 1.5rem;
     margin: 0.1em 0.1em;
-    border: 1px solid transparent;
+    padding: 0.4em;
     scroll-snap-align: center;
+    border-radius: 0.2em;
+    background: transparent;
+
+    color: #444;
+    border: 1px solid transparent;
 }
 
-.word.active {
+.tutor-words:not(.paused) .word.active {
     scroll-snap-stop: always;
-    border: 1px solid green;
+    // border: 1px solid #50ce95;
+    // background-color: rgba(73, 207, 147, 0.05);
+    border: 1px solid #50aace;
+    background-color: rgba(73, 170, 207, 0.15);
+}
+
+.tutor-words.paused .word.active {
+    border: 1px solid #a7a6a3;
+    background-color: rgba(200, 200, 200, 0.2);
+    // border: 1px solid #ce5f50;
+}
+
+.word:not(.active):not(.queued) {
+    animation-name: updown;
+    animation-duration: 0.3s;
+    animation-delay: 0s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
 }
 
 .word:not(.active) .complete {
-    color: green;
+    color: #50ce95;
 }
 
 .letter.complete {
-    color: grey;
+    color: #20b0e9;
 }
 
-.letter.incomplete {
-    color: black;
+.letter {
+    border-left: 1px solid transparent;
 }
 
-.letter.active {
-    color: #0be2e2;
+.tutor-words:not(.paused) .letter.active {
+    border-left: 1px solid rgba(0, 0, 0, 1);
+    animation-name: blinking;
+    animation-timing-function: steps(2, jump-start);
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
 }
 
 .letter.error {
     color: #d43f3f;
+}
+
+.success.word:not(.active) {
+    border: 1px solid #50ce95;
+    background-color: #e2f7e2;
+}
+
+// .word.success:hover {
+//     display: inline-block;
+//     // position: relative;
+//     animation-name: updown;
+//     animation-duration: 5s;
+//     animation-delay: 0s;
+//     animation-iteration-count: infinite;
+//     // animation-timing-function: ease-out;
+//     // animation-iteration-count: 1;
+
+// }
+
+@keyframes blinking {
+    100% {
+        border-color: rgba(0, 0, 0, 0);
+    }
+}
+
+@keyframes updown {
+    20% {
+        transform: translateY(5%);
+    }
 }

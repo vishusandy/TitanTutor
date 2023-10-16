@@ -1,7 +1,7 @@
 
-stats - overall
-max word history
 
+max word history
 multilingual example text
 
+pausing after completing a word, but before pressing space, will not see the word as complete when pressing space
 

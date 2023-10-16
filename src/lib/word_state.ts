@@ -47,7 +47,7 @@ export class WordState {
     reset(word: string) {
         this.word = word;
         this.wordChars = [...word];
-        this.state = this.wordChars.slice(1).map((_, i) => (i == 0) ? LetterState.Active : LetterState.Incomplete);
+        this.state = this.wordChars.map((_, i) => (i == 0) ? LetterState.Active : LetterState.Incomplete);
         this.input = '';
         this.wordAttempts += 1;
     }

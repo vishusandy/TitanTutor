@@ -1,12 +1,14 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
-	import { Action } from '$lib/types';
+	import { SvelteComponent, onMount, tick } from 'svelte';
+	import { Action, LetterState } from '$lib/types';
 	import { Tutor } from '$lib/tutor';
 	import Word from './typing/word.svelte';
 	import QueuedWord from './typing/queued_word.svelte';
 	import type { Lesson } from '$lib/lessons/lessons';
 	import type { SessionStats } from '$lib/stats';
 	import type { Config } from '$lib/config';
+	import { createStatsDialog } from '$lib/dialog';
+	import type { WordState } from '$lib/word_state';
 
 	export let config: Config;
 	export let lesson: Lesson;
@@ -17,7 +19,8 @@
 	let activeWord: HTMLElement | undefined;
 	let started: boolean = false;
 	let paused: boolean = true;
-	let done: boolean = false;
+	let finished: boolean = false;
+	let historyNode: HTMLElement;
 
 	$: {
 		tutor.word.word; // trigger scroll() when word changes
@@ -40,11 +43,12 @@
 				return;
 			}
 		}
+
 		started = true;
-		unpause(e);
+		unpause();
 	}
 
-	async function unpause(e: Event) {
+	async function unpause(e: KeyboardEvent | undefined = undefined) {
 		if (textbox === undefined) return;
 
 		paused = false;
@@ -52,6 +56,10 @@
 
 		await tick();
 		textbox.focus();
+
+		if (e !== undefined) {
+			handleAction(tutor.handleKeydown(e));
+		}
 	}
 
 	function pause(e: Event) {
@@ -65,18 +73,25 @@
 		textbox?.focus();
 	}
 
-	function lessonCompleted() {
+	async function lessonCompleted() {
 		endLesson();
 	}
 
-	function endLesson() {
-		done = true;
+	async function endLesson() {
+		if (config.logStats) {
+			config.userStats.add(sessionStats);
+		}
+
+		config.saveUserConfig();
+		finished = true;
+
+		createStatsDialog(config.lang.statsDialogSessionTitle, config, sessionStats);
 	}
 
 	async function shortcuts(e: KeyboardEvent) {
 		if (e.key === config.pause || e.key === 'Escape') {
 			if (paused) {
-				unpause(e);
+				unpause();
 				textbox?.focus();
 			} else {
 				pause(e);
@@ -87,10 +102,13 @@
 		} else if (e.key === config.stop && started) {
 			e.preventDefault();
 			pause(e);
+			confirmEndLesson();
+		}
+	}
 
-			if (window.confirm(config.lang.stopMsg)) {
-				endLesson();
-			}
+	function confirmEndLesson() {
+		if (window.confirm(config.lang.stopMsg)) {
+			endLesson();
 		}
 	}
 
@@ -107,7 +125,23 @@
 			case Action.Refresh:
 				tutor = tutor;
 				break;
-			case Action.lessonCompleted:
+			case Action.NextWord:
+				const n = tutor.nextWord();
+
+				if (!Array.isArray(n)) {
+					// prevent recursion (shouldn't happen, but just to be safe...)
+					if (n !== Action.NextWord) handleAction(n);
+
+					return;
+				}
+
+				if (n[0] !== undefined) {
+					addToHistory(n[0]);
+				}
+
+				tutor = tutor;
+				break;
+			case Action.LessonCompleted:
 				tutor = tutor;
 				lessonCompleted();
 				break;
@@ -120,30 +154,54 @@
 			activeWord.scrollIntoView({ behavior: 'smooth' });
 		}
 	}
+
+	async function showSessionStatsDialog() {
+		createStatsDialog(config.lang.statsDialogSessionTitle, config, sessionStats);
+	}
+
+	function addToHistory(w: WordState) {
+		const c = new Word({
+			target: historyNode,
+			props: {
+				word: w.wordChars,
+				state: w.state
+			}
+		});
+	}
 </script>
 
 <svelte:document on:keydown={shortcuts} />
 
-<div class="tutor">
-	<div class="tutor-words" class:paused>
-		{#each tutor.history as w}
-			<Word word={w.word} state={w.state} />{' '}
-		{/each}
+{#if !finished}
+	<div class="tutor">
+		<div class="tutor-menu">
+			<button type="button" class="link" on:click={showSessionStatsDialog}
+				>{config.lang.openSessionStatsDialog}</button
+			>
+			{#if started}
+				<!-- <button type="button" class="link pause-button" class:paused on:click={pause} /> -->
+				<button class="link stop-button" on:click={confirmEndLesson}>{config.lang.stop}</button>
+			{/if}
+		</div>
 
-		<Word
-			bind:span={activeWord}
-			word={tutor.word.wordChars}
-			state={tutor.word.state}
-			active={true}
-		/>
+		<div class="tutor-words" class:paused>
+			<span bind:this={historyNode} class="history" />
 
-		{#each tutor.queue as q}
-			<QueuedWord word={q} />{' '}
-		{/each}
-	</div>
+			<Word
+				bind:span={activeWord}
+				word={tutor.word.wordChars}
+				state={tutor.word.state}
+				active={true}
+			/>
 
-	<div class="tutor-input">
-		{#if !done}
+			<span class="queue">
+				{#each tutor.queue as q}
+					<QueuedWord word={q} />{' '}
+				{/each}
+			</span>
+		</div>
+
+		<div class="tutor-input">
 			{#if paused && !started}
 				<input
 					class="textbox"
@@ -171,14 +229,16 @@
 					on:click|preventDefault={handleClick}
 				/>
 			{/if}
-		{/if}
+		</div>
 	</div>
-</div>
+{:else}
+	<a data-sveltekit-reload href="/">Again!</a>
+{/if}
 
 <style>
 	.tutor {
-		--tutorWidth: 70ch;
-		--tutorMaxWidth: 80%;
+		--tutorWidth: 100%;
+		--tutorMaxWidth: 100%;
 		width: var(--tutorWidth);
 		max-width: var(--tutorMaxWidth);
 		margin: 4rem auto 2rem;
@@ -192,26 +252,54 @@
 		white-space: nowrap;
 		border-radius: 0.3rem;
 		margin: 2rem auto;
-		box-shadow: inset 0px -1px 7px rgba(31, 155, 0, 0.445);
+		/* box-shadow: inset 0px -1px 7px rgba(31, 155, 0, 0.445); */
 		/* scrollbar-width: thin; */
+		scroll-behavior: smooth;
+		scrollbar-width: none;
 		scroll-snap-type: x mandatory;
 		-webkit-overflow-scrolling: touch;
-		background-color: #faf8f2;
+		/* background-color: #faf8f2; */
 	}
 
 	.tutor-input {
 		text-align: center;
 	}
 
-	.tutor-words :global(.word:first-of-type) {
+	.textbox {
+		border: 1px solid #bcc2c9;
+		box-sizing: border-box;
+		font-size: 1.2rem;
+		width: 100%;
+		max-width: 40ch;
+		text-align: center;
+		padding: 1.2rem 2rem;
+	}
+
+	.textbox:focus {
+		box-shadow: none;
+		/* border: 1px solid #faf8f2; */
+	}
+
+	.history {
 		margin-left: calc(min(var(--tutorWidth), 100%) / 2);
 	}
 
-	.tutor-words :global(.word:last-of-type) {
+	.queue {
 		margin-right: calc(min(var(--tutorWidth), 100%) / 2);
 	}
 
-	.paused {
-		box-shadow: inset 0px -1px 7px rgba(148, 137, 120, 0.445);
+	.tutor-words.paused {
+		/* box-shadow: inset 0px -1px 7px rgba(148, 137, 120, 0.445); */
+	}
+
+	.pause-button.paused {
+		width: 0.8rem;
+		height: 0.8rem;
+		background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M 0 0'/%3e%3c/svg%3e");
+		/* background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e"); */
+	}
+
+	.tutor-menu {
+		text-align: center;
 	}
 </style>

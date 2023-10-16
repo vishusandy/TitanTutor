@@ -6,6 +6,9 @@ export class Language {
     stopMsg: string = '';
     inputNotStarted: string = '';
     inputPaused: string = '';
+    stop: string = '';
+    pause: string = '';
+    resume: string = '';
     submit: string = '';
     cancel: string = '';
     close: string = '';
@@ -31,7 +34,8 @@ export class Language {
     ttsExampleText: string = '';
     ttsNotEnabled: string = '';
     openTtsDialog: string = '';
-    openStatsDialog: string = '';
+    openUserStatsDialog: string = '';
+    openSessionStatsDialog: string = '';
     statsDialogSessionTitle: string = '';
     statsDialogUserTitle: string = '';
     statsDialogDuration: string = '';
@@ -43,6 +47,9 @@ export class Language {
     statsDialogGrossWpm: string = '';
     statsDialogNetWpm: string = '';
     statsDialogAccuracy: string = '';
+    statsDialogClearUserStats: string = '';
+    statsDialogTrackUserStats: string = '';
+    statsResetPrompt: string = '';
 
     constructor(
         lang: Object,

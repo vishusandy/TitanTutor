@@ -43,6 +43,7 @@
 	});
 
 	$: {
+		mute;
 		pitch;
 		rate;
 		volume;
@@ -184,7 +185,7 @@
 						id="pitch"
 						disabled={mute}
 					/>
-					<span>{pitch.toFixed(1)}</span>
+					<span class:disabled={mute}>{pitch.toFixed(1)}</span>
 				</div>
 
 				<label for="rate" class:disabled={mute}>{config.lang.ttsRateLabel}</label>
@@ -198,7 +199,7 @@
 						id="rate"
 						disabled={mute}
 					/>
-					<span>{rate.toFixed(1)}</span>
+					<span class:disabled={mute}>{rate.toFixed(1)}</span>
 				</div>
 
 				<label for="volume" class:disabled={mute}>{config.lang.ttsVolumeLabel}</label>
@@ -212,7 +213,7 @@
 						id="volume"
 						disabled={mute}
 					/>
-					<span>{volume.toFixed(2)}</span>
+					<span class:disabled={mute}>{volume.toFixed(2)}</span>
 				</div>
 
 				<label for="text" class:disabled={mute}>{config.lang.ttsTextLabel}</label>
@@ -258,6 +259,10 @@
 		text-align: center;
 		font-family: var(--font-slab);
 		font-size: 95%;
+	}
+
+	.input-cell span.disabled {
+		background-color: #f1f1f1;
 	}
 
 	.btn-cont {

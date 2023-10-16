@@ -10,8 +10,8 @@ export function createVoiceDialog(config: Config) {
     return createDialog<Audio>(config.lang.ttsDialogTitle, Voice, true, config);
 }
 
-export function createStatsDialog<T extends BaseStats>(config: Config, stats: T) {
-    return createDialog<undefined>(config.lang.statsDialogSessionTitle, Stats, false, config, { stats });
+export function createStatsDialog<T extends BaseStats>(title: string, config: Config, stats: T) {
+    return createDialog<undefined>(title, Stats, false, config, { stats });
 }
 
 export function createDialog<T>(title: string, content: innerDialogComponent, submit: boolean, config: Config, props?: Object): Promise<T | undefined> {

@@ -40,6 +40,7 @@ type ConfigProps = {
     minQueue: number;
     stop: string;
     pause: string;
+    logStats: boolean;
     audioDefaults: string[]; // array to match different browsers' tts languages
     remap: Remap;
     lang: Language;
@@ -57,6 +58,7 @@ export class Config implements ConfigProps {
     minQueue: number;
     stop: string;
     pause: string;
+    logStats: boolean;
     audioDefaults: string[]; // array to match different browsers' tts languages
     remap: Remap;
     lang: Language;
@@ -71,6 +73,7 @@ export class Config implements ConfigProps {
         this.minQueue = c.minQueue;
         this.stop = c.stop;
         this.pause = c.pause;
+        this.logStats = c.logStats;
         this.audioDefaults = c.audioDefaults;
         this.remap = c.remap;
         this.lang = c.lang;
@@ -94,6 +97,7 @@ export class Config implements ConfigProps {
             minQueue: 8,
             stop: 'F7',
             pause: 'F4',
+            logStats: true,
             tts,
             audioDefaults,
             remap,
@@ -126,8 +130,9 @@ export class Config implements ConfigProps {
         const lang = await Language.loadLang(o.lang, fetchFn);
         const remap = await loadKbMap(o.remap, fetchFn);
         const tts = Audio.deserialize(o.tts);
+        const userStats = UserStats.deserialize(o.userStats);
 
-        const c: ConfigProps = { ...o, lang: lang, remap, tts };
+        const c: ConfigProps = { ...o, lang: lang, remap, tts, userStats };
 
         return new Config(c);
     }

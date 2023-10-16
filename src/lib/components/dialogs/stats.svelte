@@ -1,29 +1,55 @@
-<script lang="ts" generics="T extends UserStats">
+<script lang="ts" generics="T extends BaseStats">
 	import type { Config } from '$lib/config';
-	import type { UserStats } from '$lib/stats';
+	import { UserStats, type BaseStats } from '$lib/stats';
 	import { formatDuration } from '$lib/util';
 
 	export let stats: T;
 	export let config: Config;
+	const userStats = (stats as unknown as UserStats).sessions !== undefined;
+
+	let grossWpm: string = '';
+	let netWpm: string = '';
+	let accuracy: string = '';
+
+	let trackStats: boolean = config.logStats;
+	let trackStatsCheckbox: HTMLInputElement;
 
 	// Inspired by:
 	// https://carl-topham.com/articles/intl-number-formatting-percentage
-	function formatNaN(fn: () => number, options?: Intl.NumberFormatOptions) {
-		const n = fn.bind(stats)();
-		return Number.isNaN(n)
+	function formatNaN(num: number, options?: Intl.NumberFormatOptions) {
+		return Number.isNaN(num)
 			? config.lang.notAvailable
-			: Intl.NumberFormat(navigator.language, options).format(n);
+			: Intl.NumberFormat(navigator.language, options).format(num);
 	}
 
-	const grossWpm = formatNaN(stats.getGrossWpm, { style: 'decimal', maximumFractionDigits: 2 });
-	const netWpm = formatNaN(stats.getNetWpm, { style: 'decimal', maximumFractionDigits: 2 });
-	const accuracy = formatNaN(stats.getAccuracy, { style: 'percent' });
+	function calc() {
+		grossWpm = formatNaN(stats.getGrossWpm(), { style: 'decimal', maximumFractionDigits: 2 });
+		netWpm = formatNaN(stats.getNetWpm(), { style: 'decimal', maximumFractionDigits: 2 });
+		accuracy = formatNaN(stats.getAccuracy(), { style: 'percent' });
+	}
+
+	calc();
+
+	function clearStats() {
+		if (!window.confirm(config.lang.statsResetPrompt)) return;
+
+		config.userStats = new UserStats();
+		config.saveUserConfig();
+		config = config;
+		// @ts-ignore
+		stats = config.userStats;
+		calc();
+	}
+
+	function changeTractStats() {
+		trackStats = trackStatsCheckbox.checked;
+		config.logStats = trackStats;
+		config = config;
+		config.saveUserConfig();
+	}
 </script>
 
 <div class="grid">
-	<div class="label">Duration</div>
-	<div>{formatDuration(stats.duration, config.lang)}</div>
-
 	<div class="label">{config.lang.statsDialogWords}</div>
 	<div>{stats.words}</div>
 
@@ -32,13 +58,20 @@
 
 	<div class="label">{config.lang.statsDialogKeystrokes}</div>
 	<div>{stats.keystrokes}</div>
+</div>
+<hr />
+<div class="grid">
+	<div class="label">Duration</div>
+	<div>{formatDuration(stats.duration, config.lang)}</div>
 
 	<div class="label">{config.lang.statsDialogUncorrectedErrors}</div>
 	<div>{stats.uncorrectedErrors}</div>
 
 	<div class="label">{config.lang.statsDialogCorrectedErrors}</div>
 	<div>{stats.correctedErrors}</div>
-
+</div>
+<hr />
+<div class="grid">
 	<div class="label">{config.lang.statsDialogGrossWpm}</div>
 	<div>{grossWpm}</div>
 
@@ -49,14 +82,81 @@
 	<div>{accuracy}</div>
 </div>
 
+{#if userStats}
+	<form>
+		<div class="user-options">
+			<div class="track-stats-container">
+				<input
+					id="log-stats"
+					type="checkbox"
+					checked={trackStats}
+					bind:this={trackStatsCheckbox}
+					on:change={changeTractStats}
+				/>
+				<label for="log-stats">{config.lang.statsDialogTrackUserStats}</label>
+			</div>
+			<button type="button" on:click={clearStats}>{config.lang.statsDialogClearUserStats}</button>
+		</div>
+	</form>
+{/if}
+
 <style>
 	.grid {
 		display: grid;
-		grid-template-columns: min-content auto;
+		/* grid-template-columns: min-content auto; */
+		grid-template-columns: auto auto;
 		column-gap: 2rem;
-		row-gap: 1.3rem;
+		/* row-gap: 1.3rem; */
 		margin: 0px auto;
-		width: min-content;
+		/* width: min-content; */
+		width: 40ch;
+		max-width: 80%;
 		white-space: nowrap;
+	}
+
+	.grid > * {
+		margin: 0.65rem 0px;
+	}
+
+	.grid :nth-child(2n) {
+		text-align: left;
+	}
+
+	.grid :nth-child(2n + 1) {
+		text-align: left;
+	}
+
+	hr {
+		margin: 0.325rem auto;
+		grid-column: span 2;
+		height: 1px;
+		border: 0px;
+		width: 80%;
+		opacity: 0.5;
+		background-color: #b2b8be;
+		background: linear-gradient(
+			90deg,
+			rgba(178, 184, 190, 0) 0%,
+			rgba(178, 184, 190, 0.8981793400954132) 10%,
+			rgba(178, 184, 190, 1) 20%,
+			rgba(178, 184, 190, 1) 80%,
+			rgba(178, 184, 190, 0.9037815809917717) 90%,
+			rgba(178, 184, 190, 0) 100%
+		);
+	}
+
+	.user-options {
+		margin: 2rem 0px 0rem;
+		text-align: center;
+	}
+
+	.track-stats-container {
+		display: flex;
+		justify-content: center;
+		margin-bottom: 0.5rem;
+	}
+
+	#log-stats {
+		margin-right: 0.4rem;
 	}
 </style>
