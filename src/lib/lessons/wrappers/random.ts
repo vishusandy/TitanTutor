@@ -1,12 +1,13 @@
-import { type BaseLesson, type Lesson, retrieveFromStorable, type StorableLesson } from "$lib/lessons/lessons";
+import { type WordListBase, type Lesson, retrieveFromStorable, type StorableLesson } from "$lib/lessons/lessons";
+import type { LessonFormState } from "$lib/forms";
 import { shuffle, defaultBatch } from "$lib/util";
 
 export type StorableRandom = { type: "random", base: StorableLesson };
 
 export class RandomList implements Lesson {
-    base: BaseLesson;
+    base: WordListBase;
 
-    constructor(base: BaseLesson) {
+    constructor(base: WordListBase) {
         this.base = base;
     }
 
@@ -36,11 +37,19 @@ export class RandomList implements Lesson {
 
     static async fromStorable(s: StorableRandom, fetchFn: typeof fetch = fetch): Promise<RandomList> {
         const base = await retrieveFromStorable(s.base, fetchFn);
-        return new RandomList(base as BaseLesson);
+        return new RandomList(base as WordListBase);
     }
 
     toJSON(): string {
         return JSON.stringify(this.storable());
+    }
+
+    setFormState(state: LessonFormState): void {
+        state.random = true;
+    }
+
+    getChild(): Lesson | undefined {
+        return this.base;
     }
 
     getLessonName(): string {

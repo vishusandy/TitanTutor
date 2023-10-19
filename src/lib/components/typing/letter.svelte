@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { LetterState } from '$lib/types';
+
 	export let letter: string;
 	export let state: LetterState;
 </script>

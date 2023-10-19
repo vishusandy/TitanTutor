@@ -1,22 +1,22 @@
 import { shuffle } from "weighted-shuffle";
-import { type Lesson, type BaseLesson, type StorableLesson, retrieveFromStorable } from "$lib/lessons/lessons";
+import { type Lesson, type WordListBase, type StorableLesson, retrieveFromStorable } from "$lib/lessons/lessons";
 import { defaultBatch } from "$lib/util";
-import { storagePrefix } from "$lib/config";
+import type { lessonFormState } from "$lib/types";
 
 type Weights = number[] | string;
 
-export type StorableWeighted = {
+export type StorableWeightedShuffle = {
     type: "weighted",
     weights: Weights,
     base: StorableLesson;
 };
 
-export class WeightedList implements Lesson {
+export class WeightedShuffle implements Lesson {
     words: [string, number][];
     pos: number = 0;
-    base: BaseLesson;
+    base: WordListBase;
 
-    constructor(base: BaseLesson, weights: Weights | undefined) {
+    constructor(base: WordListBase, weights: Weights | undefined) {
         if (base.words.length === 0) {
             throw new Error("Invalid weighted word list: the list must contain at least one element");
         }
@@ -53,7 +53,7 @@ export class WeightedList implements Lesson {
         return { done: false, value: this.words[this.pos++][0] }
     }
 
-    storable(): StorableWeighted {
+    storable(): StorableWeightedShuffle {
         return {
             type: 'weighted',
             weights: Array.from(this.words.map(([_, weight]) => weight)),
@@ -65,19 +65,21 @@ export class WeightedList implements Lesson {
         return JSON.stringify(this.storable());
     }
 
-    async deserialize(s: string) {
-        let o = JSON.parse(s);
-
-    }
-    static async fromStorable(s: StorableWeighted, fetchFn: typeof fetch = fetch): Promise<WeightedList> {
+    static async fromStorable(s: StorableWeightedShuffle, fetchFn: typeof fetch = fetch): Promise<WeightedShuffle> {
         const base = await retrieveFromStorable(s.base, fetchFn);
-        return new WeightedList(base as BaseLesson, s.weights)
+        return new WeightedShuffle(base as WordListBase, s.weights)
+    }
+
+    setFormState(state: lessonFormState): void { }
+
+    children(): Lesson[] | undefined {
+        return retrieveFromStorable(this.base);
     }
 
     getLessonName(): string {
         return this.base.lessonName;
     }
-    
+
     batch(n: number): string[] {
         return defaultBatch(this, n);
     }

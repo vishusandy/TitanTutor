@@ -4,75 +4,96 @@
     margin: 0.1em 0.1em;
     padding: 0.4em;
     scroll-snap-align: center;
-    border-radius: 0.2em;
     background: transparent;
-
     color: #444;
+    border-radius: 0.15em;
     border: 1px solid transparent;
+}
+
+.word.active {
+    font-size: 1.9rem;
+    box-shadow: 0px 2px 6px 0px rgba(160, 160, 160, 0.8);
 }
 
 .tutor-words:not(.paused) .word.active {
     scroll-snap-stop: always;
-    // border: 1px solid #50ce95;
-    // background-color: rgba(73, 207, 147, 0.05);
     border: 1px solid #50aace;
-    background-color: rgba(73, 170, 207, 0.15);
+    // background-color: rgba(73, 170, 207, 0.15);
+    background-color: #e4f2f8;
 }
 
 .tutor-words.paused .word.active {
-    border: 1px solid #a7a6a3;
-    background-color: rgba(200, 200, 200, 0.2);
-    // border: 1px solid #ce5f50;
+    // border: 1px solid #a7a6a3;
+    // background-color: rgba(200, 200, 200, 0.2);
+    border: 1px solid #d3d2cf;
 }
 
-.word:not(.active):not(.queued) {
-    animation-name: updown;
-    animation-duration: 0.3s;
-    animation-delay: 0s;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: 1;
+.tutor-words:not(.paused) .letter.active {
+    border-left: 1px solid rgba(0, 0, 0, 1);
+    animation: blinking 1.5s steps(2, jump-start) infinite;
 }
 
-.word:not(.active) .complete {
+.word.active .letter.error {
+    color: #d43f3f;
+}
+
+.word.active .letter.complete {
+    color: #20b0e9;
+}
+
+
+
+.word:not(.active):not(.queued).success {
+    animation: word-added 0.3s ease-in-out 0s 1;
+    box-shadow: 0px 0px 4px 0px rgba(202, 202, 202, 0.9)
+}
+
+.word:not(.active):not(.queued).error {
+    animation: word-wrong 0.1s ease-in-out 0s 3;
+}
+
+.word:not(.active).queued {
+    background-color: rgba(200, 200, 200, 0.15);
+    box-shadow: 0px 0px 4px 0px rgba(202, 202, 202, 0.9)
+}
+
+.word:not(.active).success {
+    border: 1px solid #50ce95;
+    background-color: #e2f7e2;
+}
+
+.word:not(.active).error {
+    border: 1px solid #ce5f50;
+    // border: 1px solid #923636;
+    background-color: #f1d7d4;
+}
+
+.word:not(.active).success .letter.complete {
     color: #50ce95;
 }
 
-.letter.complete {
-    color: #20b0e9;
+.word:not(.active).error .letter.complete {
+    color: #666;
 }
+
+.word:not(.active) .letter.error {
+    // color: #d43f3f;
+    color: #ad3a3a;
+}
+
+
 
 .letter {
     border-left: 1px solid transparent;
 }
 
-.tutor-words:not(.paused) .letter.active {
-    border-left: 1px solid rgba(0, 0, 0, 1);
-    animation-name: blinking;
-    animation-timing-function: steps(2, jump-start);
-    animation-duration: 1.5s;
-    animation-iteration-count: infinite;
+.missed-space {
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #ce5f50;
+    background-color: #f1d7d4;
 }
 
-.letter.error {
-    color: #d43f3f;
-}
-
-.success.word:not(.active) {
-    border: 1px solid #50ce95;
-    background-color: #e2f7e2;
-}
-
-// .word.success:hover {
-//     display: inline-block;
-//     // position: relative;
-//     animation-name: updown;
-//     animation-duration: 5s;
-//     animation-delay: 0s;
-//     animation-iteration-count: infinite;
-//     // animation-timing-function: ease-out;
-//     // animation-iteration-count: 1;
-
-// }
 
 @keyframes blinking {
     100% {
@@ -80,8 +101,35 @@
     }
 }
 
-@keyframes updown {
+@keyframes word-added {
+    0% {
+        // font-size: 1.75rem;
+    }
+
     20% {
         transform: translateY(5%);
     }
+}
+
+@keyframes word-wrong {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(1deg);
+    }
+
+    50% {
+        transform: rotate(0deg);
+    }
+
+    75% {
+        transform: rotate(-1deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+
 }

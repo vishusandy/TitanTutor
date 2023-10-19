@@ -6,6 +6,13 @@ export class Language {
     stopMsg: string = '';
     inputNotStarted: string = '';
     inputPaused: string = '';
+    on: string = '';
+    off: string = '';
+    none: string = '';
+    disabled: string = '';
+    infinite: string = '';
+    accept: string = '';
+    ignore: string = '';
     stop: string = '';
     pause: string = '';
     resume: string = '';
@@ -22,6 +29,9 @@ export class Language {
     seconds: string = '';
     notAvailable: string = '';
     enable: string = '';
+    wordMode: string = '';
+    charMode: string = '';
+    openTtsDialog: string = '';
     ttsDialogTitle: string = '';
     ttsLanguageLabel: string = '';
     ttsVoiceLabel: string = '';
@@ -33,7 +43,6 @@ export class Language {
     ttsPreview: string = '';
     ttsExampleText: string = '';
     ttsNotEnabled: string = '';
-    openTtsDialog: string = '';
     openUserStatsDialog: string = '';
     openSessionStatsDialog: string = '';
     statsDialogSessionTitle: string = '';
@@ -50,6 +59,17 @@ export class Language {
     statsDialogClearUserStats: string = '';
     statsDialogTrackUserStats: string = '';
     statsResetPrompt: string = '';
+    openLessonConfigDialog: string = '';
+    lessonConfigDialogTitle: string = '';
+    lessonConfigDialogRandom: string = '';
+    lessonConfigDialogUntil: string = '';
+    lessonConfigDialogUseUserSetting: string = '';
+    lessonConfigDialogMinQueue: string = '';
+    lessonConfigDialogWordBatchSize: string = '';
+    lessonConfigDialogCheckMode: string = '';
+    lessonConfigDialogCheckModeChars: string = '';
+    lessonConfigDialogCheckModeWords: string = '';
+    lessonConfigDialogAcceptBackspace: string = '';
 
     constructor(
         lang: Object,

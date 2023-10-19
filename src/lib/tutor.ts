@@ -1,17 +1,16 @@
-
 import { type Config, CheckMode, BackspaceMode, type LessonTypingConfig } from './config';
-import { getLessonConfig, type Lesson } from './lessons/lessons';
+import { getUserLessonConfig, type Lesson } from './lessons/lessons';
 import type { SessionStats } from './stats';
 import { Action, LetterState } from './types';
 import { WordState, CompletedWord } from './word_state';
 import { controlKeys } from './remap';
-import type Word from './components/typing/word.svelte';
 
 export class Tutor {
     config: Config;
     lesson: Lesson;
     stats: SessionStats;
-    overrides: LessonTypingConfig;
+    overrides: Partial<LessonTypingConfig>;
+    lessonConfig: LessonTypingConfig;
     word: WordState = new WordState('');
     history: CompletedWord[] = [];
     queue: string[] = [];
@@ -21,17 +20,24 @@ export class Tutor {
         this.stats = stats;
         this.config = config;
         this.lesson = lesson;
-        this.overrides = getLessonConfig(lesson.getLessonName(), config);;
+        this.overrides = getUserLessonConfig(lesson.getLessonName());
+        this.lessonConfig = config.lessonConfigOverrides(this.overrides);
         this.nextWord();
     }
 
-    checkAudioQueue() {
+    private checkAudioQueue() {
         if (this.config.tts === undefined || this.config.tts.mute) return;
 
         this.audioQueue -= 1;
         if (this.audioQueue <= 0) {
             this.audioQueue = this.config.tts.queueSize;
             this.config.tts.play([...this.queue]);
+        }
+    }
+
+    private fillQueue() {
+        while (this.queue.length < this.config.minQueue) {
+            this.queue.push(...this.lesson.batch(this.config.wordBatchSize - this.queue.length));
         }
     }
 
@@ -62,39 +68,39 @@ export class Tutor {
         return [prev, this.word];
     }
 
-    fillQueue() {
-        if (this.queue.length < this.config.minQueue) {
-            this.queue.push(...this.lesson.batch(this.config.wordBatchSize - this.queue.length));
-        }
-    }
-
-    modeWordKeydown(e: KeyboardEvent) {
-        let act = Action.None;
-        // console.log(e.key);
+    private handleKeydownWordMode(e: KeyboardEvent) {
         if (e.key === ' ' || e.key === 'Enter') {
             if (this.word.completed()) {
                 e.preventDefault();
                 return Action.NextWord;
-            } else {
-                this.stats.resetWord(this.word);
-                this.word.reset(this.word.getWord());
-                this.word.state[0] = LetterState.Active;
-                e.preventDefault();
-                return Action.Refresh;
             }
+
+            this.stats.resetWord(this.word);
+            this.word.reset(this.word.getWord());
+            e.preventDefault();
+
+            return Action.WordReset;
         }
 
         if (controlKeys.has(e.key)) {
-            console.log('key is control key')
             e.preventDefault();
         }
 
-        return act;
+        return Action.None;
     }
 
-    modeCharKeydown(e: KeyboardEvent): Action {
+    private handleKeydownCharMode(e: KeyboardEvent): Action {
         if (this.word.atEnd()) {
-            return Action.NextWord;
+            if (e.key === ' ') {
+                e.preventDefault();
+                return Action.NextWord;
+            }
+
+            if (!this.config.spaceOptional) {
+                this.word.uncorrectedErrors += 1;
+                e.preventDefault();
+                return Action.MissedSpace;
+            }
         }
 
         return Action.None;
@@ -109,12 +115,11 @@ export class Tutor {
 
         switch (this.config.checkMode) {
             case CheckMode.Char:
-                return this.modeCharKeydown(e);
+                return this.handleKeydownCharMode(e);
             case CheckMode.WordRepeat:
-                return this.modeWordKeydown(e);
-            default:
-                return Action.None;
+                return this.handleKeydownWordMode(e);
         }
+        return Action.None;
     }
 
     handleBeforeInput(e: InputEvent): Action {

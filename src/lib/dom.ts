@@ -1,4 +1,4 @@
-import { letterStateString, type LetterState } from "./types";
+import { letterStateToString, type LetterState } from "./types";
 import type { WordState } from "./word_state";
 
 export type Span = {
@@ -35,7 +35,7 @@ function renderSpans(to: HTMLElement, spans: Span[]) {
 
     const els = spans.map((span) => {
         const el = document.createElement('span');
-        el.classList.add(letterStateString(span.state));
+        el.classList.add(letterStateToString(span.state));
         el.textContent = span.text;
         return el;
     });

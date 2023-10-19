@@ -1,4 +1,5 @@
 import { type Lesson, type StorableLesson, retrieveFromStorable } from "$lib/lessons/lessons";
+import type { LessonFormState } from "$lib/forms";
 import { defaultBatch } from "$lib/util";
 
 export type StorableUntil = { type: "until", max: number, lesson: StorableLesson };
@@ -42,10 +43,18 @@ export class UntilN implements Lesson {
         return new UntilN(lesson, s.max);
     }
 
+    setFormState(state: LessonFormState): void {
+        state.until = this.max;
+    }
+
+    getChild(): Lesson | undefined {
+        return this.lesson;
+    }
+
     getLessonName(): string {
         return this.lesson.getLessonName();
     }
-    
+
     batch(n: number): string[] {
         return defaultBatch(this, n);
     }

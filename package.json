@@ -32,6 +32,7 @@
     },
     "type": "module",
     "dependencies": {
+        "pure-rand": "^6.0.4",
         "weighted-shuffle": "^1.0.0"
     }
 }

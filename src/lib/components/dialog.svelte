@@ -1,22 +1,32 @@
 <script lang="ts" generics="T">
-	import type { Config } from '$lib/config';
-	import type { closeFn, innerDialogComponent } from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
 
+	import type { Config } from '$lib/config';
+	import type { CloseFn, InnerDialogComponent } from '$lib/types';
+
+	export let title: string = '';
 	export let passProps: any;
 	export let config: Config;
-	export let title: string = '';
 	export let hasSubmit: boolean;
-	export let closeCallback: closeFn<T>;
-	export let content: innerDialogComponent;
+	export let closeCallback: CloseFn<T>;
+	export let content: InnerDialogComponent;
+
+	const closeTime: number = 100.0;
+
 	let dialog: HTMLDialogElement;
 
+	function animateClose() {
+		dialog.classList.add('closing');
+	}
+
 	function handleSubmit(e: Event) {
-		closeCallback(submitData());
+		animateClose();
+		setTimeout(() => closeCallback(submitData()), closeTime);
 	}
 
 	function handleClose(e: Event) {
-		closeCallback(undefined);
+		animateClose();
+		setTimeout(() => closeCallback(undefined), closeTime);
 	}
 
 	onMount(() => {
@@ -65,6 +75,7 @@
 		border: 1px solid var(--border-color);
 		padding: 0px;
 		box-shadow: 0px 0px 15px #939596;
+		animation: dialog-slide-in 0.2s ease-out 0s 1;
 	}
 
 	header {
@@ -82,7 +93,7 @@
 	}
 
 	header h1 {
-		margin: 0px;
+		margin: 0px 2rem;
 		font-size: 1.3rem;
 		font-weight: normal;
 		user-select: none;
@@ -115,5 +126,11 @@
 
 	::backdrop {
 		backdrop-filter: blur(3px);
+	}
+
+	@keyframes dialog-slide-in {
+		0% {
+			opacity: 0;
+		}
 	}
 </style>

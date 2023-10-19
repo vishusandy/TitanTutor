@@ -5,6 +5,10 @@ export const enum Action {
     Refresh = 1,
     NextWord = 2,
     LessonCompleted = 3,
+    MissedSpace = 4, // for char mode when optionalSpace==false
+    WordReset = 5, // for word mode
+    CharAdded = 6,
+
 }
 
 export const enum LetterState {
@@ -14,7 +18,7 @@ export const enum LetterState {
     Error = 3,
 }
 
-export function letterStateString(letter: LetterState): string {
+export function letterStateToString(letter: LetterState): string {
     switch (letter) {
         case LetterState.Incomplete:
             return "incomplete"
@@ -29,7 +33,7 @@ export function letterStateString(letter: LetterState): string {
     }
 }
 
-export type closeFn<T> = ((data: T | undefined) => void);
+export type CloseFn<T> = ((data: T | undefined) => void);
 
-export type innerDialogComponent = ComponentType<SvelteComponent>;
+export type InnerDialogComponent = ComponentType<SvelteComponent>;
 

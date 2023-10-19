@@ -1,11 +1,10 @@
+export const rateClamp: [number, number] = [0.5, 2.0];
+export const pitchClamp: [number, number] = [0.0, 2.0];
+export const volumeClamp: [number, number] = [0.0, 1.0];
 
 function clamp(n: number, min: number, max: number): number {
     return Math.min(max, Math.max(min, n));
 }
-
-export const rateClamp: [number, number] = [0.5, 2.0];
-export const pitchClamp: [number, number] = [0.0, 2.0];
-export const volumeClamp: [number, number] = [0.0, 1.0];
 
 export class Audio {
     rate: number = 1.0; // 0.5 to 2.0
@@ -94,17 +93,18 @@ export function displayVoice(s: string, lang: string): string {
     return getVoiceName(s);
 }
 
-
-function sortVoices(a: SpeechSynthesisVoice, b: SpeechSynthesisVoice): number {
-    return a.name.toUpperCase().localeCompare(b.name.toUpperCase());
-}
-
 export function getLangFromVoice(s: string): string {
     const pos = s.indexOf('+');
     return (pos !== -1) ? s.substring(0, pos) : s;
 }
 
-export function getVoiceName(s: string): string {
+
+
+function sortVoices(a: SpeechSynthesisVoice, b: SpeechSynthesisVoice): number {
+    return a.name.toUpperCase().localeCompare(b.name.toUpperCase());
+}
+
+function getVoiceName(s: string): string {
     const pos = s.indexOf('+');
     return (pos !== -1) ? s.substring(pos + 1) : s;
 }

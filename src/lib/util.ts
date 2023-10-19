@@ -40,5 +40,3 @@ export function defaultBatch(lesson: Lesson, n: number) {
 
     return words;
 }
-
-

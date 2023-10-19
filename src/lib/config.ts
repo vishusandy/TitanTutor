@@ -3,6 +3,7 @@ import { getDefaultTtsLangsFromLocale, getInterfaceLangFromLocale } from "./loca
 import { defaultMap, loadKbMap, type Remap } from "./remap";
 import { Language } from "./language";
 import { UserStats } from "./stats";
+import type { LessonFormState } from "./forms";
 
 export const storagePrefix = 'vkTutor_'
 
@@ -45,6 +46,9 @@ type ConfigProps = {
     remap: Remap;
     lang: Language;
     userStats: UserStats;
+    spaceOptional: boolean;
+    randomizeLesson: boolean;
+    lessonSize: number | null;
 }
 
 type ConfigStorable = Omit<ConfigProps, "tts" | "lang" | "remap" | "audio"> & { tts: string, lang: string, remap: string, audio: string };
@@ -63,6 +67,10 @@ export class Config implements ConfigProps {
     remap: Remap;
     lang: Language;
     userStats: UserStats;
+    spaceOptional: boolean;
+    randomizeLesson: boolean;
+    lessonSize: number | null;
+
 
     constructor(c: ConfigProps) {
         this.version = c.version;
@@ -78,6 +86,9 @@ export class Config implements ConfigProps {
         this.remap = c.remap;
         this.lang = c.lang;
         this.userStats = c.userStats;
+        this.spaceOptional = c.spaceOptional;
+        this.randomizeLesson = c.randomizeLesson;
+        this.lessonSize = c.lessonSize;
     }
 
     static async default(fetchFn: typeof fetch = fetch): Promise<Config> {
@@ -102,7 +113,10 @@ export class Config implements ConfigProps {
             audioDefaults,
             remap,
             lang,
-            userStats
+            userStats,
+            spaceOptional: false,
+            randomizeLesson: true,
+            lessonSize: 100
         });
     }
 
@@ -133,21 +147,27 @@ export class Config implements ConfigProps {
         const userStats = UserStats.deserialize(o.userStats);
 
         const c: ConfigProps = { ...o, lang: lang, remap, tts, userStats };
-
         return new Config(c);
     }
 
     static async loadUserConfig(fetchFn: typeof fetch = fetch): Promise<Config> {
         const s = localStorage.getItem(storagePrefix + 'config');
-
         if (s !== null)
             return Config.deserialize(s, fetchFn);
-
         return Config.default(fetchFn);
     }
 
     saveUserConfig() {
         localStorage.setItem(storagePrefix + 'config', this.serialize())
+    }
+
+    lessonConfig(): LessonTypingConfig {
+        return {
+            wordBatchSize: this.wordBatchSize,
+            minQueue: this.minQueue,
+            checkMode: this.checkMode,
+            backspace: this.backspace
+        }
     }
 
     lessonConfigOverrides(opts: Partial<LessonTypingConfig>): LessonTypingConfig {
@@ -156,6 +176,13 @@ export class Config implements ConfigProps {
             minQueue: opts.minQueue ?? this.minQueue,
             checkMode: opts.checkMode ?? this.checkMode,
             backspace: opts.backspace ?? this.backspace
+        }
+    }
+
+    setLessonFormState(state: LessonFormState) {
+        state.random = this.randomizeLesson;
+        if (this.lessonSize !== undefined) {
+            state.until = this.lessonSize;
         }
     }
 }

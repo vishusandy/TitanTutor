@@ -1,11 +1,10 @@
-
-// https://www.speedtypingonline.com/typing-equations]
 import type { CheckMode } from "./config";
 import type { WordState } from "./word_state";
 
+// https://www.speedtypingonline.com/typing-equations
+
 export const wordLen: number = 5;
 
-// https://www.speedtypingonline.com/typing-equations
 
 export class BaseStats {
     duration: number = 0;

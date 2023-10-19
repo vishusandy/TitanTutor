@@ -1,13 +1,13 @@
 import { base } from "$app/paths";
-import type { BaseLesson } from "$lib/lessons/lessons";
+import type { Lesson, WordListBase } from "$lib/lessons/lessons";
+import type { LessonFormState } from "$lib/forms";
 
-export type StorableStock = { type: "stock", lessonName: string, file: string };
+export type StorableStockList = { type: "stock", lessonName: string, file: string };
 
-export class StockWords implements BaseLesson {
+export class StockWordListLesson implements WordListBase {
     words: string[];
     pos: number = 0;
-    // todo: remove default value
-    lessonName: string = '';
+    lessonName: string;
 
     constructor(words: string[], lessonName: string) {
         if (words.length === 0) {
@@ -16,10 +16,6 @@ export class StockWords implements BaseLesson {
 
         this.words = words;
         this.lessonName = lessonName;
-    }
-
-    baseType(): string {
-        return 'stock';
     }
 
     [Symbol.iterator]() {
@@ -38,11 +34,11 @@ export class StockWords implements BaseLesson {
         return JSON.stringify(this.storable());
     }
 
-    static newStorable(name: string, path: string): StorableStock {
+    static newStorable(name: string, path: string): StorableStockList {
         return { type: "stock", lessonName: name, file: path }
     }
-    
-    storable(): StorableStock {
+
+    storable(): StorableStockList {
         return {
             type: 'stock',
             lessonName: this.lessonName,
@@ -50,20 +46,31 @@ export class StockWords implements BaseLesson {
         };
     }
 
-    static async fromStorable(s: StorableStock, fetchFn: typeof fetch = fetch): Promise<StockWords> {
+    static async fromStorable(s: StorableStockList, fetchFn: typeof fetch = fetch): Promise<StockWordListLesson> {
+        // TODO
+        // if (s.file.startsWith('user_')) {
+        //     const lesson = localStorage.getItem(storagePrefix + s.file);
+        // }
+
         const req = new Request(`${base}/data/words/${s.file}.json`);
 
         return fetchFn(req)
             .then((resp) => resp.json())
             .then((words: string[]) => {
-                return new StockWords(words, s.lessonName);
+                return new StockWordListLesson(words, s.lessonName);
             });
+    }
+
+    setFormState(state: LessonFormState): void { }
+
+    getChild(): Lesson | undefined {
+        return undefined;
     }
 
     getLessonName(): string {
         return this.lessonName;
     }
-    
+
     batch(n: number): string[] {
         let words: string[] = []
 

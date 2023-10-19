@@ -5,12 +5,12 @@
 
 	export let stats: T;
 	export let config: Config;
+
 	const userStats = (stats as unknown as UserStats).sessions !== undefined;
 
 	let grossWpm: string = '';
 	let netWpm: string = '';
 	let accuracy: string = '';
-
 	let trackStats: boolean = config.logStats;
 	let trackStatsCheckbox: HTMLInputElement;
 

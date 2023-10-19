@@ -24,6 +24,7 @@ export class WordState {
     wordAttempts: number = 0;
     wordChars: string[];
     inputChars: string[] = [];
+    wordInputAttempts: string[] = [];
 
     constructor(word: string) {
         this.word = word;
@@ -45,6 +46,8 @@ export class WordState {
     }
 
     reset(word: string) {
+        if (this.input.length !== 0)
+            this.wordInputAttempts.push(this.input);
         this.word = word;
         this.wordChars = [...word];
         this.state = this.wordChars.map((_, i) => (i == 0) ? LetterState.Active : LetterState.Incomplete);
@@ -76,17 +79,21 @@ export class WordState {
         for (const c of e.data) {
             const mapped = kbmap.get(c);
             if (mapped !== undefined) {
-                act = Action.Refresh;
                 this.addChar(mapped);
+                act = Action.CharAdded;
             }
         }
 
         if (act != Action.None) {
+            this.addKeystroke();
             e.preventDefault();
-            this.keystrokes += 1;
         }
 
         return act;
+    }
+
+    addKeystroke() {
+        this.keystrokes += 1;
     }
 
     addBackspace(config: Config): boolean {
