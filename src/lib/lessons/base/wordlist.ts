@@ -2,7 +2,7 @@ import { base } from "$app/paths";
 import type { Lesson, WordListBase } from "$lib/lessons/lessons";
 import type { LessonFormState } from "$lib/forms";
 
-export type StorableStockList = { type: "stock", lessonName: string, file: string };
+export type StorableStockList = { type: 'wordlist', lessonName: string, file: string };
 
 export class StockWordListLesson implements WordListBase {
     words: string[];
@@ -14,6 +14,7 @@ export class StockWordListLesson implements WordListBase {
             throw new Error("Invalid pregenerated word list: the list must contain at least one element");
         }
 
+        this.pos = 0;
         this.words = words;
         this.lessonName = lessonName;
     }
@@ -35,23 +36,18 @@ export class StockWordListLesson implements WordListBase {
     }
 
     static newStorable(name: string, path: string): StorableStockList {
-        return { type: "stock", lessonName: name, file: path }
+        return { type: 'wordlist', lessonName: name, file: path }
     }
 
     storable(): StorableStockList {
         return {
-            type: 'stock',
+            type: 'wordlist',
             lessonName: this.lessonName,
             file: this.lessonName,
         };
     }
 
     static async fromStorable(s: StorableStockList, fetchFn: typeof fetch = fetch): Promise<StockWordListLesson> {
-        // TODO
-        // if (s.file.startsWith('user_')) {
-        //     const lesson = localStorage.getItem(storagePrefix + s.file);
-        // }
-
         const req = new Request(`${base}/data/words/${s.file}.json`);
 
         return fetchFn(req)
@@ -67,19 +63,20 @@ export class StockWordListLesson implements WordListBase {
         return undefined;
     }
 
+    baseType(): string {
+        return 'wordlist'
+    }
+
     getLessonName(): string {
         return this.lessonName;
     }
 
     batch(n: number): string[] {
         let words: string[] = []
-
         for (let i = 0, p = this.pos; i < n; i++, p = p + 1 % this.words.length) {
             words.push(this.words[p]);
         }
-
         this.pos += n;
-
         return words;
     }
 };

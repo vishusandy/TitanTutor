@@ -1,5 +1,5 @@
 import { LetterState } from './types';
-import { type Config, BackspaceMode } from './config';
+import type { Config } from './config';
 import { Action } from './types';
 import type { Remap } from './remap';
 
@@ -99,7 +99,7 @@ export class WordState {
     addBackspace(config: Config): boolean {
         this.keystrokes += 1;
 
-        if (config.backspace == BackspaceMode.Accept) {
+        if (config.backspace === true) {
             if (this.inputChars.length !== 0) {
                 this.backspaces += 1;
                 if (this.state[this.inputChars.length - 1] === LetterState.Error) {

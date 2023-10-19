@@ -6,6 +6,8 @@ export class Language {
     stopMsg: string = '';
     inputNotStarted: string = '';
     inputPaused: string = '';
+    yes: string = '';
+    no: string = '';
     on: string = '';
     off: string = '';
     none: string = '';
@@ -31,6 +33,7 @@ export class Language {
     enable: string = '';
     wordMode: string = '';
     charMode: string = '';
+    useUserValue: string = '';
     openTtsDialog: string = '';
     ttsDialogTitle: string = '';
     ttsLanguageLabel: string = '';
@@ -45,6 +48,7 @@ export class Language {
     ttsNotEnabled: string = '';
     openUserStatsDialog: string = '';
     openSessionStatsDialog: string = '';
+    statsDialogSaveTitle: string = '';
     statsDialogSessionTitle: string = '';
     statsDialogUserTitle: string = '';
     statsDialogDuration: string = '';
@@ -63,7 +67,6 @@ export class Language {
     lessonConfigDialogTitle: string = '';
     lessonConfigDialogRandom: string = '';
     lessonConfigDialogUntil: string = '';
-    lessonConfigDialogUseUserSetting: string = '';
     lessonConfigDialogMinQueue: string = '';
     lessonConfigDialogWordBatchSize: string = '';
     lessonConfigDialogCheckMode: string = '';

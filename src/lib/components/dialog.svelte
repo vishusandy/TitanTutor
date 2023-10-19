@@ -4,12 +4,15 @@
 	import type { Config } from '$lib/config';
 	import type { CloseFn, InnerDialogComponent } from '$lib/types';
 
-	export let title: string = '';
+	export let title: string;
 	export let passProps: any;
 	export let config: Config;
 	export let hasSubmit: boolean;
 	export let closeCallback: CloseFn<T>;
 	export let content: InnerDialogComponent;
+	export let closeLabel = config.lang.close;
+	export let submitLabel = config.lang.submit;
+	export let cancelLabel = config.lang.cancel;
 
 	const closeTime: number = 100.0;
 
@@ -56,10 +59,10 @@
 			</div>
 			<footer>
 				<button type="button" class="close" on:click={handleClose}
-					>{#if hasSubmit}{config.lang.cancel}{:else}{config.lang.close}{/if}</button
+					>{#if hasSubmit}{cancelLabel}{:else}{closeLabel}{/if}</button
 				>
 				{#if hasSubmit}
-					<button type="submit">{config.lang.submit}</button>
+					<button type="submit">{submitLabel}</button>
 				{/if}
 			</footer>
 		</div>

@@ -14,6 +14,10 @@
 	let trackStats: boolean = config.logStats;
 	let trackStatsCheckbox: HTMLInputElement;
 
+	export function getData(): boolean {
+		return true;
+	}
+
 	// Inspired by:
 	// https://carl-topham.com/articles/intl-number-formatting-percentage
 	function formatNaN(num: number, options?: Intl.NumberFormatOptions) {

@@ -22,7 +22,7 @@ export type LessonTypingConfig = {
     wordBatchSize: number,
     minQueue: number,
     checkMode: CheckMode,
-    backspace: BackspaceMode
+    backspace: boolean
 };
 
 export const defaultLessonConfig = {
@@ -35,7 +35,7 @@ export const defaultLessonConfig = {
 type ConfigProps = {
     version: number;
     checkMode: CheckMode;
-    backspace: BackspaceMode;
+    backspace: boolean;
     tts: Audio | undefined;
     wordBatchSize: number;
     minQueue: number;
@@ -56,7 +56,7 @@ type ConfigStorable = Omit<ConfigProps, "tts" | "lang" | "remap" | "audio"> & { 
 export class Config implements ConfigProps {
     version: number;
     checkMode: CheckMode;
-    backspace: BackspaceMode;
+    backspace: boolean;
     tts: Audio | undefined;
     wordBatchSize: number;
     minQueue: number;
@@ -103,7 +103,7 @@ export class Config implements ConfigProps {
         return new Config({
             version: 1,
             checkMode: CheckMode.WordRepeat,
-            backspace: BackspaceMode.Accept,
+            backspace: true,
             wordBatchSize: 10,
             minQueue: 8,
             stop: 'F7',

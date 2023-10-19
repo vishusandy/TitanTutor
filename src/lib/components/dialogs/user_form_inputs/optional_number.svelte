@@ -1,12 +1,13 @@
 <script lang="ts">
 	import type { Config } from '$lib/config';
-	import type { FormUserOptional } from '$lib/forms';
+	import type { FormUserOptional, FormUserOptionalReturn } from '$lib/forms';
 	import { onMount } from 'svelte';
 
 	export let config: Config;
 	export let label: string;
-    export let userLabel: string = config.lang.lessonConfigDialogUseUserSetting;
-    export let nullLabel: string = config.lang.none;
+	export let id: string;
+	export let userLabel: string = config.lang.useUserValue;
+	export let nullLabel: string = config.lang.none;
 	export let initialState: FormUserOptional<number>;
 	export let defaultValue: number;
 	export let min: number | undefined = undefined;
@@ -24,8 +25,8 @@
 		updateCheckbox();
 	});
 
-	export function getData(): number | null | 'user' | undefined {
-		return state === 'disabled' ? undefined : state;
+	export function getData(): FormUserOptionalReturn<number> {
+		return state === 'disabled' || state === 'user' ? undefined : state;
 	}
 
 	function numberChanged() {
@@ -72,8 +73,8 @@
 </script>
 
 <div class="optional">
-	<input bind:this={checkboxInput} on:click={nextCheckboxState} id="until" type="checkbox" />
-	<label for="until">{label}</label>
+	<input bind:this={checkboxInput} on:click={nextCheckboxState} {id} type="checkbox" />
+	<label for={id}>{label}</label>
 </div>
 {#if state === 'user'}
 	<div class="check-value">{userLabel}</div>

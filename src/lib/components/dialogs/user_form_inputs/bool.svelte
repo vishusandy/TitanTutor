@@ -1,11 +1,12 @@
 <script lang="ts">
 	import type { Config } from '$lib/config';
-	import type { FormUserValue } from '$lib/forms';
+	import type { FormUserValue, FormUserValueReturn } from '$lib/forms';
 	import { onMount } from 'svelte';
 
 	export let config: Config;
 	export let label: string;
-	export let userLabel: string = config.lang.lessonConfigDialogUseUserSetting;
+	export let id: string;
+	export let userLabel: string = config.lang.useUserValue;
 	export let onLabel: string = config.lang.on;
 	export let offLabel: string = config.lang.off;
 	export let initialState: FormUserValue<boolean>;
@@ -18,8 +19,8 @@
 		updateCheckbox();
 	});
 
-	export function getData(): boolean | 'user' | undefined {
-		return state === 'disabled' ? undefined : state;
+	export function getData(): FormUserValueReturn<boolean> {
+		return state === 'disabled' || state === 'user' ? undefined : state;
 	}
 
 	function updateCheckbox() {
@@ -57,6 +58,8 @@
 			case false:
 				state = 'user';
 				break;
+			default:
+				state = 'disabled';
 		}
 
 		updateCheckbox();
@@ -64,8 +67,8 @@
 </script>
 
 <div class="optional">
-	<input bind:this={checkboxInput} on:click={nextCheckboxState} id="until" type="checkbox" />
-	<label for="until">{label}</label>
+	<input bind:this={checkboxInput} on:click={nextCheckboxState} {id} type="checkbox" />
+	<label for={id}>{label}</label>
 </div>
 <div>
 	{#if state === 'user'}

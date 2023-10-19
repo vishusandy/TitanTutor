@@ -1,5 +1,5 @@
 import { type Config, CheckMode, BackspaceMode, type LessonTypingConfig } from './config';
-import { getUserLessonConfig, type Lesson } from './lessons/lessons';
+import type { Lesson } from './lessons/lessons';
 import type { SessionStats } from './stats';
 import { Action, LetterState } from './types';
 import { WordState, CompletedWord } from './word_state';
@@ -11,16 +11,20 @@ export class Tutor {
     stats: SessionStats;
     overrides: Partial<LessonTypingConfig>;
     lessonConfig: LessonTypingConfig;
-    word: WordState = new WordState('');
-    history: CompletedWord[] = [];
-    queue: string[] = [];
-    audioQueue: number = 0;
+    word: WordState;
+    history: CompletedWord[];
+    queue: string[];
+    audioQueue: number
 
-    constructor(config: Config, lesson: Lesson, stats: SessionStats) {
+    constructor(config: Config, lesson: Lesson, overrides: Partial<LessonTypingConfig>, stats: SessionStats) {
         this.stats = stats;
         this.config = config;
         this.lesson = lesson;
-        this.overrides = getUserLessonConfig(lesson.getLessonName());
+        this.overrides = overrides;
+        this.word = new WordState('');
+        this.queue = [];
+        this.history = [];
+        this.audioQueue = 0;
         this.lessonConfig = config.lessonConfigOverrides(this.overrides);
         this.nextWord();
     }
@@ -123,7 +127,7 @@ export class Tutor {
     }
 
     handleBeforeInput(e: InputEvent): Action {
-        if (e.inputType === 'deleteContentBackward' && this.config.backspace === BackspaceMode.Accept) {
+        if (e.inputType === 'deleteContentBackward' && this.config.backspace === true) {
             e.preventDefault();
 
             if (this.word.addBackspace(this.config)) {

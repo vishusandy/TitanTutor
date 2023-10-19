@@ -1,4 +1,6 @@
 import { storagePrefix } from "./config";
+import { StockWordListLesson } from "./lessons/base/wordlist";
+import type { Lesson, StorableLesson } from "./lessons/lessons";
 
 const fallbackLocale = 'en';
 
@@ -24,21 +26,15 @@ const interfaceLanguagePaths: Map<string, string> = new Map([
 
 
 
-export const defaultLessonData: [string, string] = ['en-test-words', 'test_words'];
-export const lessonDefaultDataLocaleMap: Map<string, [string, string]> = new Map([
-    // locale   lessonName      dataFile (in static/data/words, without the path or .json extension)
-    ['en-US', ['en-test-words', 'test_words']],
-    ['en', ['en-test-words', 'test_words']],
-]);
-
 const defaultStockLesson = 'en-test-words';
-
 export const defaultStockLessonLocaleMap: Map<string, string> = new Map([
+    // locale   stockLesson key
     ['en-US', 'en-test-words'],
+    ['en', 'en-test-words'],
 ]);
 
-export const stockLessonPaths: Map<string, string> = new Map([
-    ['en-test-words', 'test_words'],
+export const stockLessons: Map<string, StorableLesson> = new Map([
+    ['en-test-words', StockWordListLesson.newStorable('en-test-words', 'test_words')],
 ]);
 
 
@@ -68,9 +64,4 @@ export function getInterfaceLangFromLocale(locale: string): string {
 
 export function getDefaultLessonFromLocale(locale: string): string {
     return recurseLocaleArray([locale, navigator.language, fallbackLocale], defaultStockLessonLocaleMap, defaultStockLesson);
-}
-
-export function getUserLessonName(): string {
-    const lang = localStorage.getItem(storagePrefix + 'lesson') ?? navigator.language;
-    return recurseLocaleArray([lang, navigator.language, fallbackLocale], lessonDefaultDataLocaleMap, defaultLessonData)[0];
 }

@@ -4,19 +4,29 @@
 	import Word from './typing/word.svelte';
 	import QueuedWord from './typing/queued_word.svelte';
 
-	import type { Config } from '$lib/config';
-	import type { Lesson } from '$lib/lessons/lessons';
-	import type { SessionStats } from '$lib/stats';
+	import type { Config, LessonTypingConfig } from '$lib/config';
+	import {
+		getUserLessonOverrides,
+		saveLesson,
+		type Lesson,
+		loadLesson
+	} from '$lib/lessons/lessons';
+	import { SessionStats } from '$lib/stats';
 	import type { WordState } from '$lib/word_state';
 	import { Tutor } from '$lib/tutor';
 	import { Action } from '$lib/types';
-	import { showLessonConfigDialog, showStatsDialog } from '$lib/dialog';
+	import { showLessonConfigDialog, showStatsConfirmDialog, showStatsDialog } from '$lib/dialog';
 
 	export let config: Config;
 	export let lesson: Lesson;
 	export let sessionStats: SessionStats;
 
-	let tutor = new Tutor(config, lesson, sessionStats);
+	let tutor = new Tutor(
+		config,
+		lesson,
+		getUserLessonOverrides(lesson.getLessonName()),
+		sessionStats
+	);
 	let started: boolean = false;
 	let paused: boolean = true;
 	let finished: boolean = false;
@@ -71,21 +81,39 @@
 		sessionStats.pause();
 	}
 
-	function handleClick(e: Event) {
-		textbox?.focus();
-	}
-
 	async function lessonCompleted() {
 		endLesson();
 	}
 
-	async function endLesson() {
-		if (config.logStats) {
-			config.userStats.add(sessionStats);
+	function confirmEndLesson() {
+		if (window.confirm(config.lang.stopMsg)) {
+			endLesson();
 		}
-		config.saveUserConfig();
+	}
+
+	async function reset(overrides?: Partial<LessonTypingConfig>) {
+		const lessonName = lesson.getLessonName();
+		if (overrides === undefined) overrides = getUserLessonOverrides(lessonName);
+
+		lesson = await loadLesson(lessonName);
+		tutor = new Tutor(config, lesson, overrides, sessionStats);
+		started = false;
+		paused = true;
+		finished = false;
+		sessionStats = new SessionStats(tutor.lessonConfig.checkMode);
+	}
+
+	async function endLesson() {
+		if (config.logStats && sessionStats.chars !== 0) {
+			await showStatsConfirmDialog(config, sessionStats).then((v: boolean | undefined) => {
+				if (v === true) {
+					config.userStats.add(sessionStats);
+					config.saveUserConfig();
+				}
+			});
+		}
 		finished = true;
-		showStatsDialog(config.lang.statsDialogSessionTitle, config, sessionStats);
+		return;
 	}
 
 	async function shortcuts(e: KeyboardEvent) {
@@ -105,10 +133,8 @@
 		}
 	}
 
-	function confirmEndLesson() {
-		if (window.confirm(config.lang.stopMsg)) {
-			endLesson();
-		}
+	function handleClick(e: Event) {
+		textbox?.focus();
 	}
 
 	function handleBeforeInput(e: InputEvent) {
@@ -157,10 +183,6 @@
 		showStatsDialog(config.lang.statsDialogSessionTitle, config, sessionStats);
 	}
 
-	async function openLessonConfig() {
-		showLessonConfigDialog(config, lesson, tutor.lessonConfig).then(() => {});
-	}
-
 	function addToHistory(w: WordState) {
 		const c = new Word({
 			target: historyNode,
@@ -176,6 +198,19 @@
 		el.classList.add('missed-space');
 		historyNode.appendChild(el);
 	}
+
+	async function showLessonConfig(): Promise<void> {
+		return showLessonConfigDialog(config, lesson, tutor.overrides).then(
+			(data?: [Lesson, Partial<LessonTypingConfig>]) => {
+				if (data !== undefined) {
+					let overrides;
+					[lesson, overrides] = data;
+					reset(overrides);
+					saveLesson(lesson, true);
+				}
+			}
+		);
+	}
 </script>
 
 <svelte:document on:keydown={shortcuts} />
@@ -188,7 +223,7 @@
 		<button class="link stop-button" on:click={confirmEndLesson} class:hidden={!started}
 			>{config.lang.stop}</button
 		>
-		<button class="link" on:click={openLessonConfig}>{config.lang.openLessonConfigDialog}</button>
+		<button class="link" on:click={showLessonConfig}>{config.lang.openLessonConfigDialog}</button>
 	</div>
 
 	<div class="tutor-words" class:paused>
@@ -238,7 +273,8 @@
 		{/if}
 	</div>
 {:else}
-	<a data-sveltekit-reload href="/">Again!</a>
+	<!-- <a data-sveltekit-reload href="/">Again!</a> -->
+	<button type="button" on:click={() => reset()}>Again!</button>
 {/if}
 
 <style>

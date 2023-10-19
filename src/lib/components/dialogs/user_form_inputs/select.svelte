@@ -1,39 +1,39 @@
-<script lang="ts">
+<script lang="ts" generics="T">
 	import type { Config } from '$lib/config';
 	import type { FormUserValue, FormUserValueReturn } from '$lib/forms';
 	import { onMount } from 'svelte';
 
 	export let config: Config;
-	export let label: string;
 	export let id: string;
+	export let label: string;
 	export let userLabel: string = config.lang.useUserValue;
-	export let initialState: FormUserValue<number>;
-	export let defaultValue: number;
-	export let min: number | undefined = undefined;
-	export let max: number | undefined = undefined;
-	export let step: number | undefined = 1;
+	export let choices: { key: string; label: string; value: T }[];
+	export let initialValue: FormUserValue<T>;
 
-	let checkboxInput: HTMLInputElement;
-	let numberInput: HTMLInputElement;
+	let checkboxInput: HTMLInputElement | undefined;
+	let selectInput: HTMLSelectElement | undefined;
 
-	let state: FormUserValue<number> = initialState;
-	let value: number = Number.isInteger(state) ? (state as number) : defaultValue;
+	let state = initialValue;
+
+	const map = new Map(Array.from(choices.map(({ key, value }) => [key, value])));
+	const rev = new Map(Array.from(choices.map(({ key, value }) => [value, key])));
+
+	let selected: string | undefined = undefined;
+	if (initialValue !== 'user' && initialValue !== 'disabled') {
+		selected = rev.get(initialValue) ?? choices[0].key;
+	}
 
 	onMount(() => {
-		if (numberInput) numberInput.value = value.toString();
 		updateCheckbox();
 	});
 
-	export function getData(): FormUserValueReturn<number> {
+	export function getData(): FormUserValueReturn<T> {
 		return state === 'disabled' || state === 'user' ? undefined : state;
 	}
 
-	function numberChanged() {
-		value = parseInt(numberInput.value);
-		state = value;
-	}
-
 	function updateCheckbox() {
+		if (checkboxInput === undefined) return;
+
 		switch (state) {
 			case 'disabled':
 				checkboxInput.checked = false;
@@ -55,13 +55,18 @@
 			case 'disabled':
 				break;
 			case 'user':
-				state = value;
+				const v = choices.find((s) => s.key === selected) ?? choices[0];
+				state = v.value;
 				break;
 			default:
 				state = 'user';
 		}
 
 		updateCheckbox();
+	}
+
+	function selectChanged() {
+		if (selectInput !== undefined) selected = selectInput.value;
 	}
 </script>
 
@@ -71,22 +76,12 @@
 </div>
 {#if state === 'user'}
 	<div class="check-value">{userLabel}</div>
-{:else if Number.isInteger(state)}
-	<div class="check-value input">
-		<input
-			bind:this={numberInput}
-			on:change={numberChanged}
-			value={state}
-			type="number"
-			{min}
-			{max}
-			{step}
-		/>
-	</div>
 {:else}
-	<div>
-		<input bind:this={numberInput} type="number" disabled />
-	</div>
+	<select on:change={selectChanged}>
+		{#each choices as { key, label } (key)}
+			<option value={key} selected={selected === key}>{label}</option>
+		{/each}
+	</select>
 {/if}
 
 <style>
