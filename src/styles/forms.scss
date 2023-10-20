@@ -117,26 +117,31 @@ input[type="submit"]:active {
 }
 
 button.link {
+    border-radius: 0px;
     font-family: var(--font-sans-serif);
+    color: #374b70;
+    // border: 1px solid #da9dd2;
+    // border: 1px solid #b29dda;
     border: 0px;
-    --button-bg: transparent;
+    --button-bg: #e7e8f5;
     font-size: 1rem;
-    padding: 0px;
+    padding: 0.4rem 0.5rem;
     margin: 0.2rem 0.6rem;
 }
 
 button.link:hover {
     color: #333;
-    text-decoration: underline;
+    // text-decoration: underline;
+    // --button-bg: #e2eaf7;
 }
 
 button.link:active {
     color: #555;
-    text-decoration: underline;
+    // text-decoration: underline;
 }
 
 button.link:focus {
-    text-decoration: underline;
+    // text-decoration: underline;
 }
 
 label,

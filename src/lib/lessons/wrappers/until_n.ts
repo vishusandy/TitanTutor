@@ -51,8 +51,12 @@ export class UntilN implements Lesson {
         return this.lesson;
     }
 
-    baseType(): string {
-        return this.lesson.baseType();
+    getType(): string {
+        return this.lesson.getType();
+    }
+
+    baseLesson(): Lesson {
+        return this.lesson;
     }
 
     getLessonName(): string {

@@ -48,8 +48,12 @@ export class RandomList implements Lesson {
         return this.base;
     }
 
-    baseType(): string {
-        return this.base.baseType();
+    getType(): string {
+        return 'random';
+    }
+
+    baseLesson(): Lesson {
+        return this.base;
     }
 
     getLessonName(): string {

@@ -66,9 +66,13 @@ export class RandomChars extends Lesson {
     getChild(): Lesson | undefined {
         return undefined;
     }
-    
-    baseType(): string {
+
+    getType(): string {
         return 'chars'
+    }
+
+    baseLesson(): Lesson {
+        return this;
     }
 
     getLessonName(): string {

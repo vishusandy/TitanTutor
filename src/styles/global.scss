@@ -8,6 +8,28 @@
 
 body {
     margin: 0px;
+    height: 100%;
+}
+
+body>div {
+    height: 100%;
+}
+
+nav.header {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+}
+
+nav ul {
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+}
+
+nav li {
+    list-style: none;
 }
 
 :root {

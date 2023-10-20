@@ -15,8 +15,9 @@
 	import type { WordState } from '$lib/word_state';
 	import { Tutor } from '$lib/tutor';
 	import { Action } from '$lib/types';
-	import { showLessonConfigDialog, showStatsConfirmDialog, showStatsDialog } from '$lib/dialog';
-
+	import { showLessonConfigDialog, showStatsConfirmDialog, showStatsDialog,showVoiceDialog } from '$lib/dialog';
+	import type { Audio } from '$lib/audio';
+    
 	export let config: Config;
 	export let lesson: Lesson;
 	export let sessionStats: SessionStats;
@@ -40,12 +41,19 @@
 	}
 
 	onMount(async () => {
+		document.addEventListener('click', handleBodyClick);
+		document.addEventListener('touchstart', handleBodyClick);
+
 		if (textbox) {
 			started = false;
 			await tick();
 			textbox.focus();
 		}
 	});
+
+	function handleBodyClick() {
+		textbox?.focus();
+	}
 
 	async function startInput(e: Event) {
 		if ('key' in e) {
@@ -211,9 +219,36 @@
 			}
 		);
 	}
+    
+	async function showAudioDialog(_: Event) {
+		showVoiceDialog(config).then((audio?: Audio) => {
+			if (audio !== undefined) {
+				config.tts = audio;
+				config.saveUserConfig();
+			}
+		});
+	}
+
+	async function showUserStatsDialog() {
+		showStatsDialog(config.lang.statsDialogUserTitle, config, config.userStats);
+	}
 </script>
 
 <svelte:document on:keydown={shortcuts} />
+<nav class="header">
+	<ul>
+		<li>
+			<button class="link" type="button" on:click={showAudioDialog}
+				>{config.lang.openTtsDialog}</button
+			>
+		</li>
+		<li>
+			<button class="link" type="button" on:click={showUserStatsDialog}
+				>{config.lang.openUserStatsDialog}</button
+			>
+		</li>
+	</ul>
+</nav>
 
 {#if !finished}
 	<div class="tutor-menu">
@@ -226,21 +261,23 @@
 		<button class="link" on:click={showLessonConfig}>{config.lang.openLessonConfigDialog}</button>
 	</div>
 
-	<div class="tutor-words" class:paused>
-		<span bind:this={historyNode} class="history" />
+	<div class="tutor-center">
+		<div class="tutor-words" class:paused>
+			<span bind:this={historyNode} class="history" />
 
-		<Word
-			bind:span={activeWord}
-			word={tutor.word.wordChars}
-			state={tutor.word.state}
-			active={true}
-		/>
+			<Word
+				bind:span={activeWord}
+				word={tutor.word.wordChars}
+				state={tutor.word.state}
+				active={true}
+			/>
 
-		<span class="queue">
-			{#each tutor.queue as q}
-				<QueuedWord word={q} />{' '}
-			{/each}
-		</span>
+			<span class="queue">
+				{#each tutor.queue as q}
+					<QueuedWord word={q} />{' '}
+				{/each}
+			</span>
+		</div>
 	</div>
 
 	<div class="tutor-input">
@@ -273,36 +310,66 @@
 		{/if}
 	</div>
 {:else}
-	<!-- <a data-sveltekit-reload href="/">Again!</a> -->
 	<button type="button" on:click={() => reset()}>Again!</button>
 {/if}
 
 <style>
-	/* .tutor {
-		--tutorWidth: 100%;
-		 width: var(--tutorWidth);
-		margin: 4rem auto 2rem; 
-	} */
+	.tutor-center {
+		margin: 0px 0px;
+		height: 100%;
+		width: 100%;
+		display: flex;
+		position: absolute;
+		align-items: center;
+		top: 0px;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
+		z-index: -10;
+	}
 
 	.tutor-words {
 		font-family: var(--font-system);
-		padding: 2rem 0px;
+		/* font-size: 1.5rem; */
+		font-size: min(max(5vh, 1.5rem), 2.3rem);
+		margin: auto;
+		padding: 4rem 0px 15vh;
+		width: 100%;
 		overflow-x: hidden;
 		overflow-y: hidden;
 		white-space: nowrap;
 		border-radius: 0.3rem;
-		margin: 2rem auto;
 		scroll-behavior: smooth;
 		scroll-snap-type: x mandatory;
-		-webkit-overflow-scrolling: touch;
+
+		/* height: 100%; */
+		/* display: flex; */
+		/* align-items: center; */
+		/* justify-content: center; */
+		/* text-align: center; */
+
+		/* position: absolute;
+		margin: auto;
+		top: 0px;
+		bottom: 0px;
+		left: 0px;
+		right: 0px; */
 	}
 
 	.tutor-input {
 		text-align: center;
+		position: absolute;
+		bottom: 0px;
+		left: 0px;
+		width: 100%;
+		margin: 0px auto;
 	}
 
 	.textbox {
 		border: 1px solid #bcc2c9;
+		border-bottom-left-radius: 0px;
+		border-bottom-right-radius: 0px;
+		/* border-bottom-width: 0px; */
 		box-sizing: border-box;
 		font-size: 1.2rem;
 		width: 100%;
@@ -313,7 +380,8 @@
 	}
 
 	.textbox:focus {
-		box-shadow: none;
+		border-color: #f5c0ab;
+		box-shadow: 0px 0px 4px #f5c0ab;
 	}
 
 	.history {
@@ -329,7 +397,7 @@
 		display: flex;
 		width: 100%;
 		max-width: calc(40ch + 2.4rem + 2px);
-		margin: 0px auto;
+		margin: 2rem auto 0px;
 		justify-content: space-between;
 	}
 

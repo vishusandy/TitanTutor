@@ -25,7 +25,8 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract getLessonName(): string;
     abstract setFormState(state: LessonFormState): void;
     abstract getChild(): Lesson | undefined;
-    abstract baseType(): string;
+    abstract getType(): string;
+    abstract baseLesson(): Lesson;
 }
 
 export async function deserializeStorable(o: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
@@ -46,9 +47,6 @@ export async function deserializeStorable(o: StorableLesson, fetchFn: typeof fet
     }
 }
 
-function storableFromFormState(lessonName: string, form: LessonFormState) {
-
-}
 
 export function getUserLessonOverrides(lessonName: string): Partial<LessonTypingConfig> {
     const opts = localStorage.getItem(`${storagePrefix}lesson_options_${lessonName}`);
@@ -57,14 +55,11 @@ export function getUserLessonOverrides(lessonName: string): Partial<LessonTyping
 
 export async function loadUserLesson(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
     const lastLesson = localStorage.getItem(storagePrefix + 'last_lesson');
-    if (lastLesson === null) {
-        return loadDefaultLesson(config, fetchFn);
-    }
 
-    if (lastLesson.startsWith('user_')) {
-        // todo
+    if (lastLesson === null)
+        return loadDefaultLesson(config, fetchFn);
+    if (lastLesson.startsWith('user_'))
         throw new Error("Custom lessons are not implemented yet");
-    }
 
     return loadLesson(lastLesson, fetchFn);
 }

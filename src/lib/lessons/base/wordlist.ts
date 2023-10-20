@@ -63,8 +63,12 @@ export class StockWordListLesson implements WordListBase {
         return undefined;
     }
 
-    baseType(): string {
+    getType(): string {
         return 'wordlist'
+    }
+
+    baseLesson(): Lesson {
+        return this;
     }
 
     getLessonName(): string {

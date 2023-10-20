@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { PageData } from '../../../routes/$types';
 	import OptionalNumber from './user_form_inputs/optional_number.svelte';
 	import Number from './user_form_inputs/number.svelte';
 	import Bool from './user_form_inputs/bool.svelte';
@@ -46,7 +45,7 @@
 		};
 
 		let l: Lesson;
-		if (randomData() === true && lesson.baseType() === 'wordlist') {
+		if (randomData() === true && lesson.baseLesson().getType() === 'wordlist') {
 			l = new RandomList(lesson as WordListBase);
 		} else {
 			l = lesson;
@@ -67,7 +66,7 @@
 			...lessonConfigOverrides
 		};
 
-		if (lesson.baseType() !== 'wordlist') {
+		if (lesson.baseLesson().getType() !== 'wordlist') {
 			s.random = 'disabled';
 		}
 
