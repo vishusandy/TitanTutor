@@ -1,4 +1,4 @@
-import { type WordListBase, type Lesson, deserializeStorable, type StorableLesson } from "$lib/lessons/lessons";
+import { type WordListBase, type Lesson, type BaseLesson, deserializeStorable, type StorableLesson } from "$lib/lessons/lessons";
 import type { LessonFormState } from "$lib/forms";
 import { shuffle, defaultBatch } from "$lib/util";
 
@@ -52,12 +52,8 @@ export class RandomList implements Lesson {
         return 'random';
     }
 
-    baseLesson(): Lesson {
+    baseLesson(): BaseLesson {
         return this.base;
-    }
-
-    getLessonName(): string {
-        return this.base.lessonName;
     }
 
     batch(n: number): string[] {

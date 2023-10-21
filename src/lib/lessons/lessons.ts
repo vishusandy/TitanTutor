@@ -4,16 +4,22 @@ import { UntilN, type StorableUntil } from './wrappers/until_n';
 import { getDefaultLessonFromLocale, stockLessons } from '$lib/locales';
 import { storagePrefix, type LessonTypingConfig, Config } from '$lib/config';
 import type { LessonFormState } from '$lib/forms';
+import type { Language } from '$lib/language';
 
 
 export interface StorableLesson {
     type: string;
 }
 
-export interface WordListBase extends Lesson {
+export interface BaseLesson extends Lesson {
+    id: string;
+    getName(lang: Language): string;
+}
+
+export interface WordListBase extends Lesson, BaseLesson {
     words: string[];
     pos: number;
-    lessonName: string;
+    id: string;
 }
 
 export abstract class Lesson implements Iterator<string>, Iterable<string> {
@@ -22,11 +28,10 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract storable(): StorableLesson;
     abstract next(): IteratorResult<string>;
     abstract [Symbol.iterator](): typeof this;
-    abstract getLessonName(): string;
     abstract setFormState(state: LessonFormState): void;
     abstract getChild(): Lesson | undefined;
     abstract getType(): string;
-    abstract baseLesson(): Lesson;
+    abstract baseLesson(): BaseLesson;
 }
 
 export async function deserializeStorable(o: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
@@ -48,37 +53,43 @@ export async function deserializeStorable(o: StorableLesson, fetchFn: typeof fet
 }
 
 
-export function getUserLessonOverrides(lessonName: string): Partial<LessonTypingConfig> {
-    const opts = localStorage.getItem(`${storagePrefix}lesson_options_${lessonName}`);
+export function getLocalStorageLessonOverrides(id: string): Partial<LessonTypingConfig> {
+    const opts = localStorage.getItem(`${storagePrefix}lesson_options_${id}`);
     return (opts !== null) ? JSON.parse(opts) : {};
 }
 
-export async function loadUserLesson(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+export function saveUserLessonOverrides(id: string, overrides: Partial<LessonTypingConfig>) {
+    localStorage.setItem(`${storagePrefix}lesson_options_${id}`, JSON.stringify(overrides));
+}
+
+export async function loadLastLesson(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
     const lastLesson = localStorage.getItem(storagePrefix + 'last_lesson');
 
     if (lastLesson === null)
         return loadDefaultLesson(config, fetchFn);
-    if (lastLesson.startsWith('user_'))
-        throw new Error("Custom lessons are not implemented yet");
 
     return loadLesson(lastLesson, fetchFn);
 }
 
-export async function loadLesson(lessonName: string, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-    const local = localStorage.getItem(lessonName);
-    const storable = local === null ? stockLessons.get(lessonName) : JSON.parse(local) as StorableLesson;
+export async function loadLesson(id: string, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+    const local = localStorage.getItem(storagePrefix + 'user_lesson_' + id);
+    const storable = local === null ? stockLessons.get(id) : JSON.parse(local) as StorableLesson;
     if (storable === undefined) {
-        throw new Error(`Could not find lesson '${lessonName}'`);
+        throw new Error(`Could not find lesson '${id}'`);
     }
     return deserializeStorable(storable, fetchFn);
 }
 
-export function saveLesson(lesson: Lesson, last: boolean = true) {
+export function saveUserLesson(lesson: Lesson, saveAsLastLesson: boolean = true) {
     const storable = lesson.storable();
-    localStorage.setItem(storagePrefix + lesson.getLessonName(), JSON.stringify(storable));
-    if (last) {
-        localStorage.setItem(storagePrefix + 'last_lesson', lesson.getLessonName());
+    localStorage.setItem(storagePrefix + 'user_lesson_' + lesson.baseLesson().id, JSON.stringify(storable));
+    if (saveAsLastLesson) {
+        saveLast(lesson);
     }
+}
+
+export function saveLast(lesson: Lesson) {
+    localStorage.setItem(storagePrefix + 'last_lesson', lesson.baseLesson().id);
 }
 
 
@@ -86,12 +97,3 @@ async function loadDefaultLesson(config: Config, fetchFn: typeof fetch = fetch):
     const lesson = getDefaultLessonFromLocale(config.lang.lang);
     return loadLesson(lesson, fetchFn);
 }
-
-
-// async function loadWordListLesson(lessonName: string, path: string, config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-//     const storable: StorableStockList = StockWordListLesson.newStorable(lessonName, path);
-//     return StockWordListLesson.fromStorable(storable, fetchFn).then((s) => {
-//         return s;
-//     });
-// }
-

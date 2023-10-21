@@ -29,7 +29,8 @@
 }
 
 .tutor-words:not(.paused) .letter.active {
-    border-left: 1px solid rgba(0, 0, 0, 1);
+    border-left: 2px solid rgba(0, 0, 0, 1);
+    margin-left: -2px;
     animation: blinking 1.5s steps(2, jump-start) infinite;
 }
 
@@ -84,7 +85,7 @@
 
 
 .letter {
-    border-left: 1px solid transparent;
+    border-left: 0px solid transparent;
 }
 
 .missed-space {

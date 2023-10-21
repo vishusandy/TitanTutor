@@ -11,7 +11,7 @@ export type FormUserOptionalReturn<T> = T | null | undefined;
 
 
 export type LessonFormState = {
-    lessonName: string,
+    id: string,
     checkMode: FormUserValue<CheckMode>,
     backspace: FormUserValue<boolean>,
     wordBatchSize: FormUserValue<number>,
@@ -20,7 +20,7 @@ export type LessonFormState = {
     until: FormUserOptional<number>;
 };
 
-export const defaultLessonFormState: Omit<LessonFormState, 'lessonName'> = {
+export const defaultLessonFormState: Omit<LessonFormState, 'id'> = {
     random: 'user',
     until: 'user',
     checkMode: 'user',

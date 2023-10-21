@@ -31,7 +31,7 @@ export class WeightedShuffle implements Lesson {
             const p = 1 / base.words.length;
             this.words = base.words.map((w, i) => [w, p]);
         } else if (typeof weights === 'string') {
-            // const w = localStorage.getItem(`${storagePrefix}lesson_${base.lessonName}_weights`);
+            // const w = localStorage.getItem(`${storagePrefix}lesson_${base.lessonId}_weights`);
             throw new Error("localStorage weights are not yet supported");
         } else {
             this.words = base.words.map((w, i) => [w, weights[i]]);
@@ -76,8 +76,8 @@ export class WeightedShuffle implements Lesson {
         return retrieveFromStorable(this.base);
     }
 
-    getLessonName(): string {
-        return this.base.lessonName;
+    getlessonId(): string {
+        return this.base.lessonId;
     }
 
     batch(n: number): string[] {

@@ -1,4 +1,4 @@
-import { type Lesson, type StorableLesson, deserializeStorable } from "$lib/lessons/lessons";
+import { type Lesson, type StorableLesson, deserializeStorable, type BaseLesson } from "$lib/lessons/lessons";
 import type { LessonFormState } from "$lib/forms";
 import { defaultBatch } from "$lib/util";
 
@@ -52,15 +52,11 @@ export class UntilN implements Lesson {
     }
 
     getType(): string {
-        return this.lesson.getType();
+        return 'until';
     }
 
-    baseLesson(): Lesson {
-        return this.lesson;
-    }
-
-    getLessonName(): string {
-        return this.lesson.getLessonName();
+    baseLesson(): BaseLesson {
+        return this.lesson.baseLesson();
     }
 
     batch(n: number): string[] {

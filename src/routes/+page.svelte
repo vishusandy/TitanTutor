@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '$lib/../styles/typing.scss';
+	import '$lib/../styles/words.scss';
 	import '$lib/../styles/global.scss';
 
 	import type { PageData } from './$types';
@@ -12,14 +12,10 @@
 	let config = data.config;
 	let lesson = data.lesson;
 	let sessionStats = new SessionStats(config.checkMode);
-
 </script>
 
 <svelte:head>
 	<title>Keyboard Tutor</title>
 </svelte:head>
 
-
-
 <Typing {config} {lesson} {sessionStats} />
-

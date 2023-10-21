@@ -1,25 +1,27 @@
 import prand from "pure-rand";
 
-import { Lesson } from "$lib/lessons/lessons";
+import type { Lesson, BaseLesson } from "$lib/lessons/lessons";
 import { defaultBatch } from "$lib/util";
 import { randGen } from '$lib/random'
 import type { LessonFormState } from "$lib/forms";
+import type { Language } from "$lib/language";
 
 
-export type StorableChars = { type: "chars", lessonName: string, chars: string[] };
+export type StorableChars = { type: "chars", id: string, name: string, chars: string[] };
 
-export class RandomChars extends Lesson {
+export class RandomChars implements Lesson, BaseLesson {
     chars: string[];
     length: number | [number, number] = 5;
-    lessonName: string = '';
+    id: string = '';
+    name: string = '';
     rng: prand.RandomGenerator;
 
-    constructor(chars: string[], lessonName: string) {
-        super();
+    constructor(chars: string[], id: string, name: string) {
         if (chars.length === 0) {
             throw new Error("Invalid random letter lesson: the list of characters must contain at least one element");
         }
-        this.lessonName = lessonName;
+        this.id = id;
+        this.name = name;
         this.chars = chars;
         this.rng = randGen();
     }
@@ -52,13 +54,14 @@ export class RandomChars extends Lesson {
     storable(): StorableChars {
         return {
             type: 'chars',
-            lessonName: this.lessonName,
+            id: this.id,
+            name: this.name,
             chars: this.chars,
         };
     }
 
     static async fromStorable(s: StorableChars, _: typeof fetch = fetch): Promise<RandomChars> {
-        return new RandomChars(s.chars, s.lessonName);
+        return new RandomChars(s.chars, s.id, s.name);
     }
 
     setFormState(state: LessonFormState): void { }
@@ -71,12 +74,12 @@ export class RandomChars extends Lesson {
         return 'chars'
     }
 
-    baseLesson(): Lesson {
-        return this;
+    getName(_: Language): string {
+        return this.name;
     }
 
-    getLessonName(): string {
-        return this.lessonName;
+    baseLesson(): BaseLesson {
+        return this;
     }
 
     batch(n: number): string[] {

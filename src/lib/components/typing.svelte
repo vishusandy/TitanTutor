@@ -6,18 +6,24 @@
 
 	import type { Config, LessonTypingConfig } from '$lib/config';
 	import {
-		getUserLessonOverrides,
-		saveLesson,
+		getLocalStorageLessonOverrides,
 		type Lesson,
-		loadLesson
+		loadLesson,
+		saveUserLessonOverrides,
+		saveLast
 	} from '$lib/lessons/lessons';
 	import { SessionStats } from '$lib/stats';
 	import type { WordState } from '$lib/word_state';
 	import { Tutor } from '$lib/tutor';
 	import { Action } from '$lib/types';
-	import { showLessonConfigDialog, showStatsConfirmDialog, showStatsDialog,showVoiceDialog } from '$lib/dialog';
+	import {
+		showLessonConfigDialog,
+		showStatsConfirmDialog,
+		showStatsDialog,
+		showVoiceDialog
+	} from '$lib/dialog';
 	import type { Audio } from '$lib/audio';
-    
+
 	export let config: Config;
 	export let lesson: Lesson;
 	export let sessionStats: SessionStats;
@@ -25,9 +31,10 @@
 	let tutor = new Tutor(
 		config,
 		lesson,
-		getUserLessonOverrides(lesson.getLessonName()),
+		getLocalStorageLessonOverrides(lesson.baseLesson().id),
 		sessionStats
 	);
+
 	let started: boolean = false;
 	let paused: boolean = true;
 	let finished: boolean = false;
@@ -49,6 +56,7 @@
 			await tick();
 			textbox.focus();
 		}
+		saveLast(lesson);
 	});
 
 	function handleBodyClick() {
@@ -100,10 +108,11 @@
 	}
 
 	async function reset(overrides?: Partial<LessonTypingConfig>) {
-		const lessonName = lesson.getLessonName();
-		if (overrides === undefined) overrides = getUserLessonOverrides(lessonName);
+		const id = lesson.baseLesson().id;
+		console.log('resetting', overrides);
+		if (overrides === undefined) overrides = getLocalStorageLessonOverrides(id);
 
-		lesson = await loadLesson(lessonName);
+		lesson = await loadLesson(id);
 		tutor = new Tutor(config, lesson, overrides, sessionStats);
 		started = false;
 		paused = true;
@@ -211,15 +220,15 @@
 		return showLessonConfigDialog(config, lesson, tutor.overrides).then(
 			(data?: [Lesson, Partial<LessonTypingConfig>]) => {
 				if (data !== undefined) {
-					let overrides;
+					let overrides: Partial<LessonTypingConfig>;
 					[lesson, overrides] = data;
 					reset(overrides);
-					saveLesson(lesson, true);
+					saveUserLessonOverrides(lesson.baseLesson().id, overrides);
 				}
 			}
 		);
 	}
-    
+
 	async function showAudioDialog(_: Event) {
 		showVoiceDialog(config).then((audio?: Audio) => {
 			if (audio !== undefined) {
@@ -251,53 +260,67 @@
 </nav>
 
 {#if !finished}
-	<div class="tutor-menu">
-		<button type="button" class="link" on:click={showSessionStatsDialog}
-			>{config.lang.openSessionStatsDialog}</button
-		>
-		<button class="link stop-button" on:click={confirmEndLesson} class:hidden={!started}
-			>{config.lang.stop}</button
-		>
-		<button class="link" on:click={showLessonConfig}>{config.lang.openLessonConfigDialog}</button>
+	<div class="tutor-title">
+		{lesson.baseLesson().getName(config.lang)}
 	</div>
 
 	<div class="tutor-center">
-		<div class="tutor-words" class:paused>
-			<span bind:this={historyNode} class="history" />
+		<div class="tutor-center-wrapper">
+			<div class="tutor-above">
+				<div class="tutor-menu">
+					<button type="button" class="link" on:click={showSessionStatsDialog}
+						>{config.lang.openSessionStatsDialog}</button
+					>
+					<button class="link" on:click={showLessonConfig}
+						>{config.lang.openLessonConfigDialog}</button
+					>
 
-			<Word
-				bind:span={activeWord}
-				word={tutor.word.wordChars}
-				state={tutor.word.state}
-				active={true}
-			/>
+					<button class="link stop-button" disabled={!started} on:click={confirmEndLesson}
+						>{config.lang.stop}</button
+					>
+				</div>
+				{#if !started}
+					{config.lang.notStarted}
+				{/if}
+			</div>
 
-			<span class="queue">
-				{#each tutor.queue as q}
-					<QueuedWord word={q} />{' '}
-				{/each}
-			</span>
+			<div class="tutor-words" class:paused>
+				<span bind:this={historyNode} class="history" />
+
+				<Word
+					bind:span={activeWord}
+					word={tutor.word.wordChars}
+					state={tutor.word.state}
+					active={true}
+				/>
+
+				<span class="queue">
+					{#each tutor.queue as q}
+						<QueuedWord word={q} />{' '}
+					{/each}
+				</span>
+			</div>
 		</div>
 	</div>
 
-	<div class="tutor-input">
+	<div class="tutor-bottom">
 		{#if paused && !started}
 			<input
-				class="textbox"
+				class="tutor-input"
 				bind:this={textbox}
 				placeholder={config.lang.inputNotStarted}
 				on:keydown={startInput}
 			/>
 		{:else if paused && started}
 			<input
-				class="textbox"
+				class="tutor-input"
 				bind:this={textbox}
 				placeholder={config.lang.inputPaused}
 				on:keydown={unpause}
 			/>
 		{:else}
 			<input
-				class="textbox"
+				class="tutor-input"
 				bind:this={textbox}
 				value={tutor.word.input}
 				on:blur={pause}
@@ -325,15 +348,32 @@
 		bottom: 0px;
 		left: 0px;
 		right: 0px;
-		z-index: -10;
+		z-index: 10;
+	}
+
+	.tutor-center-wrapper {
+		padding: 0rem 0px 20vh;
+		width: 100%;
+	}
+
+	.tutor-above {
+		width: 100%;
+		text-align: center;
+		margin: 0px 0px 2rem 0px;
+	}
+
+	.tutor-title {
+		font-size: 2rem;
+		text-align: center;
 	}
 
 	.tutor-words {
+		background: white;
 		font-family: var(--font-system);
-		/* font-size: 1.5rem; */
-		font-size: min(max(5vh, 1.5rem), 2.3rem);
+		font-size: min(max(5vh, 1.5rem), 2rem);
+		font-size: clamp(1rem, 5vh, 2rem);
 		margin: auto;
-		padding: 4rem 0px 15vh;
+		padding: 0px;
 		width: 100%;
 		overflow-x: hidden;
 		overflow-y: hidden;
@@ -341,22 +381,9 @@
 		border-radius: 0.3rem;
 		scroll-behavior: smooth;
 		scroll-snap-type: x mandatory;
-
-		/* height: 100%; */
-		/* display: flex; */
-		/* align-items: center; */
-		/* justify-content: center; */
-		/* text-align: center; */
-
-		/* position: absolute;
-		margin: auto;
-		top: 0px;
-		bottom: 0px;
-		left: 0px;
-		right: 0px; */
 	}
 
-	.tutor-input {
+	.tutor-bottom {
 		text-align: center;
 		position: absolute;
 		bottom: 0px;
@@ -365,11 +392,10 @@
 		margin: 0px auto;
 	}
 
-	.textbox {
+	.tutor-input {
 		border: 1px solid #bcc2c9;
 		border-bottom-left-radius: 0px;
 		border-bottom-right-radius: 0px;
-		/* border-bottom-width: 0px; */
 		box-sizing: border-box;
 		font-size: 1.2rem;
 		width: 100%;
@@ -379,7 +405,7 @@
 		caret-color: transparent;
 	}
 
-	.textbox:focus {
+	.tutor-input:focus {
 		border-color: #f5c0ab;
 		box-shadow: 0px 0px 4px #f5c0ab;
 	}
@@ -397,12 +423,17 @@
 		display: flex;
 		width: 100%;
 		max-width: calc(40ch + 2.4rem + 2px);
-		margin: 2rem auto 0px;
+		margin: 0rem auto 0px;
 		justify-content: space-between;
 	}
 
-	.stop-button {
-		transition: opacity 0.5s ease-out;
-		/* opacity: 1; */
+	.stop-button:not(.hidden) {
+		animation: opacity-fadein 0.5s ease-out 0s 1;
+	}
+
+	@keyframes opacity-fadein {
+		0% {
+			opacity: 0;
+		}
 	}
 </style>

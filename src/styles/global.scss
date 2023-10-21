@@ -3,8 +3,8 @@
 
 .hidden {
     opacity: 0;
+    display: none;
 }
-
 
 body {
     margin: 0px;
@@ -16,8 +16,8 @@ body>div {
 }
 
 nav.header {
-    position: absolute;
-    top: 0px;
+    // position: absolute;
+    // top: 0px;
     width: 100%;
 }
 

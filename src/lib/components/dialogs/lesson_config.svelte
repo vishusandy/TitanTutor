@@ -19,7 +19,14 @@
 	export let lesson: Lesson;
 	export let lessonConfigOverrides: Partial<LessonTypingConfig>;
 
-	const state: LessonFormState = getFormState(lesson);
+	const state: LessonFormState = getFormState(lesson, config);
+
+	console.log('[form] user config:', config.lessonConfig());
+	console.log('[form] overrides:', lessonConfigOverrides);
+	console.log('[form] final:', config.lessonConfigOverrides(lessonConfigOverrides));
+
+	console.log('[form] form state:', state);
+
 	const wordModeChoices = [
 		{
 			key: 'words',
@@ -59,12 +66,23 @@
 		return [l, lessonOverrides];
 	}
 
-	function getFormState(lesson: Lesson): LessonFormState {
+	function getFormState(lesson: Lesson, config: Config): LessonFormState {
 		let s: LessonFormState = {
-			lessonName: lesson.getLessonName(),
-			...defaultLessonFormState,
-			...lessonConfigOverrides
+			id: lesson.baseLesson().id,
+			...defaultLessonFormState
 		};
+
+		console.log('getFormState:', s);
+		for (let key in lessonConfigOverrides) {
+			// @ts-ignore
+			if (lessonConfigOverrides[key] !== undefined) {
+				// @ts-ignore
+				s[key] = lessonConfigOverrides[key];
+			}
+		}
+
+		console.log('getFormState2:', s);
+		console.log('getFormState spread operator:', { ...s, ...lessonConfigOverrides });
 
 		if (lesson.baseLesson().getType() !== 'wordlist') {
 			s.random = 'disabled';
@@ -92,7 +110,7 @@
 	<Bool
 		bind:getData={randomData}
 		{config}
-		id="accept-backspace"
+		id="random"
 		label={config.lang.lessonConfigDialogRandom}
 		onLabel={config.lang.on}
 		offLabel={config.lang.off}

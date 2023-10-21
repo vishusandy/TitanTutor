@@ -6,6 +6,8 @@ export class Language {
     stopMsg: string = '';
     inputNotStarted: string = '';
     inputPaused: string = '';
+    notStarted: string = '';
+    paused: string = '';
     yes: string = '';
     no: string = '';
     on: string = '';

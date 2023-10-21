@@ -4,6 +4,8 @@
     "stopMsg": "Are you sure you want to stop?",
     "inputNotStarted": "Type any key to start",
     "inputPaused": "Type any key to continue",
+    "notStarted": "Not started",
+    "paused": "Paused",
     "yes": "Yes",
     "no": "No",
     "on": "On",

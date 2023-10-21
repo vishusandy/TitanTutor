@@ -34,7 +34,7 @@ export const defaultStockLessonLocaleMap: Map<string, string> = new Map([
 ]);
 
 export const stockLessons: Map<string, StorableLesson> = new Map([
-    ['en-test-words', StockWordListLesson.newStorable('en-test-words', 'test_words')],
+    ['en-test-words', StockWordListLesson.newStorable('en-test-words', 'test_words', 'Test Words')],
 ]);
 
 

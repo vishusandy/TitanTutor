@@ -1,4 +1,4 @@
-import { type Config, CheckMode, BackspaceMode, type LessonTypingConfig } from './config';
+import { type Config, CheckMode, type LessonTypingConfig } from './config';
 import type { Lesson } from './lessons/lessons';
 import type { SessionStats } from './stats';
 import { Action, LetterState } from './types';
@@ -16,15 +16,20 @@ export class Tutor {
     queue: string[];
     audioQueue: number
 
-    constructor(config: Config, lesson: Lesson, overrides: Partial<LessonTypingConfig>, stats: SessionStats) {
+    constructor(config: Config, lesson: Lesson, lessonOverrides: Partial<LessonTypingConfig>, stats: SessionStats) {
         this.stats = stats;
         this.config = config;
         this.lesson = lesson;
-        this.overrides = overrides;
+        this.overrides = lessonOverrides;
         this.word = new WordState('');
         this.queue = [];
         this.history = [];
         this.audioQueue = 0;
+
+        console.log('[tutor] user config:', config.lessonConfig());
+        console.log('[tutor] overrides:', lessonOverrides);
+        console.log('[tutor] final:', config.lessonConfigOverrides(this.overrides));
+
         this.lessonConfig = config.lessonConfigOverrides(this.overrides);
         this.nextWord();
     }
