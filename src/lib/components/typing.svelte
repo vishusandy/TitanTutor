@@ -5,35 +5,30 @@
 	import QueuedWord from './typing/queued_word.svelte';
 
 	import type { Config, LessonTypingConfig } from '$lib/config';
-	import {
-		getLocalStorageLessonOverrides,
-		type Lesson,
-		loadLesson,
-		saveUserLessonOverrides,
-		saveLast
-	} from '$lib/lessons/lessons';
 	import { SessionStats } from '$lib/stats';
 	import type { WordState } from '$lib/word_state';
 	import { Tutor } from '$lib/tutor';
 	import { Action } from '$lib/types';
+	import type { Audio } from '$lib/audio';
+	import {
+		getOverrides,
+		type Lesson,
+		loadLesson,
+		saveOverrides,
+		saveLast
+	} from '$lib/lessons/lessons';
 	import {
 		showLessonConfigDialog,
 		showStatsConfirmDialog,
 		showStatsDialog,
 		showVoiceDialog
 	} from '$lib/dialog';
-	import type { Audio } from '$lib/audio';
 
 	export let config: Config;
 	export let lesson: Lesson;
 	export let sessionStats: SessionStats;
 
-	let tutor = new Tutor(
-		config,
-		lesson,
-		getLocalStorageLessonOverrides(lesson.baseLesson().id),
-		sessionStats
-	);
+	let tutor = new Tutor(config, lesson, getOverrides(lesson.baseLesson().id), sessionStats);
 
 	let started: boolean = false;
 	let paused: boolean = true;
@@ -110,7 +105,7 @@
 	async function reset(overrides?: Partial<LessonTypingConfig>) {
 		const id = lesson.baseLesson().id;
 		console.log('resetting', overrides);
-		if (overrides === undefined) overrides = getLocalStorageLessonOverrides(id);
+		if (overrides === undefined) overrides = getOverrides(id);
 
 		lesson = await loadLesson(id);
 		tutor = new Tutor(config, lesson, overrides, sessionStats);
@@ -223,7 +218,7 @@
 					let overrides: Partial<LessonTypingConfig>;
 					[lesson, overrides] = data;
 					reset(overrides);
-					saveUserLessonOverrides(lesson.baseLesson().id, overrides);
+					saveOverrides(lesson.baseLesson().id, overrides);
 				}
 			}
 		);

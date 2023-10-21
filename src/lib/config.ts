@@ -7,6 +7,8 @@ import type { LessonFormState } from "./forms";
 
 export const storagePrefix = 'vkTutor_'
 
+export const configKey = storagePrefix + 'config';
+
 export const enum CheckMode {
     Char = 0,
     WordRepeat = 1, // redo current word if wrong
@@ -151,14 +153,14 @@ export class Config implements ConfigProps {
     }
 
     static async loadUserConfig(fetchFn: typeof fetch = fetch): Promise<Config> {
-        const s = localStorage.getItem(storagePrefix + 'config');
+        const s = localStorage.getItem(configKey);
         if (s !== null)
             return Config.deserialize(s, fetchFn);
         return Config.default(fetchFn);
     }
 
     saveUserConfig() {
-        localStorage.setItem(storagePrefix + 'config', this.serialize())
+        localStorage.setItem(configKey, this.serialize())
     }
 
     lessonConfig(): LessonTypingConfig {

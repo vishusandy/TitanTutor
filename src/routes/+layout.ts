@@ -1,14 +1,14 @@
 export const prerender = true;
 export const ssr = false;
 
-import { Config, storagePrefix } from "$lib/config";
+import { Config, configKey } from "$lib/config";
 import { showVoiceDialog } from '$lib/dialog';
 import type { Audio } from '$lib/audio';
 
 export async function load({ fetch }) {
     let config = await Config.loadUserConfig(fetch);
 
-    if (localStorage.getItem(storagePrefix + 'config') === null) {
+    if (localStorage.getItem(configKey) === null) {
         await showVoiceDialog(config).then((audio?: Audio) => {
             if (audio !== undefined) {
                 config.tts = audio;

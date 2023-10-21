@@ -1,6 +1,5 @@
-import { storagePrefix } from "./config";
 import { StockWordListLesson } from "./lessons/base/wordlist";
-import type { Lesson, StorableLesson } from "./lessons/lessons";
+import type { StorableLesson } from "./lessons/lessons";
 
 const fallbackLocale = 'en';
 
