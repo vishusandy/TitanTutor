@@ -1,26 +1,13 @@
-import type { CheckMode } from "./config";
+import type { LessonTypingConfig } from "./lessons/lessons";
 
 export type UserValue<T> = T | 'user';
-export type UserOptional<T> = T | null | 'user';
-
 export type FormUserValue<T> = UserValue<T> | 'disabled';
-export type FormUserOptional<T> = UserOptional<T> | 'disabled';
-
 export type FormUserValueReturn<T> = T | undefined;
-export type FormUserOptionalReturn<T> = T | null | undefined;
 
 
-export type LessonFormState = {
-    id: string,
-    checkMode: FormUserValue<CheckMode>,
-    backspace: FormUserValue<boolean>,
-    wordBatchSize: FormUserValue<number>,
-    minQueue: FormUserValue<number>,
-    random: FormUserValue<boolean>;
-    until: FormUserOptional<number>;
-};
+export type LessonFormState = { [P in keyof LessonTypingConfig]: FormUserValue<LessonTypingConfig[P]> };
 
-export const defaultLessonFormState: Omit<LessonFormState, 'id'> = {
+export const defaultLessonFormState: LessonFormState = {
     random: 'user',
     until: 'user',
     checkMode: 'user',

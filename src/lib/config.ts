@@ -2,11 +2,10 @@ import { Audio } from "./audio";
 import { getDefaultTtsLangsFromLocale, getInterfaceLangFromLocale } from "./locales";
 import { defaultMap, loadKbMap, type Remap } from "./remap";
 import { Language } from "./language";
-import { UserStats } from "./stats";
-import type { LessonFormState } from "./forms";
+import { UserStats, type UserStatsObject } from "./stats";
+import type { LessonTypingConfig } from '$lib/lessons/lessons'
 
 export const storagePrefix = 'vkTutor_'
-
 export const configKey = storagePrefix + 'config';
 
 export const enum CheckMode {
@@ -20,19 +19,6 @@ export const enum BackspaceMode {
     Ignore = 1,
 }
 
-export type LessonTypingConfig = {
-    wordBatchSize: number,
-    minQueue: number,
-    checkMode: CheckMode,
-    backspace: boolean
-};
-
-export const defaultLessonConfig = {
-    wordBatchSize: 10,
-    minQueue: 4,
-    checkMode: CheckMode.WordRepeat,
-    backspace: BackspaceMode.Accept,
-};
 
 type ConfigProps = {
     version: number;
@@ -53,7 +39,7 @@ type ConfigProps = {
     lessonSize: number | null;
 }
 
-type ConfigStorable = Omit<ConfigProps, "tts" | "lang" | "remap" | "audio"> & { tts: string, lang: string, remap: string, audio: string };
+type ConfigStorable = Omit<ConfigProps, "tts" | "lang" | "remap" | "audio" | "userStats"> & { tts: string, lang: string, remap: string, audio: string, userStats: UserStatsObject };
 
 export class Config implements ConfigProps {
     version: number;
@@ -148,7 +134,7 @@ export class Config implements ConfigProps {
         const tts = Audio.deserialize(o.tts);
         const userStats = UserStats.deserialize(o.userStats);
 
-        const c: ConfigProps = { ...o, lang: lang, remap, tts, userStats };
+        const c: ConfigProps = { ...o, lang, remap, tts, userStats };
         return new Config(c);
     }
 
@@ -165,6 +151,8 @@ export class Config implements ConfigProps {
 
     lessonConfig(): LessonTypingConfig {
         return {
+            random: this.randomizeLesson,
+            until: this.lessonSize,
             wordBatchSize: this.wordBatchSize,
             minQueue: this.minQueue,
             checkMode: this.checkMode,
@@ -174,6 +162,8 @@ export class Config implements ConfigProps {
 
     lessonConfigOverrides(opts: Partial<LessonTypingConfig>): LessonTypingConfig {
         return {
+            random: opts.random ?? this.randomizeLesson,
+            until: opts.until === undefined ? this.lessonSize : opts.until,
             wordBatchSize: opts.wordBatchSize ?? this.wordBatchSize,
             minQueue: opts.minQueue ?? this.minQueue,
             checkMode: opts.checkMode ?? this.checkMode,
@@ -181,11 +171,16 @@ export class Config implements ConfigProps {
         }
     }
 
-    setLessonFormState(state: LessonFormState) {
-        state.random = this.randomizeLesson;
-        if (this.lessonSize !== undefined) {
-            state.until = this.lessonSize;
-        }
-    }
+    // async deserializeLessonBase(s: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+    //     let lesson: Lesson;
+    //     if(this.randomizeLesson) {}
+    // }
+
+    // setLessonFormState(state: LessonFormState) {
+    //     state.random = this.randomizeLesson;
+    //     if (this.lessonSize !== undefined) {
+    //         state.until = this.lessonSize;
+    //     }
+    // }
 }
 

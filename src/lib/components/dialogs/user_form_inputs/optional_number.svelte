@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Config } from '$lib/config';
-	import type { FormUserOptional, FormUserOptionalReturn } from '$lib/forms';
+	import type { FormUserValue, FormUserValueReturn } from '$lib/forms';
 	import { onMount } from 'svelte';
 
 	export let config: Config;
@@ -8,7 +8,7 @@
 	export let id: string;
 	export let userLabel: string = config.lang.useUserValue;
 	export let nullLabel: string = config.lang.none;
-	export let initialState: FormUserOptional<number>;
+	export let initialState: FormUserValue<number | null>;
 	export let defaultValue: number;
 	export let min: number | undefined = undefined;
 	export let max: number | undefined = undefined;
@@ -17,7 +17,7 @@
 	let checkboxInput: HTMLInputElement;
 	let numberInput: HTMLInputElement;
 
-	let state: FormUserOptional<number> = initialState;
+	let state: FormUserValue<number | null> = initialState;
 	let value: number = Number.isInteger(state) ? (state as number) : defaultValue;
 
 	onMount(() => {
@@ -25,7 +25,7 @@
 		updateCheckbox();
 	});
 
-	export function getData(): FormUserOptionalReturn<number> {
+	export function getData(): FormUserValueReturn<number | null> {
 		return state === 'disabled' || state === 'user' ? undefined : state;
 	}
 

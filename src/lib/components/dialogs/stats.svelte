@@ -6,6 +6,8 @@
 	export let stats: T;
 	export let config: Config;
 
+	type IsUserStats = T extends UserStats ? true : false;
+
 	const userStats = (stats as unknown as UserStats).sessions !== undefined;
 
 	let grossWpm: string = '';
@@ -34,7 +36,7 @@
 
 	calc();
 
-	function clearStats() {
+	function clearUserStats() {
 		if (!window.confirm(config.lang.statsResetPrompt)) return;
 
 		config.userStats = new UserStats();
@@ -99,7 +101,9 @@
 				/>
 				<label for="log-stats">{config.lang.statsDialogTrackUserStats}</label>
 			</div>
-			<button type="button" on:click={clearStats}>{config.lang.statsDialogClearUserStats}</button>
+			<button type="button" on:click={clearUserStats}
+				>{config.lang.statsDialogClearUserStats}</button
+			>
 		</div>
 	</form>
 {/if}

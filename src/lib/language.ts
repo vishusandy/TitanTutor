@@ -1,5 +1,7 @@
 import { base } from '$app/paths';
 
+type LanguageObject = { [P in keyof Language]: string };
+
 export class Language {
     lang: string = '';
     langName: string = '';
@@ -77,11 +79,10 @@ export class Language {
     lessonConfigDialogAcceptBackspace: string = '';
 
     constructor(
-        lang: Object,
+        lang: LanguageObject,
     ) {
         for (const key in lang) {
             if (this.hasOwnProperty(key)) {
-                // @ts-ignore
                 this[key] = lang[key];
             }
         }
@@ -94,7 +95,7 @@ export class Language {
 
         return fetchFn(req)
             .then((resp) => resp.json())
-            .then((lang: Object) => new Language(lang))
+            .then((lang: LanguageObject) => new Language(lang))
     }
 }
 

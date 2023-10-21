@@ -35,6 +35,10 @@ export class RandomList implements Lesson {
         const base = await deserializeStorable(s.base, fetchFn);
         return new RandomList(base as WordListBase);
     }
+    
+    static newStorable(lesson: StorableLesson): StorableRandom {
+        return { type: 'random', base: lesson };
+    }
 
     toJSON(): string {
         return JSON.stringify(this.storable());

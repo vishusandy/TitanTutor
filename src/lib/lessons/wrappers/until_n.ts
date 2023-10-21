@@ -43,6 +43,10 @@ export class UntilN implements Lesson {
         return new UntilN(lesson, s.max);
     }
 
+    static newStorable(s: StorableLesson, max: number): StorableUntil {
+        return { type: 'until', max, lesson: s }
+    }
+
     setFormState(state: LessonFormState): void {
         state.until = this.max;
     }

@@ -4,10 +4,10 @@ import Stats from "./components/dialogs/stats.svelte";
 import LessonConfig from "./components/dialogs/lesson_config.svelte";
 
 import type { Audio } from "./audio";
-import type { Config, LessonTypingConfig } from "./config";
+import type { Config } from "./config";
 import type { BaseStats } from "./stats";
 import type { InnerDialogComponent, CloseFn } from "./types";
-import type { Lesson } from "./lessons/lessons";
+import type { Lesson, LessonTypingConfig } from "$lib/lessons/lessons";
 
 
 export function showVoiceDialog(config: Config) {

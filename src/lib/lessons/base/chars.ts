@@ -64,7 +64,7 @@ export class RandomChars implements Lesson, BaseLesson {
         return new RandomChars(s.chars, s.id, s.name);
     }
 
-    setFormState(state: LessonFormState): void { }
+    setFormState(_: LessonFormState): void { }
 
     getChild(): Lesson | undefined {
         return undefined;

@@ -2,7 +2,7 @@ import { StockWordListLesson, type StorableStockList } from './base/wordlist';
 import { RandomList, type StorableRandom } from './wrappers/random';
 import { UntilN, type StorableUntil } from './wrappers/until_n';
 import { getDefaultLessonFromLocale, stockLessons } from '$lib/locales';
-import { storagePrefix, type LessonTypingConfig, Config } from '$lib/config';
+import { storagePrefix, Config, CheckMode } from '$lib/config';
 import type { LessonFormState } from '$lib/forms';
 import type { Language } from '$lib/language';
 import { UserWordList, type StorableUserWordlist } from './base/user_wordlist';
@@ -12,9 +12,17 @@ const userLessonPrefix = `${storagePrefix}user_lesson_`;
 const lastLessonPrefix = `${storagePrefix}last_lesson_`;
 const lessonOptionsPrefix = `${storagePrefix}lesson_options_`;
 
+export type LessonTypingConfig = {
+    random: boolean,
+    until: number | null,
+    wordBatchSize: number,
+    minQueue: number,
+    checkMode: CheckMode,
+    backspace: boolean
+};
 
 export interface StorableLesson {
-    type: 'wordlist' | 'random' | 'until' | 'userwordlist';
+    type: 'wordlist' | 'random' | 'until' | 'userwordlist' | 'chars';
 }
 
 export interface BaseLesson extends Lesson {
@@ -40,19 +48,30 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract baseLesson(): BaseLesson;
 }
 
-export async function deserializeStorable(o: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-    if (!o.hasOwnProperty('type'))
+async function deserializeStorableConfig(s: StorableLesson, opts: LessonTypingConfig, fetchFn: typeof fetch = fetch) {
+    let storable = s;
+    if (opts.random) {
+        storable = RandomList.newStorable(s);
+    }
+    if (opts.until !== null) {
+        storable = UntilN.newStorable(s, opts.until);
+    }
+    return deserializeStorable(storable, fetchFn);
+}
+
+export async function deserializeStorable(s: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+    if (!s.hasOwnProperty('type'))
         throw new Error("Attempted to load invalid lesson");
 
-    switch (o.type) {
+    switch (s.type) {
         case 'wordlist':
-            return StockWordListLesson.fromStorable(o as StorableStockList, fetchFn);
+            return StockWordListLesson.fromStorable(s as StorableStockList, fetchFn);
         case 'userwordlist':
-            return UserWordList.fromStorable(o as StorableUserWordlist);
+            return UserWordList.fromStorable(s as StorableUserWordlist);
         case 'random':
-            return RandomList.fromStorable(o as StorableRandom, fetchFn);
+            return RandomList.fromStorable(s as StorableRandom, fetchFn);
         case 'until':
-            return UntilN.fromStorable(o as StorableUntil, fetchFn);
+            return UntilN.fromStorable(s as StorableUntil, fetchFn);
         // case 'weighted':
         //     return WeightedShuffle.fromStorable(o as StorableWeightedShuffle, fetchFn);
         default:
@@ -73,20 +92,18 @@ export function saveOverrides(id: string, overrides: Partial<LessonTypingConfig>
 export async function getLastLesson(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
     const lastLesson = localStorage.getItem(lastLessonPrefix);
     if (lastLesson === null)
-        return loadDefaultLesson(config, fetchFn);
+        return getLocaleDefaultLesson(config, fetchFn);
     return loadLesson(lastLesson, fetchFn);
 }
 
 export async function loadLesson(id: string, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-    let storable;
     if (id.startsWith('user_')) {
-        const local = localStorage.getItem(userLessonPrefix + id);
-        if (local === null) throw new Error(`Could not find user lesson '${id}'`);
-        storable = (local === null) ? undefined : JSON.parse(local) as StorableLesson;
-    } else {
-        storable = stockLessons.get(id);
+        const storable = localStorage.getItem(userLessonPrefix + id);
+        if (storable === null) throw new Error(`Could not find user lesson '${id}'`);
+        return deserializeStorable(JSON.parse(storable), fetchFn);
     }
 
+    const storable = stockLessons.get(id);
     if (storable === undefined)
         throw new Error(`Could not find lesson '${id}'`);
     return deserializeStorable(storable, fetchFn);
@@ -104,8 +121,7 @@ export function saveLast(lesson: Lesson) {
     localStorage.setItem(lastLessonPrefix, lesson.baseLesson().id);
 }
 
-
-async function loadDefaultLesson(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+async function getLocaleDefaultLesson(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
     const lesson = getDefaultLessonFromLocale(config.lang.lang);
     return loadLesson(lesson, fetchFn);
 }

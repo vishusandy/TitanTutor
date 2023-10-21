@@ -62,7 +62,7 @@ export class StockWordListLesson implements WordListBase, BaseLesson {
             });
     }
 
-    setFormState(state: LessonFormState): void { }
+    setFormState(_: LessonFormState): void { }
 
     getChild(): Lesson | undefined {
         return undefined;

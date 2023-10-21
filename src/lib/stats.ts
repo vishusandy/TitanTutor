@@ -5,6 +5,7 @@ import type { WordState } from "./word_state";
 
 export const wordLen: number = 5;
 
+export type UserStatsObject = { [P in keyof UserStats]: UserStats[P] };
 
 export class BaseStats {
     duration: number = 0;
@@ -73,7 +74,7 @@ export class SessionStats extends BaseStats {
 export class UserStats extends BaseStats {
     sessions: number = 0;
 
-    static deserialize(o: Object) {
+    static deserialize(o: UserStatsObject) {
         const stats = new UserStats();
         for (const key in o) {
             if (stats.hasOwnProperty(key)) {

@@ -4,7 +4,7 @@
 	import Word from './typing/word.svelte';
 	import QueuedWord from './typing/queued_word.svelte';
 
-	import type { Config, LessonTypingConfig } from '$lib/config';
+	import type { Config } from '$lib/config';
 	import { SessionStats } from '$lib/stats';
 	import type { WordState } from '$lib/word_state';
 	import { Tutor } from '$lib/tutor';
@@ -15,7 +15,8 @@
 		type Lesson,
 		loadLesson,
 		saveOverrides,
-		saveLast
+		saveLast,
+		type LessonTypingConfig
 	} from '$lib/lessons/lessons';
 	import {
 		showLessonConfigDialog,

@@ -4,11 +4,10 @@
 	import Bool from './user_form_inputs/bool.svelte';
 	import Select from './user_form_inputs/select.svelte';
 
-	import { CheckMode, type Config, type LessonTypingConfig } from '$lib/config';
-	import type { Lesson, WordListBase } from '$lib/lessons/lessons';
+	import { CheckMode, type Config } from '$lib/config';
+	import type { Lesson, WordListBase, LessonTypingConfig } from '$lib/lessons/lessons';
 	import {
 		defaultLessonFormState,
-		type FormUserOptionalReturn,
 		type FormUserValueReturn,
 		type LessonFormState
 	} from '$lib/forms';
@@ -36,7 +35,7 @@
 		{ key: 'chars', label: config.lang.lessonConfigDialogCheckModeChars, value: CheckMode.Char }
 	];
 
-	let untilData: () => FormUserOptionalReturn<number>;
+	let untilData: () => FormUserValueReturn<number | null>;
 	let randomData: () => FormUserValueReturn<boolean>;
 	let minQueueData: () => FormUserValueReturn<number>;
 	let wordBatchSizeData: () => FormUserValueReturn<number>;
@@ -45,6 +44,8 @@
 
 	export function getData(): [Lesson, Partial<LessonTypingConfig>] {
 		const lessonOverrides: Partial<LessonTypingConfig> = {
+			until: untilData(),
+			random: randomData(),
 			minQueue: minQueueData(),
 			wordBatchSize: wordBatchSizeData(),
 			backspace: backspaceData(),
@@ -68,12 +69,11 @@
 
 	function getFormState(lesson: Lesson, config: Config): LessonFormState {
 		let s: LessonFormState = {
-			id: lesson.baseLesson().id,
 			...defaultLessonFormState
 		};
 
 		console.log('getFormState:', s);
-		for (let key in lessonConfigOverrides) {
+		for (const key in lessonConfigOverrides) {
 			// @ts-ignore
 			if (lessonConfigOverrides[key] !== undefined) {
 				// @ts-ignore
