@@ -49,7 +49,7 @@
 			checkMode: checkModeDataFn()
 		};
 
-		const result = addWrappers(lesson, config.lessonConfigOverrides(lessonOverrides));
+		const result = addWrappers(lesson.baseLesson(), config.lessonConfigOverrides(lessonOverrides));
 
 		return [result, lessonOverrides];
 	}

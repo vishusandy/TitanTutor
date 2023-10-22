@@ -21,12 +21,9 @@ export class UntilN implements Lesson {
 
     next(): IteratorResult<string> {
         this.num += 1;
-
-        console.log(`until: ${this.num}/${this.max}`);
         if (this.num > this.max) {
             return { done: true, value: undefined };
         }
-
         return this.lesson.next();
     }
 
