@@ -1,13 +1,13 @@
 import prand from "pure-rand";
 
-import type { Lesson, BaseLesson } from "$lib/lessons/lessons";
+import type { Lesson, BaseLesson, StorableBaseLesson } from "$lib/lessons/lessons";
 import { defaultBatch } from "$lib/util";
 import { randGen } from '$lib/random'
 import type { LessonFormState } from "$lib/forms";
 import type { Language } from "$lib/language";
 
 
-export type StorableChars = { type: "chars", id: string, name: string, chars: string[] };
+export type StorableChars = { type: "chars", name: string, chars: string[] } & StorableBaseLesson;
 
 export class RandomChars implements Lesson, BaseLesson {
     chars: string[];

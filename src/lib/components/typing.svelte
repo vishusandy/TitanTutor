@@ -105,10 +105,9 @@
 
 	async function reset(overrides?: Partial<LessonTypingConfig>) {
 		const id = lesson.baseLesson().id;
-		console.log('resetting', overrides);
 		if (overrides === undefined) overrides = getOverrides(id);
 
-		lesson = await loadLesson(id);
+		lesson = await loadLesson(id, config);
 		tutor = new Tutor(config, lesson, overrides, sessionStats);
 		started = false;
 		paused = true;

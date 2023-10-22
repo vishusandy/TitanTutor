@@ -1,5 +1,5 @@
-import { StockWordListLesson } from "./lessons/base/wordlist";
-import type { StorableLesson } from "./lessons/lessons";
+import { StockWordList } from "./lessons/base/wordlist";
+import type { StorableBaseLesson, StorableLesson } from "./lessons/lessons";
 
 const fallbackLocale = 'en';
 
@@ -32,8 +32,8 @@ export const defaultStockLessonLocaleMap: Map<string, string> = new Map([
     ['en', 'en-test-words'],
 ]);
 
-export const stockLessons: Map<string, StorableLesson> = new Map([
-    ['en-test-words', StockWordListLesson.newStorable('en-test-words', 'test_words', 'Test Words')],
+export const stockLessons: Map<string, StorableBaseLesson> = new Map([
+    ['en-test-words', StockWordList.newStorable('en-test-words', 'test_words', 'Test Words')],
 ]);
 
 

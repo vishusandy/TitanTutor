@@ -6,12 +6,13 @@ export type StorableUntil = { type: "until", max: number, lesson: StorableLesson
 
 export class UntilN implements Lesson {
     lesson: Lesson;
-    pos: number = 0;
+    num: number;
     max: number;
 
     constructor(lesson: Lesson, max: number) {
         this.lesson = lesson;
         this.max = max;
+        this.num = 0;
     }
 
     [Symbol.iterator]() {
@@ -19,7 +20,10 @@ export class UntilN implements Lesson {
     }
 
     next(): IteratorResult<string> {
-        if (this.pos >= this.max) {
+        this.num += 1;
+
+        console.log(`until: ${this.num}/${this.max}`);
+        if (this.num > this.max) {
             return { done: true, value: undefined };
         }
 

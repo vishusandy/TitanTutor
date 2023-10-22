@@ -25,11 +25,6 @@ export class Tutor {
         this.queue = [];
         this.history = [];
         this.audioQueue = 0;
-
-        console.log('[tutor] user config:', config.lessonConfig());
-        console.log('[tutor] overrides:', lessonOverrides);
-        console.log('[tutor] final:', config.lessonConfigOverrides(this.overrides));
-
         this.lessonConfig = config.lessonConfigOverrides(this.overrides);
         this.nextWord();
     }
@@ -45,8 +40,9 @@ export class Tutor {
     }
 
     private fillQueue() {
-        while (this.queue.length < this.config.minQueue) {
-            this.queue.push(...this.lesson.batch(this.config.wordBatchSize - this.queue.length));
+        let batch;
+        while (this.queue.length < this.config.minQueue && (batch = this.lesson.batch(this.config.wordBatchSize - this.queue.length)) && batch.length !== 0) {
+            this.queue.push(...batch);
         }
     }
 

@@ -5,26 +5,23 @@
 	import Select from './user_form_inputs/select.svelte';
 
 	import { CheckMode, type Config } from '$lib/config';
-	import type { Lesson, WordListBase, LessonTypingConfig } from '$lib/lessons/lessons';
+	import {
+		addWrappers,
+		canRandomize,
+		type Lesson,
+		type LessonTypingConfig
+	} from '$lib/lessons/lessons';
 	import {
 		defaultLessonFormState,
 		type FormUserValueReturn,
 		type LessonFormState
 	} from '$lib/forms';
-	import { RandomList } from '$lib/lessons/wrappers/random';
-	import { UntilN } from '$lib/lessons/wrappers/until_n';
 
 	export let config: Config;
 	export let lesson: Lesson;
 	export let lessonConfigOverrides: Partial<LessonTypingConfig>;
 
-	const state: LessonFormState = getFormState(lesson, config);
-
-	console.log('[form] user config:', config.lessonConfig());
-	console.log('[form] overrides:', lessonConfigOverrides);
-	console.log('[form] final:', config.lessonConfigOverrides(lessonConfigOverrides));
-
-	console.log('[form] form state:', state);
+	const state: LessonFormState = getFormState(lesson, config, lessonConfigOverrides);
 
 	const wordModeChoices = [
 		{
@@ -35,44 +32,37 @@
 		{ key: 'chars', label: config.lang.lessonConfigDialogCheckModeChars, value: CheckMode.Char }
 	];
 
-	let untilData: () => FormUserValueReturn<number | null>;
-	let randomData: () => FormUserValueReturn<boolean>;
-	let minQueueData: () => FormUserValueReturn<number>;
-	let wordBatchSizeData: () => FormUserValueReturn<number>;
-	let backspaceData: () => FormUserValueReturn<boolean>;
-	let checkModeData: () => FormUserValueReturn<CheckMode>;
+	let untilDataFn: () => FormUserValueReturn<number | null>;
+	let randomDataFn: () => FormUserValueReturn<boolean>;
+	let minQueueDataFn: () => FormUserValueReturn<number>;
+	let wordBatchSizeDataFn: () => FormUserValueReturn<number>;
+	let backspaceDataFn: () => FormUserValueReturn<boolean>;
+	let checkModeDataFn: () => FormUserValueReturn<CheckMode>;
 
 	export function getData(): [Lesson, Partial<LessonTypingConfig>] {
 		const lessonOverrides: Partial<LessonTypingConfig> = {
-			until: untilData(),
-			random: randomData(),
-			minQueue: minQueueData(),
-			wordBatchSize: wordBatchSizeData(),
-			backspace: backspaceData(),
-			checkMode: checkModeData()
+			until: untilDataFn(),
+			random: randomDataFn(),
+			minQueue: minQueueDataFn(),
+			wordBatchSize: wordBatchSizeDataFn(),
+			backspace: backspaceDataFn(),
+			checkMode: checkModeDataFn()
 		};
 
-		let l: Lesson;
-		if (randomData() === true && lesson.baseLesson().getType() === 'wordlist') {
-			l = new RandomList(lesson as WordListBase);
-		} else {
-			l = lesson;
-		}
+		const result = addWrappers(lesson, config.lessonConfigOverrides(lessonOverrides));
 
-		const max = untilData();
-		if (typeof max === 'number') {
-			l = new UntilN(l, max);
-		}
-
-		return [l, lessonOverrides];
+		return [result, lessonOverrides];
 	}
 
-	function getFormState(lesson: Lesson, config: Config): LessonFormState {
+	function getFormState(
+		lesson: Lesson,
+		config: Config,
+		lessonConfigOverrides: Partial<LessonTypingConfig>
+	): LessonFormState {
 		let s: LessonFormState = {
 			...defaultLessonFormState
 		};
 
-		console.log('getFormState:', s);
 		for (const key in lessonConfigOverrides) {
 			// @ts-ignore
 			if (lessonConfigOverrides[key] !== undefined) {
@@ -80,9 +70,6 @@
 				s[key] = lessonConfigOverrides[key];
 			}
 		}
-
-		console.log('getFormState2:', s);
-		console.log('getFormState spread operator:', { ...s, ...lessonConfigOverrides });
 
 		if (lesson.baseLesson().getType() !== 'wordlist') {
 			s.random = 'disabled';
@@ -96,7 +83,7 @@
 
 <div class="grid">
 	<OptionalNumber
-		bind:getData={untilData}
+		bind:getData={untilDataFn}
 		{config}
 		id="until"
 		label={config.lang.lessonConfigDialogUntil}
@@ -108,17 +95,17 @@
 	/>
 
 	<Bool
-		bind:getData={randomData}
+		bind:getData={randomDataFn}
 		{config}
 		id="random"
 		label={config.lang.lessonConfigDialogRandom}
 		onLabel={config.lang.on}
 		offLabel={config.lang.off}
-		initialState={state.random}
+		initialState={canRandomize(lesson.baseLesson().getType()) ? state.random : 'disabled'}
 	/>
 
 	<Number
-		bind:getData={minQueueData}
+		bind:getData={minQueueDataFn}
 		{config}
 		id="min-queue"
 		label={config.lang.lessonConfigDialogMinQueue}
@@ -129,7 +116,7 @@
 	/>
 
 	<Number
-		bind:getData={wordBatchSizeData}
+		bind:getData={wordBatchSizeDataFn}
 		{config}
 		id="word-batch-size"
 		label={config.lang.lessonConfigDialogWordBatchSize}
@@ -140,7 +127,7 @@
 	/>
 
 	<Bool
-		bind:getData={backspaceData}
+		bind:getData={backspaceDataFn}
 		{config}
 		id="accept-backspace"
 		label={config.lang.lessonConfigDialogAcceptBackspace}
@@ -150,7 +137,7 @@
 	/>
 
 	<Select
-		bind:getData={checkModeData}
+		bind:getData={checkModeDataFn}
 		{config}
 		id="check-mode"
 		label={config.lang.lessonConfigDialogCheckMode}

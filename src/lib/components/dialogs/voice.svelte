@@ -120,7 +120,6 @@
 		matchLang(getDefaultTtsLangsFromLocale(config.lang.lang));
 		if (chosenLang !== undefined) return;
 
-		console.log('use first fallback');
 		useFirstLang();
 		useFirstVoice();
 	}
