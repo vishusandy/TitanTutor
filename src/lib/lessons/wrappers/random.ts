@@ -49,9 +49,7 @@ export class RandomList implements Lesson {
         return JSON.stringify(this.storable());
     }
 
-    setFormState(state: LessonFormState): void {
-        state.random = true;
-    }
+    setFormState(_: LessonFormState): void { }
 
     getChild(): Lesson | undefined {
         return this.base;

@@ -49,7 +49,8 @@
 			checkMode: checkModeDataFn()
 		};
 
-		const result = addWrappers(lesson.baseLesson(), config.lessonConfigOverrides(lessonOverrides));
+		const userOverrides = config.lessonConfigOverrides(lessonOverrides);
+		const result = addWrappers(lesson.baseLesson(), userOverrides);
 
 		return [result, lessonOverrides];
 	}
@@ -77,6 +78,7 @@
 
 		let c: Lesson | undefined = lesson;
 		while ((c = c.getChild())) c.setFormState(s);
+
 		return s;
 	}
 </script>
@@ -90,7 +92,7 @@
 		initialState={state.until}
 		defaultValue={100}
 		nullLabel={config.lang.infinite}
-		min={10}
+		min={1}
 		step={1}
 	/>
 

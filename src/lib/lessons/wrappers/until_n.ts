@@ -48,9 +48,7 @@ export class UntilN implements Lesson {
         return { type: 'until', max, lesson: s }
     }
 
-    setFormState(state: LessonFormState): void {
-        state.until = this.max;
-    }
+    setFormState(_: LessonFormState): void { }
 
     getChild(): Lesson | undefined {
         return this.lesson;

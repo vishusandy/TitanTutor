@@ -213,12 +213,14 @@
 
 	async function showLessonConfig(): Promise<void> {
 		return showLessonConfigDialog(config, lesson, tutor.overrides).then(
-			(data?: [Lesson, Partial<LessonTypingConfig>]) => {
+			async (data?: [Lesson, Partial<LessonTypingConfig>]) => {
 				if (data !== undefined) {
 					let overrides: Partial<LessonTypingConfig>;
 					[lesson, overrides] = data;
-					reset(overrides);
 					saveOverrides(lesson.baseLesson().id, overrides);
+					reset(overrides);
+					// await tick();
+					// lesson = lesson;
 				}
 			}
 		);
