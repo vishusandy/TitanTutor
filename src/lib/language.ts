@@ -1,4 +1,5 @@
 import { base } from '$app/paths';
+import { getInterfaceLangFromLocale } from './locales';
 
 type LanguageObject = { [P in keyof Language]: string };
 
@@ -90,7 +91,12 @@ export class Language {
 
     [index: string]: string;
 
-    static async loadLang(path: string, fetchFn: typeof fetch): Promise<Language> {
+    static async default(fetchFn: typeof fetch = fetch): Promise<Language> {
+        const interfacePath = getInterfaceLangFromLocale(navigator.language);
+        return Language.load(interfacePath, fetchFn);
+    }
+
+    static async load(path: string, fetchFn: typeof fetch = fetch): Promise<Language> {
         const req = new Request(`${base}/data/lang/${path}.json`);
 
         return fetchFn(req)

@@ -2,25 +2,23 @@ import { base } from '$app/paths';
 
 export const defaultMap: string = 'no_map';
 
-export interface Remap {
-    getName(): string;
-    get(key: string): string | undefined;
-}
+export abstract class Remap {
+    abstract getName(): string;
+    abstract get(key: string): string | undefined;
+    static load(name: string, fetchFn: typeof fetch): Promise<Remap> {
+        if (name === 'no_map') {
+            return new Promise((resolve) => resolve(NoRemap));
+        }
 
-export async function loadKbMap(name: string, fetchFn: typeof fetch): Promise<Remap> {
-    if (name === 'no_map') {
-        return new Promise((resolve) => resolve(NoRemap));
+        const req = new Request(`${base}/data/kbmaps/${name}.json`);
+        return fetchFn(req)
+            .then((resp) => {
+                if (!resp.ok)
+                    return NoRemap;
+                return resp.json();
+            })
+            .then((arr: [string, string][]) => new KbRemap(name, new Map(arr)))
     }
-
-    const req = new Request(`${base}/data/kbmaps/${name}.json`);
-    return fetchFn(req)
-        .then((resp) => {
-            if (!resp.ok)
-                return NoRemap;
-            return resp.json();
-        })
-        .then((arr: [string, string][]) => new KbRemap(name, new Map(arr)))
-
 }
 
 

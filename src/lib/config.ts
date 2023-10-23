@@ -1,6 +1,6 @@
 import { Audio } from "./audio";
-import { getDefaultTtsLangsFromLocale, getInterfaceLangFromLocale } from "./locales";
-import { defaultMap, loadKbMap, type Remap } from "./remap";
+import { getDefaultTtsLangsFromLocale } from "./locales";
+import { defaultMap, Remap } from "./remap";
 import { Language } from "./language";
 import { UserStats, type UserStatsObject } from "./stats";
 import type { LessonTypingConfig } from '$lib/lessons/lessons'
@@ -22,11 +22,7 @@ export const enum BackspaceMode {
 
 type ConfigProps = {
     version: number;
-    checkMode: CheckMode;
-    backspace: boolean;
     tts: Audio | undefined;
-    wordBatchSize: number;
-    minQueue: number;
     stop: string;
     pause: string;
     logStats: boolean;
@@ -34,58 +30,27 @@ type ConfigProps = {
     remap: Remap;
     lang: Language;
     userStats: UserStats;
-    spaceOptional: boolean;
-    randomizeLesson: boolean;
-    lessonSize: number | null;
-}
+} & LessonTypingConfig;
 
 type ConfigStorable = Omit<ConfigProps, "tts" | "lang" | "remap" | "audio" | "userStats"> & { tts: string, lang: string, remap: string, audio: string, userStats: UserStatsObject };
 
+export interface Config extends ConfigProps { }
+
 export class Config implements ConfigProps {
-    version: number;
-    checkMode: CheckMode;
-    backspace: boolean;
-    tts: Audio | undefined;
-    wordBatchSize: number;
-    minQueue: number;
-    stop: string;
-    pause: string;
-    logStats: boolean;
-    audioDefaults: string[]; // array to match different browsers' tts languages
-    remap: Remap;
-    lang: Language;
-    userStats: UserStats;
-    spaceOptional: boolean;
-    randomizeLesson: boolean;
-    lessonSize: number | null;
-
-
     constructor(c: ConfigProps) {
-        this.version = c.version;
-        this.checkMode = c.checkMode;
-        this.backspace = c.backspace;
-        this.tts = c.tts;
-        this.wordBatchSize = c.wordBatchSize;
-        this.minQueue = c.minQueue;
-        this.stop = c.stop;
-        this.pause = c.pause;
-        this.logStats = c.logStats;
-        this.audioDefaults = c.audioDefaults;
-        this.remap = c.remap;
-        this.lang = c.lang;
-        this.userStats = c.userStats;
-        this.spaceOptional = c.spaceOptional;
-        this.randomizeLesson = c.randomizeLesson;
-        this.lessonSize = c.lessonSize;
+
+        for (const key in c) {
+            // @ts-ignore
+            this[key] = c[key];
+        }
     }
 
     static async default(fetchFn: typeof fetch = fetch): Promise<Config> {
-        const interfacePath = getInterfaceLangFromLocale(navigator.language);
         const audioDefaults = getDefaultTtsLangsFromLocale(navigator.language);
         const userStats = new UserStats();
 
-        const lang = await Language.loadLang(interfacePath, fetchFn)
-        const remap = await loadKbMap(defaultMap, fetchFn);
+        const lang = await Language.default(fetchFn);
+        const remap = await Remap.load(defaultMap, fetchFn);
         const tts = undefined;
 
         return new Config({
@@ -103,8 +68,8 @@ export class Config implements ConfigProps {
             lang,
             userStats,
             spaceOptional: false,
-            randomizeLesson: true,
-            lessonSize: 100
+            random: true,
+            until: 100
         });
     }
 
@@ -129,8 +94,8 @@ export class Config implements ConfigProps {
     static async deserialize(s: string, fetchFn: typeof fetch = fetch): Promise<Config> {
         const o: ConfigStorable = JSON.parse(s);
 
-        const lang = await Language.loadLang(o.lang, fetchFn);
-        const remap = await loadKbMap(o.remap, fetchFn);
+        const lang = await Language.load(o.lang, fetchFn);
+        const remap = await Remap.load(o.remap, fetchFn);
         const tts = Audio.deserialize(o.tts);
         const userStats = UserStats.deserialize(o.userStats);
 
@@ -151,36 +116,26 @@ export class Config implements ConfigProps {
 
     lessonConfig(): LessonTypingConfig {
         return {
-            random: this.randomizeLesson,
-            until: this.lessonSize,
+            random: this.random,
+            until: this.until,
             wordBatchSize: this.wordBatchSize,
             minQueue: this.minQueue,
             checkMode: this.checkMode,
-            backspace: this.backspace
+            backspace: this.backspace,
+            spaceOptional: this.spaceOptional,
         }
     }
 
     lessonConfigOverrides(opts: Partial<LessonTypingConfig>): LessonTypingConfig {
         return {
-            random: opts.random ?? this.randomizeLesson,
-            until: opts.until === undefined ? this.lessonSize : opts.until,
+            random: opts.random ?? this.random,
+            until: opts.until === undefined ? this.until : opts.until,
             wordBatchSize: opts.wordBatchSize ?? this.wordBatchSize,
             minQueue: opts.minQueue ?? this.minQueue,
             checkMode: opts.checkMode ?? this.checkMode,
-            backspace: opts.backspace ?? this.backspace
+            backspace: opts.backspace ?? this.backspace,
+            spaceOptional: opts.spaceOptional ?? this.spaceOptional,
         }
     }
-
-    // async deserializeLessonBase(s: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-    //     let lesson: Lesson;
-    //     if(this.randomizeLesson) {}
-    // }
-
-    // setLessonFormState(state: LessonFormState) {
-    //     state.random = this.randomizeLesson;
-    //     if (this.lessonSize !== undefined) {
-    //         state.until = this.lessonSize;
-    //     }
-    // }
 }
 

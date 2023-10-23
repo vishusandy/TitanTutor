@@ -14,5 +14,6 @@ export const defaultLessonFormState: LessonFormState = {
     backspace: 'user',
     wordBatchSize: 'user',
     minQueue: 'user',
+    spaceOptional: false,
 };
 

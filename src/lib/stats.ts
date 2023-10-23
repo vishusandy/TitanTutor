@@ -33,11 +33,6 @@ export abstract class BaseStats {
     }
 
     abstract reset(): void;
-
-    // new<T extends BaseStats>(this: ConstructorType<T, typeof BaseStats>, config: Config): T {
-    //     const t = new this(config);
-    //     return <T>t;
-    // }
 }
 
 export class SessionStats extends BaseStats {

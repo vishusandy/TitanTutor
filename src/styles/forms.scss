@@ -67,8 +67,8 @@ select:focus {
     --input-border: transparent;
 }
 
-button:active,
-select:active {
+button:not(:disabled):active,
+select:not(:disabled):active {
     box-shadow: 0 0 0px 0.25em var(--highlight-focus);
 }
 

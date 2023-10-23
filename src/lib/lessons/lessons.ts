@@ -19,7 +19,8 @@ export type LessonTypingConfig = {
     wordBatchSize: number,
     minQueue: number,
     checkMode: CheckMode,
-    backspace: boolean
+    backspace: boolean,
+    spaceOptional: boolean
 };
 
 

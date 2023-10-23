@@ -1,5 +1,5 @@
 import { StockWordList } from "./lessons/base/wordlist";
-import type { StorableBaseLesson, StorableLesson } from "./lessons/lessons";
+import type { StorableBaseLesson } from "./lessons/lessons";
 
 const fallbackLocale = 'en';
 
