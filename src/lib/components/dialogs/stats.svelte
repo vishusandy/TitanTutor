@@ -1,6 +1,6 @@
 <script lang="ts" generics="T extends BaseStats">
 	import type { Config } from '$lib/config';
-	import { UserStats, type BaseStats } from '$lib/stats';
+	import type { UserStats, BaseStats } from '$lib/stats';
 	import { formatDuration } from '$lib/util';
 
 	export let stats: T;
@@ -39,11 +39,11 @@
 	function clearUserStats() {
 		if (!window.confirm(config.lang.statsResetPrompt)) return;
 
-		config.userStats = new UserStats();
+		// config.userStats = new UserStats(config.checkMode);
 		config.saveUserConfig();
 		config = config;
-		// @ts-ignore
-		stats = config.userStats;
+		stats.reset();
+		stats = stats;
 		calc();
 	}
 

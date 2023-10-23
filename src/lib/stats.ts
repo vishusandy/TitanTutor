@@ -7,7 +7,7 @@ export const wordLen: number = 5;
 
 export type UserStatsObject = { [P in keyof UserStats]: UserStats[P] };
 
-export class BaseStats {
+export abstract class BaseStats {
     duration: number = 0;
     keystrokes: number = 0;
     wordErrors: number = 0;
@@ -16,7 +16,6 @@ export class BaseStats {
     chars: number = 0;
     uncorrectedErrors: number = 0;
     correctedErrors: number = 0;
-
 
     getGrossWpm(): number {
         // todo: not accurate for word mode
@@ -32,6 +31,13 @@ export class BaseStats {
     getAccuracy(): number {
         return this.chars / this.keystrokes;
     }
+
+    abstract reset(): void;
+
+    // new<T extends BaseStats>(this: ConstructorType<T, typeof BaseStats>, config: Config): T {
+    //     const t = new this(config);
+    //     return <T>t;
+    // }
 }
 
 export class SessionStats extends BaseStats {
@@ -42,6 +48,7 @@ export class SessionStats extends BaseStats {
         super();
         this.mode = mode;
     }
+
 
     add(word: WordState) {
         this.words += 1;
@@ -69,6 +76,18 @@ export class SessionStats extends BaseStats {
             this.started = performance.now();
         }
     }
+
+    reset() {
+        this.started = undefined;
+        this.duration = 0;
+        this.keystrokes = 0;
+        this.wordErrors = 0;
+        this.backspaces = 0;
+        this.words = 0;
+        this.chars = 0;
+        this.uncorrectedErrors = 0;
+        this.correctedErrors = 0;
+    }
 }
 
 export class UserStats extends BaseStats {
@@ -83,6 +102,18 @@ export class UserStats extends BaseStats {
             }
         }
         return stats;
+    }
+
+    reset() {
+        this.sessions = 0;
+        this.duration = 0;
+        this.keystrokes = 0;
+        this.wordErrors = 0;
+        this.backspaces = 0;
+        this.words = 0;
+        this.chars = 0;
+        this.uncorrectedErrors = 0;
+        this.correctedErrors = 0;
     }
 
     add(session: SessionStats) {
