@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { getDefaultTtsLangsFromLocale } from '$lib/locales';
+	import { defaultTtsLangs } from '$lib/locales';
 	import type { Config } from '$lib/config';
 	import {
 		loadVoiceLangMap,
@@ -117,7 +117,7 @@
 			return;
 		}
 
-		matchLang(getDefaultTtsLangsFromLocale(config.lang.lang));
+		matchLang(defaultTtsLangs(config.lang.lang));
 		if (chosenLang !== undefined) return;
 
 		useFirstLang();

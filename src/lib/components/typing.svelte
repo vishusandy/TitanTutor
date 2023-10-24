@@ -10,14 +10,7 @@
 	import { Tutor } from '$lib/tutor';
 	import { Action } from '$lib/types';
 	import type { Audio } from '$lib/audio';
-	import {
-		getOverrides,
-		type Lesson,
-		loadLesson,
-		saveOverrides,
-		saveLast,
-		type LessonTypingConfig
-	} from '$lib/lessons/lessons';
+	import { Lesson, type LessonTypingConfig } from '$lib/lessons/lessons';
 	import {
 		showLessonConfigDialog,
 		showStatsConfirmDialog,
@@ -29,7 +22,7 @@
 	export let lesson: Lesson;
 	export let sessionStats: SessionStats;
 
-	let tutor = new Tutor(config, lesson, getOverrides(lesson.baseLesson().id), sessionStats);
+	let tutor = new Tutor(config, lesson, Lesson.getOverrides(lesson.baseLesson().id), sessionStats);
 
 	let started: boolean = false;
 	let paused: boolean = true;
@@ -52,10 +45,11 @@
 			await tick();
 			textbox.focus();
 		}
-		saveLast(lesson);
+
+		Lesson.saveLast(lesson);
 	});
 
-	function handleBodyClick() {
+	function handleBodyClick(_: Event) {
 		textbox?.focus();
 	}
 
@@ -84,7 +78,7 @@
 		}
 	}
 
-	function pause(e: Event) {
+	function pause(_: Event) {
 		if (textbox === undefined) return;
 		paused = true;
 		if (tutor.word.atEnd()) {
@@ -105,9 +99,9 @@
 
 	async function reset(overrides?: Partial<LessonTypingConfig>) {
 		const id = lesson.baseLesson().id;
-		if (overrides === undefined) overrides = getOverrides(id);
+		if (overrides === undefined) overrides = Lesson.getOverrides(id);
 
-		lesson = await loadLesson(id, config);
+		lesson = await Lesson.load(id, config);
 		tutor = new Tutor(config, lesson, overrides, sessionStats);
 		started = false;
 		paused = true;
@@ -145,7 +139,7 @@
 		}
 	}
 
-	function handleClick(e: Event) {
+	function handleClick(_: Event) {
 		textbox?.focus();
 	}
 
@@ -217,7 +211,7 @@
 				if (data !== undefined) {
 					let overrides: Partial<LessonTypingConfig>;
 					[lesson, overrides] = data;
-					saveOverrides(lesson.baseLesson().id, overrides);
+					Lesson.saveOverrides(lesson.baseLesson().id, overrides);
 					reset(overrides);
 					// await tick();
 					// lesson = lesson;
@@ -345,7 +339,7 @@
 		bottom: 0px;
 		left: 0px;
 		right: 0px;
-		z-index: 10;
+		z-index: -10;
 	}
 
 	.tutor-center-wrapper {
@@ -387,6 +381,7 @@
 		left: 0px;
 		width: 100%;
 		margin: 0px auto;
+		z-index: -20;
 	}
 
 	.tutor-input {

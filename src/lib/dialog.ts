@@ -16,18 +16,18 @@ export function showVoiceDialog(config: Config) {
 }
 
 export function showStatsDialog<T extends BaseStats>(title: string, config: Config, stats: T) {
-    const dialogProps = { title, content: Stats, hasSubmit: false, config };
+    const dialogProps: DialogProps = { title, content: Stats, hasSubmit: false, config };
     const passProps = { stats };
     return createDialog<boolean>(dialogProps, passProps);
 }
 export function showStatsConfirmDialog<T extends BaseStats>(config: Config, stats: T) {
-    const dialogProps = { title: config.lang.statsDialogSaveTitle, content: Stats, hasSubmit: true, config, cancelLabel: config.lang.no, submitLabel: config.lang.yes };
+    const dialogProps: DialogProps = { title: config.lang.statsDialogSaveTitle, content: Stats, hasSubmit: true, config, cancelLabel: config.lang.no, submitLabel: config.lang.yes };
     const passProps = { stats };
     return createDialog<boolean>(dialogProps, passProps);
 }
 
 export function showLessonConfigDialog(config: Config, lesson: Lesson, lessonConfigOverrides: Partial<LessonTypingConfig>) {
-    const dialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config };
+    const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, confirmPrompt: config.lang.lessonConfigConfirmSubmit };
     const passProps = { lesson, lessonConfigOverrides };
     return createDialog<[Lesson, Partial<LessonTypingConfig>]>(dialogProps, passProps);
 }
@@ -40,6 +40,7 @@ interface DialogProps {
     closeLabel?: string;
     submitLabel?: string;
     cancelLabel?: string;
+    confirmPrompt?: string;
 }
 
 // function createDialog<T>(title: string, content: InnerDialogComponent, hasSubmit: boolean, config: Config, passProps?: Object): Promise<T | undefined> {

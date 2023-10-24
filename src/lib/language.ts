@@ -1,5 +1,5 @@
 import { base } from '$app/paths';
-import { getInterfaceLangFromLocale } from './locales';
+import { interfaceLang } from './locales';
 
 type LanguageObject = { [P in keyof Language]: string };
 
@@ -78,6 +78,7 @@ export class Language {
     lessonConfigDialogCheckModeChars: string = '';
     lessonConfigDialogCheckModeWords: string = '';
     lessonConfigDialogAcceptBackspace: string = '';
+    lessonConfigConfirmSubmit: string = '';
 
     constructor(
         lang: LanguageObject,
@@ -92,7 +93,7 @@ export class Language {
     [index: string]: string;
 
     static async default(fetchFn: typeof fetch = fetch): Promise<Language> {
-        const interfacePath = getInterfaceLangFromLocale(navigator.language);
+        const interfacePath = interfaceLang(navigator.language);
         return Language.load(interfacePath, fetchFn);
     }
 

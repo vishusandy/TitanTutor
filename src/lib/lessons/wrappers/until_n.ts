@@ -1,4 +1,4 @@
-import { type Lesson, type StorableLesson, deserializeStorable, type BaseLesson } from "$lib/lessons/lessons";
+import { Lesson, type StorableLesson, type BaseLesson } from "$lib/lessons/lessons";
 import type { LessonFormState } from "$lib/forms";
 import { defaultBatch } from "$lib/util";
 
@@ -40,7 +40,7 @@ export class UntilN implements Lesson {
     }
 
     static async fromStorable(s: StorableUntil, fetchFn: typeof fetch = fetch): Promise<UntilN> {
-        const lesson = await deserializeStorable(s.lesson, fetchFn);
+        const lesson = await Lesson.deserialize(s.lesson, fetchFn);
         return new UntilN(lesson, s.max);
     }
 

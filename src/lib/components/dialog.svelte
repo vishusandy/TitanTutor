@@ -13,6 +13,7 @@
 	export let closeLabel = config.lang.close;
 	export let submitLabel = config.lang.submit;
 	export let cancelLabel = config.lang.cancel;
+	export let confirmPrompt: string | undefined = undefined;
 
 	const closeTime: number = 100.0;
 
@@ -23,8 +24,10 @@
 	}
 
 	function handleSubmit(e: Event) {
-		animateClose();
-		setTimeout(() => closeCallback(submitData()), closeTime);
+		if (confirmPrompt === undefined || window.confirm(confirmPrompt)) {
+			animateClose();
+			setTimeout(() => closeCallback(submitData()), closeTime);
+		}
 	}
 
 	function handleClose(e: Event) {

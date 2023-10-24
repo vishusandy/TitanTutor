@@ -72,5 +72,6 @@
     "lessonConfigDialogCheckMode": "Entry mode",
     "lessonConfigDialogCheckModeChars": "chars",
     "lessonConfigDialogCheckModeWords": "words",
-    "lessonConfigDialogAcceptBackspace": "Accept backspace"
+    "lessonConfigDialogAcceptBackspace": "Accept backspace",
+    "lessonConfigConfirmSubmit": "This will reset your current lesson.  Continue?"
 }

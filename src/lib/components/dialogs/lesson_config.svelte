@@ -5,12 +5,7 @@
 	import Select from './user_form_inputs/select.svelte';
 
 	import { CheckMode, type Config } from '$lib/config';
-	import {
-		addWrappers,
-		canRandomize,
-		type Lesson,
-		type LessonTypingConfig
-	} from '$lib/lessons/lessons';
+	import { Lesson, type LessonTypingConfig } from '$lib/lessons/lessons';
 	import {
 		defaultLessonFormState,
 		type FormUserValueReturn,
@@ -50,7 +45,7 @@
 		};
 
 		const userOverrides = config.lessonConfigOverrides(lessonOverrides);
-		const result = addWrappers(lesson.baseLesson(), userOverrides);
+		const result = Lesson.addWrappers(lesson.baseLesson(), userOverrides);
 
 		return [result, lessonOverrides];
 	}
@@ -103,7 +98,7 @@
 		label={config.lang.lessonConfigDialogRandom}
 		onLabel={config.lang.on}
 		offLabel={config.lang.off}
-		initialState={canRandomize(lesson.baseLesson().getType()) ? state.random : 'disabled'}
+		initialState={Lesson.canRandomize(lesson.baseLesson().getType()) ? state.random : 'disabled'}
 	/>
 
 	<Number

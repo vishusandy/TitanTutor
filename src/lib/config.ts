@@ -1,5 +1,5 @@
 import { Audio } from "./audio";
-import { getDefaultTtsLangsFromLocale } from "./locales";
+import { defaultTtsLangs } from "./locales";
 import { defaultMap, Remap } from "./remap";
 import { Language } from "./language";
 import { UserStats, type UserStatsObject } from "./stats";
@@ -46,7 +46,7 @@ export class Config implements ConfigProps {
     }
 
     static async default(fetchFn: typeof fetch = fetch): Promise<Config> {
-        const audioDefaults = getDefaultTtsLangsFromLocale(navigator.language);
+        const audioDefaults = defaultTtsLangs(navigator.language);
         const userStats = new UserStats();
 
         const lang = await Language.default(fetchFn);

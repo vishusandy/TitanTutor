@@ -11,7 +11,8 @@ export const ttsDefaultsMap: Map<string, string[]> = new Map([
 ]);
 
 const exampleTextMap: Map<string, string> = new Map([
-    ['en', 'The boy was there when the sun rose.'],
+    ['English (America)', 'The boy was there when the sun rose.'],
+    ['Google US English', 'The boy was there when the sun rose.'],
 ]);
 
 
@@ -32,15 +33,25 @@ export const defaultStockLessonLocaleMap: Map<string, string> = new Map([
     ['en', 'en-test-words'],
 ]);
 
-export const stockLessons: Map<string, StorableBaseLesson> = new Map([
-    ['en-test-words', StockWordList.newStorable('en-test-words', 'test_words', 'Test Words')],
-]);
 
 
 
 
 
-function recurseLocaleArray<T, U>(locale: string[], map: Map<string, T>, fallback: U): T | U {
+export function defaultTtsLangs(locale: string): string[] {
+    return recurseLocaleArray([locale, navigator.language, fallbackLocale], ttsDefaultsMap, defaultTtsList);
+}
+
+export function interfaceLang(locale: string): string {
+    return recurseLocaleArray([locale, navigator.language, fallbackLocale], interfaceLanguagePaths, defaultInterfaceLanguage);
+}
+
+export function defaultLessonName(locale: string): string {
+    return recurseLocaleArray([locale, navigator.language, fallbackLocale], defaultStockLessonLocaleMap, defaultStockLesson);
+}
+
+
+function recurseLocaleArray<T, U>(locale: string[], map: Map<string, T>, fallback: T): T {
     if (locale.length === 0) return fallback;
 
     const d = map.get(locale[0]);
@@ -51,16 +62,4 @@ function recurseLocaleArray<T, U>(locale: string[], map: Map<string, T>, fallbac
 
     locale[0] = locale[0].substring(0, pos);
     return recurseLocaleArray(locale, map, fallback);
-}
-
-export function getDefaultTtsLangsFromLocale(locale: string): string[] {
-    return recurseLocaleArray([locale, navigator.language, fallbackLocale], ttsDefaultsMap, defaultTtsList);
-}
-
-export function getInterfaceLangFromLocale(locale: string): string {
-    return recurseLocaleArray([locale, navigator.language, fallbackLocale], interfaceLanguagePaths, defaultInterfaceLanguage);
-}
-
-export function getDefaultLessonFromLocale(locale: string): string {
-    return recurseLocaleArray([locale, navigator.language, fallbackLocale], defaultStockLessonLocaleMap, defaultStockLesson);
 }
