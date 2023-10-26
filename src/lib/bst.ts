@@ -54,11 +54,10 @@ export class BinaryTree<L, N> {
     root: Child<L, N>;
 
     constructor(arr: [N, L][]) {
-        const a = [...arr].sort((a: [N, L], b: [N, L]) => {
-            if (a[0] === b[0]) return 0;
-            if (a[0] < b[0]) return -1;
-            return 1;
-        });
+        const a = [...arr].sort((a: [N, L], b: [N, L]) =>
+            (a > b) ? 1 : (a === b) ? 0 : -1
+        );
+
         this.root = build(a.map(([n, v]) => new Leaf(n, v)));
     }
 
