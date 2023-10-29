@@ -53,12 +53,18 @@ function build<L, N>(nodes: Child<L, N>[]): Child<L, N> {
 export class BinaryTree<L, N> {
     root: Child<L, N>;
 
-    constructor(arr: [N, L][]) {
-        const a = [...arr].sort((a: [N, L], b: [N, L]) =>
+    constructor(arr: [L, N][]) {
+        const a = [...arr].sort(([, a], [, b]) =>
             (a > b) ? 1 : (a === b) ? 0 : -1
         );
 
-        this.root = build(a.map(([n, v]) => new Leaf(n, v)));
+        this.root = build(a.map(([v, n]) => new Leaf(n, v)));
+    }
+
+    static normalized<L>(arr: [L, number][], probSum: number | undefined) {
+        const sum = probSum ?? arr.reduce((acc, [, v]) => acc + v, 0);
+        const a: [L, number][] = Array.from(arr.map(([w, n]) => [w, n / sum]));
+        return new BinaryTree(a);
     }
 
     search(n: N): L {

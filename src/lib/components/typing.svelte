@@ -110,13 +110,17 @@
 	}
 
 	async function endLesson() {
-		if (config.logStats && sessionStats.chars !== 0) {
-			await showStatsConfirmDialog(config, sessionStats).then((v: boolean | undefined) => {
-				if (v === true) {
-					config.userStats.add(sessionStats);
-					config.saveUserConfig();
-				}
-			});
+		if (sessionStats.chars !== 0) {
+			lesson.lessonEnd();
+
+			if (config.logStats) {
+				await showStatsConfirmDialog(config, sessionStats).then((v: boolean | undefined) => {
+					if (v === true) {
+						config.userStats.add(sessionStats);
+						config.saveUserConfig();
+					}
+				});
+			}
 		}
 		finished = true;
 		return;

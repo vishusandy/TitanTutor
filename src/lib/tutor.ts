@@ -14,7 +14,7 @@ export class Tutor {
     word: WordState;
     history: CompletedWord[];
     queue: string[];
-    audioQueue: number
+    audioQueue: number;
 
     constructor(config: Config, lesson: Lesson, lessonOverrides: Partial<LessonTypingConfig>, stats: SessionStats) {
         this.stats = stats;
@@ -124,7 +124,6 @@ export class Tutor {
             case CheckMode.WordRepeat:
                 return this.handleKeydownWordMode(e);
         }
-        return Action.None;
     }
 
     handleBeforeInput(e: InputEvent): Action {

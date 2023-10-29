@@ -54,8 +54,6 @@ export abstract class BaseWordList implements BaseLesson {
         return this;
     }
 
-    setFormState(_: LessonFormState): void { }
-
     batch(n: number): string[] {
         let words: string[] = []
         for (let i = 0, p = this.pos; i < n; i++, p = p + 1 % this.words.length) {
@@ -64,4 +62,6 @@ export abstract class BaseWordList implements BaseLesson {
         this.pos += n;
         return words;
     }
+
+    lessonEnd(): void {  }
 }

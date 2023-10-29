@@ -39,7 +39,6 @@
 	function clearUserStats() {
 		if (!window.confirm(config.lang.statsResetPrompt)) return;
 
-		// config.userStats = new UserStats(config.checkMode);
 		config.saveUserConfig();
 		config = config;
 		stats.reset();

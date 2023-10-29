@@ -78,6 +78,7 @@ export class Language {
     lessonConfigDialogCheckModeChars: string = '';
     lessonConfigDialogCheckModeWords: string = '';
     lessonConfigDialogAcceptBackspace: string = '';
+    lessonConfigDialogLogLessonStats: string = '';
     lessonConfigConfirmSubmit: string = '';
 
     constructor(

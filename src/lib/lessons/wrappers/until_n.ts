@@ -48,8 +48,6 @@ export class UntilN implements Lesson {
         return { type: 'until', max, lesson: s }
     }
 
-    setFormState(_: LessonFormState): void { }
-
     getChild(): Lesson | undefined {
         return this.lesson;
     }
@@ -65,5 +63,7 @@ export class UntilN implements Lesson {
     batch(n: number): string[] {
         return defaultBatch(this, n);
     }
+    
+    lessonEnd(): void {}
 
 }

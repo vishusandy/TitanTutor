@@ -71,9 +71,6 @@
 			s.random = 'disabled';
 		}
 
-		let c: Lesson | undefined = lesson;
-		while ((c = c.getChild())) c.setFormState(s);
-
 		return s;
 	}
 </script>

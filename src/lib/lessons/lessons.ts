@@ -7,6 +7,7 @@ import type { LessonFormState } from '$lib/forms';
 import type { Language } from '$lib/language';
 import { UserWordList, type StorableUserWordlist } from './base/user_wordlist';
 import type { BaseWordList } from './base/wordlist_base';
+import { AdaptiveList, type StorableAdaptive } from './base/adaptive_list';
 
 
 export const stockLessons: Map<string, StorableBaseLesson> = new Map([
@@ -41,7 +42,7 @@ export interface StorableBaseLesson extends StorableLesson {
 }
 
 export interface StorableLesson {
-    type: 'wordlist' | 'random' | 'until' | 'userwordlist' | 'chars';
+    type: 'wordlist' | 'random' | 'until' | 'userwordlist' | 'chars' | 'adaptive';
 }
 
 export abstract class Lesson implements Iterator<string>, Iterable<string> {
@@ -50,10 +51,10 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract storable(): StorableLesson;
     abstract next(): IteratorResult<string>;
     abstract [Symbol.iterator](): typeof this;
-    abstract setFormState(state: LessonFormState): void;
     abstract getChild(): Lesson | undefined;
     abstract getType(): string;
     abstract baseLesson(): BaseLesson;
+    abstract lessonEnd(): void;
 
 
     static canRandomize(type: string): boolean {
@@ -66,6 +67,8 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
                 return StockWordList.fromStorable(s as StorableStockList, fetchFn);
             case 'userwordlist':
                 return UserWordList.fromStorable(s as StorableUserWordlist, fetchFn);
+            case 'adaptive':
+                return AdaptiveList.fromStorable(s as StorableAdaptive, fetchFn);
             case 'random':
                 return RandomList.fromStorable(s as StorableRandom, fetchFn);
             case 'until':

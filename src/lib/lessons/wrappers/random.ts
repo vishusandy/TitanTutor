@@ -49,8 +49,6 @@ export class RandomList implements Lesson {
         return JSON.stringify(this.storable());
     }
 
-    setFormState(_: LessonFormState): void { }
-
     getChild(): Lesson | undefined {
         return this.base;
     }
@@ -66,4 +64,6 @@ export class RandomList implements Lesson {
     batch(n: number): string[] {
         return defaultBatch(this, n);
     }
+
+    lessonEnd(): void {  }
 };

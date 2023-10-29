@@ -9,7 +9,7 @@ import type { Language } from "$lib/language";
 
 export type StorableChars = { type: "chars", name: string, chars: string[] } & StorableBaseLesson;
 
-export class RandomChars implements Lesson, BaseLesson {
+export class RandomChars implements BaseLesson {
     chars: string[];
     length: number | [number, number] = 5;
     id: string = '';
@@ -64,8 +64,6 @@ export class RandomChars implements Lesson, BaseLesson {
         return new RandomChars(s.chars, s.id, s.name);
     }
 
-    setFormState(_: LessonFormState): void { }
-
     getChild(): Lesson | undefined {
         return undefined;
     }
@@ -86,4 +84,5 @@ export class RandomChars implements Lesson, BaseLesson {
         return defaultBatch(this, n);
     }
 
+    lessonEnd(): void { }
 }
