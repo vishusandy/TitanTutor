@@ -21,10 +21,10 @@
 	const wordModeChoices = [
 		{
 			key: 'words',
-			label: config.lang.lessonConfigDialogCheckModeWords,
+			label: config.lang.configCheckModeWords,
 			value: CheckMode.WordRepeat
 		},
-		{ key: 'chars', label: config.lang.lessonConfigDialogCheckModeChars, value: CheckMode.Char }
+		{ key: 'chars', label: config.lang.configCheckModeChars, value: CheckMode.Char }
 	];
 
 	let untilDataFn: () => FormUserValueReturn<number | null>;
@@ -80,7 +80,7 @@
 		bind:getData={untilDataFn}
 		{config}
 		id="until"
-		label={config.lang.lessonConfigDialogUntil}
+		label={config.lang.configUntil}
 		initialState={state.until}
 		defaultValue={100}
 		nullLabel={config.lang.infinite}
@@ -92,7 +92,7 @@
 		bind:getData={randomDataFn}
 		{config}
 		id="random"
-		label={config.lang.lessonConfigDialogRandom}
+		label={config.lang.configRandom}
 		onLabel={config.lang.on}
 		offLabel={config.lang.off}
 		initialState={Lesson.canRandomize(lesson.baseLesson().getType()) ? state.random : 'disabled'}
@@ -102,7 +102,7 @@
 		bind:getData={minQueueDataFn}
 		{config}
 		id="min-queue"
-		label={config.lang.lessonConfigDialogMinQueue}
+		label={config.lang.configMinQueue}
 		initialState={state.minQueue}
 		defaultValue={config.minQueue}
 		min={1}
@@ -113,7 +113,7 @@
 		bind:getData={wordBatchSizeDataFn}
 		{config}
 		id="word-batch-size"
-		label={config.lang.lessonConfigDialogWordBatchSize}
+		label={config.lang.configWordBatchSize}
 		initialState={state.wordBatchSize}
 		defaultValue={config.wordBatchSize}
 		min={1}
@@ -124,7 +124,7 @@
 		bind:getData={backspaceDataFn}
 		{config}
 		id="accept-backspace"
-		label={config.lang.lessonConfigDialogAcceptBackspace}
+		label={config.lang.configAcceptBackspace}
 		onLabel={config.lang.accept}
 		offLabel={config.lang.ignore}
 		initialState={state.backspace}
@@ -134,7 +134,7 @@
 		bind:getData={checkModeDataFn}
 		{config}
 		id="check-mode"
-		label={config.lang.lessonConfigDialogCheckMode}
+		label={config.lang.configCheckMode}
 		choices={wordModeChoices}
 		initialValue={state.checkMode}
 	/>

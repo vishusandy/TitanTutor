@@ -38,6 +38,8 @@ export class Language {
     enable: string = '';
     wordMode: string = '';
     charMode: string = '';
+    space: string = '';
+    missedSpace: string = ''
     useUserValue: string = '';
     openTtsDialog: string = '';
     ttsDialogTitle: string = '';
@@ -70,16 +72,22 @@ export class Language {
     statsResetPrompt: string = '';
     openLessonConfigDialog: string = '';
     lessonConfigDialogTitle: string = '';
-    lessonConfigDialogRandom: string = '';
-    lessonConfigDialogUntil: string = '';
-    lessonConfigDialogMinQueue: string = '';
-    lessonConfigDialogWordBatchSize: string = '';
-    lessonConfigDialogCheckMode: string = '';
-    lessonConfigDialogCheckModeChars: string = '';
-    lessonConfigDialogCheckModeWords: string = '';
-    lessonConfigDialogAcceptBackspace: string = '';
-    lessonConfigDialogLogLessonStats: string = '';
     lessonConfigConfirmSubmit: string = '';
+    openConfigDialog: string = '';
+    configDialogTitile: string = '';
+    configRandom: string = '';
+    configUntil: string = '';
+    configMinQueue: string = '';
+    configWordBatchSize: string = '';
+    configCheckMode: string = '';
+    configCheckModeChars: string = '';
+    configCheckModeWords: string = '';
+    configAcceptBackspace: string = '';
+    configLogLessonStats: string = '';
+    configStopHotkey: string = '';
+    configPauseHotkey: string = '';
+    configRemap: string = '';
+    configLanguage: string = '';
 
     constructor(
         lang: LanguageObject,

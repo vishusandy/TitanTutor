@@ -82,6 +82,7 @@
     color: #ad3a3a;
 }
 
+.history .word {}
 
 
 .letter {
@@ -89,12 +90,55 @@
 }
 
 .missed-space {
+    display: inline-block;
     width: 1rem;
     height: 1rem;
-    border: 1px solid #ce5f50;
+    border-bottom: 1px solid #ce5f50;
     background-color: #f1d7d4;
 }
 
+.history .spacer {
+    align-self: center;
+    display: inline-block;
+    height: clamp(1.2rem, 5vh, 2.5rem);
+    width: 2rem;
+    margin: 0px 1rem;
+    border-bottom: 1px solid #7ece50;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath fill='none' stroke='green' stroke-width='2' stroke-miterlimit='10' stroke-dashoffset='0'  d='M14.1 27.2l7.1 7.2 16.7-16.8'/%3E%3C/svg%3E") no-repeat bottom;
+    // background-size: cover;
+
+    stroke: green;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke-dashoffset: 0;
+    fill: none;
+    animation: reveal 1s ease-in-out 0s 1;
+    // mask: linear-gradient(#000 0 0);
+    // mask-composite: subtract;
+    // background-color: #f1d7d4;
+    // clip-path: inset(0px 50% 0px 0px);
+}
+
+.checkmark {}
+
+.history {
+    margin-left: calc(100% / 2);
+    display: inline-flex;
+}
+
+.queue {
+    margin-right: calc(100% / 2);
+}
+
+@keyframes reveal {
+    0% {
+        clip-path: inset(0px 50% 0px 50%);
+    }
+
+    100% {
+        clip-path: inset(0px 0px 0px 0px);
+    }
+}
 
 @keyframes blinking {
     100% {
@@ -111,6 +155,8 @@
         transform: translateY(5%);
     }
 }
+
+@keyframes space-added {}
 
 @keyframes word-wrong {
     0% {

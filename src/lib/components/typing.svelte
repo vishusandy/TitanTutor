@@ -12,6 +12,7 @@
 	import type { Audio } from '$lib/audio';
 	import { Lesson, type LessonTypingConfig } from '$lib/lessons/lessons';
 	import {
+		showConfigDialog,
 		showLessonConfigDialog,
 		showStatsConfirmDialog,
 		showStatsDialog,
@@ -155,7 +156,7 @@
 		handleAction(tutor.handleKeydown(e));
 	}
 
-	function handleAction(action: Action) {
+	function handleAction<T = undefined>(action: Action, ctx: T | undefined = undefined) {
 		switch (action) {
 			case Action.WordReset:
 			case Action.CharAdded:
@@ -167,8 +168,8 @@
 				lessonCompleted();
 				break;
 			case Action.MissedSpace:
-				handleAction(Action.NextWord);
-				addMissedSpace();
+				handleAction(Action.NextWord, true);
+				addSpace(['missed-space']);
 				break;
 			case Action.NextWord:
 				const n = tutor.nextWord();
@@ -176,7 +177,10 @@
 					if (n !== Action.NextWord) handleAction(n);
 					return;
 				}
-				if (n[0] !== undefined) addToHistory(n[0]);
+				if (n[0] !== undefined) {
+					addToHistory(n[0]);
+					if (ctx === undefined) addSpace(['spacer']);
+				}
 				tutor = tutor;
 				break;
 		}
@@ -203,10 +207,15 @@
 		});
 	}
 
-	function addMissedSpace() {
-		const el = document.createElement('span');
-		el.classList.add('missed-space');
+	function addSpace(cls: string[]) {
+		const el = document.createElement('div');
+		el.classList.add(...cls);
+		el.title = config.lang.missedSpace;
 		historyNode.appendChild(el);
+	}
+
+	function addSpacer() {
+		addSpace(['spacer']);
 	}
 
 	async function showLessonConfig(): Promise<void> {
@@ -236,11 +245,27 @@
 	async function showUserStatsDialog() {
 		showStatsDialog(config.lang.statsDialogUserTitle, config, config.userStats);
 	}
+
+	async function showConfig(_: Event) {
+		showConfigDialog(config).then((conf?: Config) => {
+			if (conf !== undefined) {
+				console.log(conf);
+				config = conf;
+				reset();
+				config.saveUserConfig();
+			}
+		});
+	}
 </script>
 
 <svelte:document on:keydown={shortcuts} />
 <nav class="header">
 	<ul>
+		<li>
+			<button class="link" type="button" on:click={showConfig}
+				>{config.lang.openConfigDialog}</button
+			>
+		</li>
 		<li>
 			<button class="link" type="button" on:click={showAudioDialog}
 				>{config.lang.openTtsDialog}</button
@@ -278,11 +303,8 @@
 					{config.lang.notStarted}
 				{/if}
 			</div>
-
 			<div class="tutor-words" class:paused>
-				<span bind:this={historyNode} class="history" />
-
-				<Word
+				<span bind:this={historyNode} class="history" /><Word
 					bind:span={activeWord}
 					word={tutor.word.wordChars}
 					state={tutor.word.state}
@@ -404,14 +426,6 @@
 	.tutor-input:focus {
 		border-color: #f5c0ab;
 		box-shadow: 0px 0px 4px #f5c0ab;
-	}
-
-	.history {
-		margin-left: calc(100% / 2);
-	}
-
-	.queue {
-		margin-right: calc(100% / 2);
 	}
 
 	.tutor-menu {

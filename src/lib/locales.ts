@@ -3,6 +3,9 @@ import type { StorableBaseLesson } from "./lessons/lessons";
 
 const fallbackLocale = 'en';
 
+type LangItem = { name: string, path: string };
+export const languageList: LangItem[] = [{ name: 'English - US', path: 'en-US' }];
+
 export const defaultTtsList = ['English (America)', 'Google US English'];
 export const ttsDefaultsMap: Map<string, string[]> = new Map([
     // locale   array of acceptable default languages for tts

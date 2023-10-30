@@ -8,6 +8,7 @@ import type { Config } from "./config";
 import type { BaseStats } from "./stats";
 import type { InnerDialogComponent, CloseFn } from "./types";
 import type { Lesson, LessonTypingConfig } from "$lib/lessons/lessons";
+import User from "./components/dialogs/user.svelte";
 
 
 export function showVoiceDialog(config: Config) {
@@ -24,6 +25,11 @@ export function showStatsConfirmDialog<T extends BaseStats>(config: Config, stat
     const dialogProps: DialogProps = { title: config.lang.statsDialogSaveTitle, content: Stats, hasSubmit: true, config, cancelLabel: config.lang.no, submitLabel: config.lang.yes };
     const passProps = { stats };
     return createDialog<boolean>(dialogProps, passProps);
+}
+
+export function showConfigDialog(config: Config) {
+    const dialogProps: DialogProps = { title: config.lang.configDialogTitile, content: User, hasSubmit: true, config };
+    return createDialog<Config>(dialogProps);
 }
 
 export function showLessonConfigDialog(config: Config, lesson: Lesson, lessonConfigOverrides: Partial<LessonTypingConfig>) {

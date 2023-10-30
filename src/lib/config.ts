@@ -79,7 +79,7 @@ export class Config implements ConfigProps {
             if (!Object.hasOwn(this, key)) continue;
 
             if (key === 'tts') obj[key] = Audio.serialize(this.tts);
-            else if (key === 'remap') obj[key] = this.remap.getName();
+            else if (key === 'remap') obj[key] = this.remap.getId();
             else if (key === 'lang') obj[key] = this.lang.lang;
             else obj[key] = this[key];
         }
