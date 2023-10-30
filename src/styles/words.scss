@@ -43,92 +43,75 @@
 }
 
 
-
-.word:not(.active):not(.queued).success {
-    animation: word-added 0.3s ease-in-out 0s 1;
-    box-shadow: 0px 0px 4px 0px rgba(202, 202, 202, 0.9)
+.queue {
+    margin-right: calc(100% / 2);
 }
 
-.word:not(.active):not(.queued).error {
-    animation: word-wrong 0.1s ease-in-out 0s 3;
-}
-
-.word:not(.active).queued {
+.queue .word:not(.active) {
     background-color: rgba(200, 200, 200, 0.15);
-    box-shadow: 0px 0px 4px 0px rgba(202, 202, 202, 0.9)
+    box-shadow: 0px 0px 4px 0px rgba(202, 202, 202, 0.9);
+    margin-right: 2rem;
 }
 
-.word:not(.active).success {
+.history .word.success {
+    animation: word-added 0.3s ease-in-out 0s 1;
+    box-shadow: 0px 0px 4px 0px rgba(202, 202, 202, 0.9);
     border: 1px solid #50ce95;
     background-color: #e2f7e2;
 }
 
-.word:not(.active).error {
+.history .word.error {
     border: 1px solid #ce5f50;
     // border: 1px solid #923636;
     background-color: #f1d7d4;
+    animation: word-wrong 0.1s ease-in-out 0s 3;
 }
 
-.word:not(.active).success .letter.complete {
+.history .word.success .letter.complete {
     color: #50ce95;
 }
 
-.word:not(.active).error .letter.complete {
+.history .word.error .letter.complete {
     color: #666;
 }
 
-.word:not(.active) .letter.error {
-    // color: #d43f3f;
+.history .word .letter.error {
     color: #ad3a3a;
 }
 
-.history .word {}
 
 
 .letter {
     border-left: 0px solid transparent;
 }
 
-.missed-space {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    border-bottom: 1px solid #ce5f50;
-    background-color: #f1d7d4;
-}
 
-.history .spacer {
+.missed-space,
+.spacer {
     align-self: center;
     display: inline-block;
     height: clamp(1.2rem, 5vh, 2.5rem);
     width: 2rem;
-    margin: 0px 1rem;
-    border-bottom: 1px solid #7ece50;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath fill='none' stroke='green' stroke-width='2' stroke-miterlimit='10' stroke-dashoffset='0'  d='M14.1 27.2l7.1 7.2 16.7-16.8'/%3E%3C/svg%3E") no-repeat bottom;
-    // background-size: cover;
+    margin: 0px 0.3rem;
+}
 
-    stroke: green;
+.history .missed-space {
+    background-color: #f1d7d4;
+}
+
+.checkmark {
     stroke-width: 2;
     stroke-miterlimit: 10;
     stroke-dashoffset: 0;
     fill: none;
-    animation: reveal 1s ease-in-out 0s 1;
-    // mask: linear-gradient(#000 0 0);
-    // mask-composite: subtract;
-    // background-color: #f1d7d4;
-    // clip-path: inset(0px 50% 0px 0px);
+    animation: reveal 0.4s ease-in-out 0s 1;
 }
-
-.checkmark {}
 
 .history {
     margin-left: calc(100% / 2);
     display: inline-flex;
 }
 
-.queue {
-    margin-right: calc(100% / 2);
-}
 
 @keyframes reveal {
     0% {
