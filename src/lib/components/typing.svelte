@@ -169,7 +169,7 @@
 				break;
 			case Action.MissedSpace:
 				handleAction(Action.NextWord, true);
-				addSpace(['missed-space']);
+				addMissedSpace();
 				break;
 			case Action.NextWord:
 				const n = tutor.nextWord();
@@ -179,7 +179,7 @@
 				}
 				if (n[0] !== undefined) {
 					addToHistory(n[0]);
-					if (ctx === undefined) addSpace(['spacer']);
+					if (ctx === undefined) addSpace();
 				}
 				tutor = tutor;
 				break;
@@ -193,10 +193,6 @@
 		}
 	}
 
-	async function showSessionStatsDialog() {
-		showStatsDialog(config.lang.statsDialogSessionTitle, config, sessionStats);
-	}
-
 	function addToHistory(w: WordState) {
 		const c = new Word({
 			target: historyNode,
@@ -207,30 +203,30 @@
 		});
 	}
 
-	function addSpace(cls: string[]) {
+	function addSpace() {
 		const el = document.createElement('div');
-		el.classList.add(...cls);
+		el.classList.add('spacer');
+		// el.innerHTML =
+		// 	"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><path  d='M14.1 27.2l7.1 7.2 16.7-16.8'/></svg>";
+		el.title = config.lang.space;
+		historyNode.appendChild(el);
+	}
+
+	function addMissedSpace() {
+		const el = document.createElement('div');
+		el.classList.add('missed-space');
+		// el.innerHTML =
+		// 	"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><path  d='M14.1 27.2l7.1 7.2 16.7-16.8'/></svg>";
 		el.title = config.lang.missedSpace;
 		historyNode.appendChild(el);
 	}
 
-	function addSpacer() {
-		addSpace(['spacer']);
+	async function showSessionStatsDialog() {
+		showStatsDialog(config.lang.statsDialogSessionTitle, config, sessionStats);
 	}
 
-	async function showLessonConfig(): Promise<void> {
-		return showLessonConfigDialog(config, lesson, tutor.overrides).then(
-			async (data?: [Lesson, Partial<LessonTypingConfig>]) => {
-				if (data !== undefined) {
-					let overrides: Partial<LessonTypingConfig>;
-					[lesson, overrides] = data;
-					Lesson.saveOverrides(lesson.baseLesson().id, overrides);
-					reset(overrides);
-					// await tick();
-					// lesson = lesson;
-				}
-			}
-		);
+	async function showUserStatsDialog() {
+		showStatsDialog(config.lang.statsDialogUserTitle, config, config.userStats);
 	}
 
 	async function showAudioDialog(_: Event) {
@@ -242,8 +238,17 @@
 		});
 	}
 
-	async function showUserStatsDialog() {
-		showStatsDialog(config.lang.statsDialogUserTitle, config, config.userStats);
+	async function showLessonConfig(): Promise<void> {
+		return showLessonConfigDialog(config, lesson, tutor.overrides).then(
+			(data?: [Lesson, Partial<LessonTypingConfig>]) => {
+				if (data !== undefined) {
+					let overrides: Partial<LessonTypingConfig>;
+					[lesson, overrides] = data;
+					Lesson.saveOverrides(lesson.baseLesson().id, overrides);
+					reset(overrides);
+				}
+			}
+		);
 	}
 
 	async function showConfig(_: Event) {
@@ -253,6 +258,7 @@
 				config = conf;
 				reset();
 				config.saveUserConfig();
+				reset();
 			}
 		});
 	}

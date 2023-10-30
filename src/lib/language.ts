@@ -75,6 +75,8 @@ export class Language {
     lessonConfigConfirmSubmit: string = '';
     openConfigDialog: string = '';
     configDialogTitile: string = '';
+    configSpaceOptional: string = '';
+    configCharModeOnly: string = '';
     configRandom: string = '';
     configUntil: string = '';
     configMinQueue: string = '';

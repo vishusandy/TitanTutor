@@ -3,7 +3,7 @@
 	import { Language } from '$lib/language';
 	import { Remap, keyboardRemappings } from '$lib/remap';
 	import { defaultTtsLangs, languageList } from '$lib/locales';
-	import type { ChangeEventHandler } from 'svelte/elements';
+	import OptionalNumber from './form_inputs/optional_number.svelte';
 
 	export let config: Config;
 
@@ -92,6 +92,24 @@
 
 	<label for="logStats">{config.lang.configLogLessonStats}</label>
 	<input id="logStats" type="checkbox" bind:checked={logStats} />
+
+	<label for="spaceOptional">{config.lang.configSpaceOptional}</label>
+	<div>
+		<input id="spaceOptional" type="checkbox" bind:checked={spaceOptional} />
+		{config.lang.configCharModeOnly}
+	</div>
+
+	<label for="random">{config.lang.configRandom}</label>
+	<input id="random" type="checkbox" bind:checked={random} />
+
+	<OptionalNumber
+		{config}
+		label={config.lang.configUntil}
+		initialState={config.until}
+		id="until"
+		defaultValue={100}
+		nullLabel={config.lang.infinite}
+	/>
 </div>
 
 <style>
