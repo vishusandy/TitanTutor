@@ -1,103 +1,130 @@
+// $success-color: #50ce95;
+$success-color: #3f5a66;
+
+// $error-letters: #3f5a66;
+$error-letters: $success-color;
+$error-color: #bb3737;
+$error-border: none;
+$error-bg: transparent;
+// $error-bg: #fde9e9;
+// $error-border: 1px solid #ce5f50;
+
+$active-color: #202d33;
+$active-error: #bb3737;
+$active-complete: #20b0e9;
+
+$queue-color: #3f5a66;
+
+
+
 .word {
     display: inline-block;
     margin: 0.1em 0.1em;
-    padding: 0.4em;
+    padding: 0px 0.1em;
     scroll-snap-align: center;
     background: transparent;
-    color: #444;
-    border-radius: 0.15em;
-    border: 1px solid transparent;
+    height: calc(clamp(1.2rem, 5vh, 2.5rem)*1.1);
 }
+
+
 
 .word.active {
-    // font-size: 1.9rem;
-    font-size: 130%;
-    box-shadow: 0px 2px 6px 0px rgba(160, 160, 160, 0.8);
+    font-size: 140%;
+    margin: 0px 1.6rem;
+    color: $active-color;
+
+    .letter.complete {
+        color: $success-color;
+    }
+
+    .letter.error {
+        color: $active-error;
+    }
+
+    .letter.complete {
+        color: $active-complete;
+    }
 }
 
-.tutor-words:not(.paused) .word.active {
-    scroll-snap-stop: always;
-    border: 1px solid #50aace;
-    // background-color: rgba(73, 170, 207, 0.15);
-    background-color: #e4f2f8;
-}
-
-.tutor-words.paused .word.active {
-    // border: 1px solid #a7a6a3;
-    // background-color: rgba(200, 200, 200, 0.2);
-    border: 1px solid #d3d2cf;
-}
-
-.tutor-words:not(.paused) .letter.active {
-    border-left: 2px solid rgba(0, 0, 0, 1);
-    margin-left: -2px;
-    animation: blinking 1.5s steps(2, jump-start) infinite;
-}
-
-.word.active .letter.error {
-    color: #d43f3f;
-}
-
-.word.active .letter.complete {
-    color: #20b0e9;
-}
 
 
 .queue {
     margin-right: calc(100% / 2);
-}
+    color: $queue-color;
 
-.queue .word:not(.active) {
-    background-color: rgba(200, 200, 200, 0.15);
-    box-shadow: 0px 0px 4px 0px rgba(202, 202, 202, 0.9);
-    margin-right: 2rem;
-}
-
-.history .word.success {
-    animation: word-added 0.3s ease-in-out 0s 1;
-    box-shadow: 0px 0px 4px 0px rgba(202, 202, 202, 0.9);
-    border: 1px solid #50ce95;
-    background-color: #e2f7e2;
-}
-
-.history .word.error {
-    border: 1px solid #ce5f50;
-    // border: 1px solid #923636;
-    background-color: #f1d7d4;
-    animation: word-wrong 0.1s ease-in-out 0s 3;
-}
-
-.history .word.success .letter.complete {
-    color: #50ce95;
-}
-
-.history .word.error .letter.complete {
-    color: #666;
-}
-
-.history .word .letter.error {
-    color: #ad3a3a;
+    .word:not(.active) {
+        margin: 0px;
+        padding: 0px 0.08em;
+    }
 }
 
 
 
-.letter {
-    border-left: 0px solid transparent;
+.history {
+    margin-left: calc(100% / 2);
+    display: inline-flex;
+
+    .word.success {
+        animation: word-added 0.3s ease-in-out 0s 1;
+
+        .letter.complete {
+            color: $success-color;
+        }
+    }
+
+    .word.error {
+        border: $error-border;
+        background-color: $error-bg;
+        animation: word-wrong 0.1s ease-in-out 0s 3;
+
+        .letter.complete {
+            color: $error-letters;
+        }
+
+        .letter.error {
+            color: $error-color;
+        }
+    }
 }
 
 
-.missed-space,
-.spacer {
-    align-self: center;
-    display: inline-block;
-    height: clamp(1.2rem, 5vh, 2.5rem);
-    width: 2rem;
-    margin: 0px 0.3rem;
+
+.tutor-words:not(.paused) {
+    .word.active {
+        scroll-snap-stop: always;
+    }
+
+    .letter.active {
+        border-left: 2px solid rgba(0, 0, 0, 1);
+        margin-left: -2px;
+        animation: blinking 1.5s steps(2, jump-start) infinite;
+    }
 }
 
-.history .missed-space {
-    background-color: #f1d7d4;
+
+
+.char-mode {
+
+    .missed-space,
+    .spacer {
+        align-self: center;
+        display: inline-block;
+        height: calc(clamp(1.2rem, 5vh, 2.5rem) * 1.1);
+        margin: 0px;
+    }
+
+    .history .spacer {
+        width: 0.4ch;
+    }
+
+    .history .missed-space {
+        width: 1ch;
+        background-color: $error-bg;
+        border: $error-border;
+    }
 }
+
+
 
 .checkmark {
     stroke-width: 2;
@@ -107,10 +134,6 @@
     animation: reveal 0.4s ease-in-out 0s 1;
 }
 
-.history {
-    margin-left: calc(100% / 2);
-    display: inline-flex;
-}
 
 
 @keyframes reveal {

@@ -1,7 +1,19 @@
 
 
+
+adaptive list must process word state for typos
+track first word error separately than all word errors
+series
+how to manage random and adaptive in config - cant use both at same time
+  add a LessonFormState type and have form state keep an array of them
+  each lesson class sets form state
+  each time config is changed run set state for all lesson wrappers
+  and/or use present | disabled for wrapper class state
+custom word lists
 max word history
 multilingual example text
-store custom wordlists in localStorage
-
 shift unpauses
+
+
+
+

@@ -6,8 +6,6 @@
 	export let stats: T;
 	export let config: Config;
 
-	type IsUserStats = T extends UserStats ? true : false;
-
 	const userStats = (stats as unknown as UserStats).sessions !== undefined;
 
 	let grossWpm: string = '';
@@ -46,7 +44,7 @@
 		calc();
 	}
 
-	function changeTractStats() {
+	function changeTrackStats() {
 		trackStats = trackStatsCheckbox.checked;
 		config.logStats = trackStats;
 		config = config;
@@ -96,7 +94,7 @@
 					type="checkbox"
 					checked={trackStats}
 					bind:this={trackStatsCheckbox}
-					on:change={changeTractStats}
+					on:change={changeTrackStats}
 				/>
 				<label for="log-stats">{config.lang.statsDialogTrackUserStats}</label>
 			</div>

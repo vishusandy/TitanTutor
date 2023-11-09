@@ -16,16 +16,15 @@ body>div {
 }
 
 nav.header {
-    // position: absolute;
-    // top: 0px;
     width: 100%;
 }
 
 nav ul {
-    margin: 0px;
+    margin: 0px auto;
     padding: 0px;
     display: flex;
-    justify-content: center;
+    width: 100%;
+    // justify-content: center;
 }
 
 nav li {

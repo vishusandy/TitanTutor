@@ -4,7 +4,7 @@
 	import Word from './typing/word.svelte';
 	import QueuedWord from './typing/queued_word.svelte';
 
-	import type { Config } from '$lib/config';
+	import { CheckMode, type Config } from '$lib/config';
 	import { SessionStats } from '$lib/stats';
 	import type { WordState } from '$lib/word_state';
 	import { Tutor } from '$lib/tutor';
@@ -108,6 +108,10 @@
 		paused = true;
 		finished = false;
 		sessionStats = new SessionStats(tutor.lessonConfig.checkMode);
+		// historyNode.childNodes
+
+		let child;
+		while ((child = historyNode.firstChild)) historyNode.removeChild(child);
 	}
 
 	async function endLesson() {
@@ -309,15 +313,13 @@
 					{config.lang.notStarted}
 				{/if}
 			</div>
-			<div class="tutor-words" class:paused>
+			<div class="tutor-words" class:paused class:char-mode={config.checkMode === CheckMode.Char}>
 				<span bind:this={historyNode} class="history" /><Word
 					bind:span={activeWord}
 					word={tutor.word.wordChars}
 					state={tutor.word.state}
 					active={true}
-				/>
-
-				<span class="queue">
+				/><span class="queue">
 					{#each tutor.queue as q}
 						<QueuedWord word={q} />{' '}
 					{/each}
@@ -417,10 +419,12 @@
 	}
 
 	.tutor-input {
-		border: 1px solid #bcc2c9;
+		/* border: 1px solid #bcc2c9;
 		border-bottom-left-radius: 0px;
 		border-bottom-right-radius: 0px;
-		box-sizing: border-box;
+		box-sizing: border-box; */
+		border: 0px;
+		box-shadow: none !important;
 		font-size: 1.2rem;
 		width: 100%;
 		max-width: 40ch;
@@ -429,10 +433,10 @@
 		caret-color: transparent;
 	}
 
-	.tutor-input:focus {
+	/* .tutor-input:focus {
 		border-color: #f5c0ab;
 		box-shadow: 0px 0px 4px #f5c0ab;
-	}
+	} */
 
 	.tutor-menu {
 		font-size: 1.2rem;
@@ -440,7 +444,8 @@
 		width: 100%;
 		max-width: calc(40ch + 2.4rem + 2px);
 		margin: 0rem auto 0px;
-		justify-content: space-between;
+        text-align: center;
+		/* justify-content: space-between; */
 	}
 
 	.stop-button:not(.hidden) {

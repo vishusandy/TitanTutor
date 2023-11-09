@@ -1,9 +1,5 @@
-import type prand from "pure-rand";
-
 import { Lesson, type BaseLesson, type StorableBaseLesson } from "$lib/lessons/lessons";
 import { defaultBatch } from "$lib/util";
-import { randGen } from '$lib/random'
-import type { LessonFormState } from "$lib/forms";
 import type { Language } from "$lib/language";
 import type { BaseWordList } from "./wordlist_base";
 import { storagePrefix } from "$lib/config";
@@ -15,7 +11,6 @@ export type StorableAdaptive = { type: "adaptive", base: StorableBaseLesson };
 
 export class AdaptiveList implements Lesson {
     base: BaseWordList;
-    rng: prand.RandomGenerator;
     pos: number;
     typos: Map<string, number>;
     wordProbTree: BinaryTree<string, number>;
@@ -23,12 +18,16 @@ export class AdaptiveList implements Lesson {
     constructor(base: BaseWordList) {
         this.pos = 0;
         this.base = base;
-        this.rng = randGen();
 
         const s = localStorage.getItem(lessonTypoPrefix + base.id);
         const typoFreq: [string, number][] = s !== null ? JSON.parse(s) : Array.from(base.words.map(w => [w, 0]));
         this.typos = new Map(typoFreq);
         this.wordProbTree = AdaptiveList.newWordProbTree(this.base.words, typoFreq);
+    }
+
+    save() {
+        const s = JSON.stringify(Array.from(this.typos.entries()));
+        localStorage.setItem(lessonTypoPrefix + this.base.id, s);
     }
 
     /**
@@ -131,7 +130,6 @@ export class AdaptiveList implements Lesson {
     }
 
     lessonEnd(): void {
-        const s = JSON.stringify(Array.from(this.typos.entries()));
-        localStorage.setItem(lessonTypoPrefix + this.base.id, s);
+        this.save();
     }
 }
