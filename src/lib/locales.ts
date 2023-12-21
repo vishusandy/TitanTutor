@@ -1,6 +1,3 @@
-import { StockWordList } from "./lessons/base/wordlist";
-import type { StorableBaseLesson } from "./lessons/lessons";
-
 const fallbackLocale = 'en';
 
 type LangItem = { name: string, path: string };
@@ -32,8 +29,9 @@ const interfaceLanguagePaths: Map<string, string> = new Map([
 const defaultStockLesson = 'en-test-words';
 export const defaultStockLessonLocaleMap: Map<string, string> = new Map([
     // locale   stockLesson key
-    ['en-US', 'en-test-words'],
-    ['en', 'en-test-words'],
+    ['en-US', 'dvorak_en-US_1'],
+    ['en', 'dvorak_en-US_1'],
+    // ['en', 'en-test-words'],
 ]);
 
 

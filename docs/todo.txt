@@ -1,5 +1,7 @@
 
 
+can user choose thier interface lang?
+
 
 adaptive list must process word state for typos
 track first word error separately than all word errors

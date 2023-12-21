@@ -1,7 +1,7 @@
 import { base } from "$app/paths";
 import { BaseWordList, type StorableBaseWordList } from "./wordlist_base";
 
-// filename is the json file located within data/words/ and without .json extension
+// filename is the json file located within data/words/
 export type StorableStockList = { type: 'wordlist', filename: string } & StorableBaseWordList;
 
 export class StockWordList extends BaseWordList {
@@ -23,7 +23,7 @@ export class StockWordList extends BaseWordList {
     }
 
     static async fromStorable(s: StorableStockList, fetchFn: typeof fetch = fetch): Promise<StockWordList> {
-        const req = new Request(`${base}/data/words/${s.filename}.json`);
+        const req = new Request(`${base}/data/words/${s.filename}`);
 
         return fetchFn(req)
             .then((resp) => resp.json())

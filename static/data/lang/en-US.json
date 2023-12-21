@@ -73,7 +73,7 @@
     "configSpaceOptional": "Space optional",
     "configCharModeOnly": "(character mode only)",
     "configRandom": "Randomize",
-    "configUntil": "Number of words",
+    "configUntil": "Max words",
     "configMinQueue": "Minimum queue size",
     "configWordBatchSize": "Queue refill size",
     "configCheckMode": "Entry mode",

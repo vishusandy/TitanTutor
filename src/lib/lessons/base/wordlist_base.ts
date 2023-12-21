@@ -1,5 +1,4 @@
 import type { BaseLesson, Lesson, StorableBaseLesson } from "$lib/lessons/lessons";
-import type { LessonFormState } from "$lib/forms";
 import type { Language } from "$lib/language";
 
 export type StorableBaseWordList = { name: string } & StorableBaseLesson;

@@ -3,7 +3,6 @@ import { RandomList, type StorableRandom } from './wrappers/random';
 import { UntilN, type StorableUntil } from './wrappers/until_n';
 import { defaultLessonName } from '$lib/locales';
 import { storagePrefix, Config, CheckMode } from '$lib/config';
-import type { LessonFormState } from '$lib/forms';
 import type { Language } from '$lib/language';
 import { UserWordList, type StorableUserWordlist } from './base/user_wordlist';
 import type { BaseWordList } from './base/wordlist_base';
@@ -11,7 +10,13 @@ import { AdaptiveList, type StorableAdaptive } from './base/adaptive_list';
 
 
 export const stockLessons: Map<string, StorableBaseLesson> = new Map([
-    ['en-test-words', StockWordList.newStorable('en-test-words', 'test_words', 'Test Words')],
+    ['en-test-words', StockWordList.newStorable('en-test-words', 'test_words.json', 'Test Words')],
+    ['dvorak_en-US_1', StockWordList.newStorable('dvorak_en-US_1', 'dvorak_en-US/lesson_1_homerow_basic.json', 'Dvorak homerow')],
+    ['dvorak_en-US_2', StockWordList.newStorable('dvorak_en-US_2', 'dvorak_en-US/lesson_2_homerow_basic.json', 'Dvorak homerow + widdle')],
+    ['dvorak_en-US_3', StockWordList.newStorable('dvorak_en-US_3', 'dvorak_en-US/lesson_3_homerow_basic.json', 'Dvorak toprow')],
+    ['dvorak_en-US_4', StockWordList.newStorable('dvorak_en-US_4', 'dvorak_en-US/lesson_4_homerow_basic.json', 'Dvorak toprow + middle')],
+    ['dvorak_en-US_5', StockWordList.newStorable('dvorak_en-US_5', 'dvorak_en-US/lesson_5_homerow_basic.json', 'Dvorak bottomrow + middle')],
+    ['dvorak_en-US_6', StockWordList.newStorable('dvorak_en-US_6', 'dvorak_en-US/lesson_6_homerow_basic.json', 'Dvorak bottomrow + middle')],
 ]);
 
 
@@ -108,7 +113,9 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
             if (storable === null) throw new Error(`Could not find user lesson '${id}'`);
             return Lesson.deserializeFromConfig(id, JSON.parse(storable), config, fetchFn);
         }
+
         const storable = stockLessons.get(id);
+
         if (storable === undefined)
             throw new Error(`Could not find lesson '${id}'`);
         return Lesson.deserializeFromConfig(id, storable, config, fetchFn);
@@ -116,6 +123,7 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
 
     static async getLast(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
         const lastLesson = localStorage.getItem(lastLessonPrefix);
+
         if (lastLesson === null)
             return Lesson.default(config, fetchFn);
 
@@ -124,6 +132,7 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
 
     static getOverrides(id: string): Partial<LessonTypingConfig> {
         const opts = localStorage.getItem(`${lessonOptionsPrefix}${id}`);
+
         return (opts !== null) ? JSON.parse(opts) : {};
     }
 
@@ -133,9 +142,11 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
 
     static async deserializeFromOverrides(s: StorableBaseLesson, opts: LessonTypingConfig, fetchFn: typeof fetch = fetch) {
         let storable: StorableLesson = s;
+
         if (opts.random && Lesson.canRandomize(s.type)) {
             storable = RandomList.newStorable(storable);
         }
+
         if (opts.until !== null) {
             storable = UntilN.newStorable(storable, opts.until);
         }
@@ -146,12 +157,14 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
 
     static async deserializeFromConfig(id: string, s: StorableBaseLesson, config: Config, fetchFn: typeof fetch = fetch) {
         const opts = config.lessonConfigOverrides(Lesson.getOverrides(id));
+
         return Lesson.deserializeFromOverrides(s, opts, fetchFn);
     }
 
     static save(lesson: Lesson, saveAsLastLesson: boolean = true) {
         const storable = lesson.storable();
         localStorage.setItem(userLessonPrefix + lesson.baseLesson().id, JSON.stringify(storable));
+
         if (saveAsLastLesson) {
             Lesson.saveLast(lesson);
         }
@@ -161,103 +174,3 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         localStorage.setItem(lastLessonPrefix, lesson.baseLesson().id);
     }
 }
-
-
-// export function addWrappers(lesson: Lesson, opts: LessonTypingConfig): Lesson {
-//     let result: Lesson;
-
-//     if (opts.random === true && canRandomize(lesson.baseLesson().getType())) {
-//         result = new RandomList(lesson as BaseWordList);
-//     } else {
-//         result = lesson;
-//     }
-
-//     const max = opts.until;
-//     if (typeof max === 'number') {
-//         result = new UntilN(result, max);
-//     }
-
-//     return result;
-// }
-
-// export async function deserializeStorableFromOverrides(s: StorableBaseLesson, opts: LessonTypingConfig, fetchFn: typeof fetch = fetch) {
-//     let storable: StorableLesson = s;
-//     if (opts.random && canRandomize(s.type)) {
-//         storable = RandomList.newStorable(storable);
-//     }
-//     if (opts.until !== null) {
-//         storable = UntilN.newStorable(storable, opts.until);
-//     }
-
-//     return Lesson.deserializeStorable(storable, fetchFn);
-// }
-
-// export async function deserializeStorableFromConfig(id: string, s: StorableBaseLesson, config: Config, fetchFn: typeof fetch = fetch) {
-//     const opts = config.lessonConfigOverrides(Lesson.getOverrides(id));
-//     return deserializeStorableFromOverrides(s, opts, fetchFn);
-// }
-
-// export async function deserializeStorable(s: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-//     switch (s.type) {
-//         case 'wordlist':
-//             return StockWordList.fromStorable(s as StorableStockList, fetchFn);
-//         case 'userwordlist':
-//             return UserWordList.fromStorable(s as StorableUserWordlist, fetchFn);
-//         case 'random':
-//             return RandomList.fromStorable(s as StorableRandom, fetchFn);
-//         case 'until':
-//             return UntilN.fromStorable(s as StorableUntil, fetchFn);
-//         // case 'weighted':
-//         //     return WeightedShuffle.fromStorable(o as StorableWeightedShuffle, fetchFn);
-//         default:
-//             throw new Error(`Attempted to load lesson with invalid type`)
-//     }
-// }
-
-
-// export function getOverrides(id: string): Partial<LessonTypingConfig> {
-//     const opts = localStorage.getItem(`${lessonOptionsPrefix}${id}`);
-//     return (opts !== null) ? JSON.parse(opts) : {};
-// }
-
-// export function saveOverrides(id: string, overrides: Partial<LessonTypingConfig>) {
-//     localStorage.setItem(`${lessonOptionsPrefix}${id}`, JSON.stringify(overrides));
-// }
-
-// export async function getLastLesson(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-//     const lastLesson = localStorage.getItem(lastLessonPrefix);
-//     if (lastLesson === null)
-//         return Lesson.default(config, fetchFn);
-
-//     return Lesson.loadLesson(lastLesson, config, fetchFn);
-// }
-
-// export async function loadLesson(id: string, config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-//     if (id.startsWith('user_')) {
-//         const storable = localStorage.getItem(userLessonPrefix + id);
-//         if (storable === null) throw new Error(`Could not find user lesson '${id}'`);
-//         return deserializeStorableFromConfig(id, JSON.parse(storable), config, fetchFn);
-//     }
-
-//     const storable = stockLessons.get(id);
-//     if (storable === undefined)
-//         throw new Error(`Could not find lesson '${id}'`);
-//     return deserializeStorableFromConfig(id, storable, config, fetchFn);
-// }
-
-// export function saveUserLesson(lesson: Lesson, saveAsLastLesson: boolean = true) {
-//     const storable = lesson.storable();
-//     localStorage.setItem(userLessonPrefix + lesson.baseLesson().id, JSON.stringify(storable));
-//     if (saveAsLastLesson) {
-//         Lesson.saveLast(lesson);
-//     }
-// }
-
-// export function saveLast(lesson: Lesson) {
-//     localStorage.setItem(lastLessonPrefix, lesson.baseLesson().id);
-// }
-
-// async function getLocaleDefaultLesson(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-//     const lesson = defaultLessonName(config.lang.lang);
-//     return loadLesson(lesson, config, fetchFn);
-// }

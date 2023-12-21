@@ -12,7 +12,7 @@ export class RandomList implements Lesson {
 
     constructor(base: BaseWordList) {
         this.pos = 0;
-        this.words = shuffle(base.words);;
+        this.words = shuffle(base.words);
         this.base = base;
     }
 
@@ -65,5 +65,5 @@ export class RandomList implements Lesson {
         return defaultBatch(this, n);
     }
 
-    lessonEnd(): void {  }
+    lessonEnd(): void { }
 };
