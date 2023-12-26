@@ -65,8 +65,13 @@
 		updateCheckbox();
 	}
 
-	function selectChanged() {
-		if (selectInput !== undefined) selected = selectInput.value;
+	function selectChanged(e: Event) {
+		if (selectInput !== undefined && map.has(selectInput.value)) {
+			state = map.get(selectInput.value)!;
+			selected = selectInput.value;
+			return;
+		}
+		e.preventDefault();
 	}
 </script>
 
@@ -77,7 +82,7 @@
 {#if state === 'user'}
 	<div class="check-value">{userLabel}</div>
 {:else}
-	<select on:change={selectChanged}>
+	<select bind:this={selectInput} on:change={selectChanged}>
 		{#each choices as { key, label } (key)}
 			<option value={key} selected={selected === key}>{label}</option>
 		{/each}

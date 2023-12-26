@@ -18,7 +18,6 @@ export class Tutor {
 
     constructor(config: Config, lesson: Lesson, lessonOverrides: Partial<LessonTypingConfig>, stats: SessionStats) {
         this.stats = stats;
-        this.config = config;
         this.lesson = lesson;
         this.overrides = lessonOverrides;
         this.word = new WordState('');
@@ -26,7 +25,9 @@ export class Tutor {
         this.history = [];
         this.audioQueue = 0;
         this.lessonConfig = config.lessonConfigOverrides(this.overrides);
+        this.config = config.mergeLessonConfig(this.lessonConfig);
         this.nextWord();
+        console.log('checkMode=' + this.lessonConfig.checkMode)
     }
 
     private checkAudioQueue() {
@@ -41,7 +42,7 @@ export class Tutor {
 
     private fillQueue() {
         let batch;
-        while (this.queue.length < this.config.minQueue && (batch = this.lesson.batch(this.config.wordBatchSize - this.queue.length)) && batch.length !== 0) {
+        while (this.queue.length < this.lessonConfig.minQueue && (batch = this.lesson.batch(this.lessonConfig.wordBatchSize - this.queue.length)) && batch.length !== 0) {
             this.queue.push(...batch);
         }
     }
@@ -101,7 +102,7 @@ export class Tutor {
                 return Action.NextWord;
             }
 
-            if (!this.config.spaceOptional) {
+            if (!this.lessonConfig.spaceOptional) {
                 this.word.uncorrectedErrors += 1;
                 e.preventDefault();
                 return Action.MissedSpace;
@@ -118,7 +119,7 @@ export class Tutor {
             return Action.Refresh;
         }
 
-        switch (this.config.checkMode) {
+        switch (this.lessonConfig.checkMode) {
             case CheckMode.Char:
                 return this.handleKeydownCharMode(e);
             case CheckMode.WordRepeat:
@@ -127,7 +128,7 @@ export class Tutor {
     }
 
     handleBeforeInput(e: InputEvent): Action {
-        if (e.inputType === 'deleteContentBackward' && this.config.backspace === true) {
+        if (e.inputType === 'deleteContentBackward' && this.lessonConfig.backspace === true) {
             e.preventDefault();
 
             if (this.word.addBackspace(this.config)) {

@@ -137,5 +137,27 @@ export class Config implements ConfigProps {
             spaceOptional: opts.spaceOptional ?? this.spaceOptional,
         }
     }
+
+    mergeLessonConfig(opts: Partial<LessonTypingConfig>): Config {
+        const props = {
+            version: this.version,
+            checkMode: opts.checkMode ?? this.checkMode,
+            backspace: opts.backspace ?? this.backspace,
+            wordBatchSize: opts.wordBatchSize ?? this.wordBatchSize,
+            minQueue: opts.minQueue ?? this.minQueue,
+            stop: this.stop,
+            pause: this.pause,
+            logStats: this.logStats,
+            tts: this.tts,
+            audioDefaults: this.audioDefaults,
+            remap: this.remap,
+            lang: this.lang,
+            userStats: this.userStats,
+            spaceOptional: opts.spaceOptional ?? this.spaceOptional,
+            random: opts.random ?? this.random,
+            until: opts.until === undefined ? this.until : opts.until,
+        };
+        return new Config(props)
+    }
 }
 
