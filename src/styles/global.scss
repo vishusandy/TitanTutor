@@ -15,11 +15,11 @@ body>div {
     height: 100%;
 }
 
-nav.header {
+header.header {
     width: 100%;
 }
 
-nav ul {
+header ul {
     margin: 0px auto;
     padding: 0px;
     display: flex;
@@ -27,9 +27,22 @@ nav ul {
     // justify-content: center;
 }
 
-nav li {
+header li {
     list-style: none;
 }
+
+html {
+    height: 100%;
+    background-color: #fbfbfb;
+}
+
+.frame {
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, min-content) 1fr 8fr;
+}
+
+
 
 :root {
     --font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -37,7 +50,8 @@ nav li {
     --font-humanist: Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
     --font-system: system-ui, sans-serif;
     --font-transitional: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
-    --font-slab: Rockwell, 'Rockwell Nova', 'Roboto Slab', 'DejaVu Serif', 'Sitka Small', serif --font-title: Trebuchet, Tahoma, Arial, sans-serif;
+    --font-slab: Rockwell, 'Rockwell Nova', 'Roboto Slab', 'DejaVu Serif', 'Sitka Small', serif;
+    --font-title: Trebuchet, Tahoma, Arial, sans-serif;
     --highlight-focus: #fd7506b4;
     --form-border-color: #585f66;
     --form-border-inner-color: #b2b8be;

@@ -269,33 +269,29 @@
 </script>
 
 <svelte:document on:keydown={shortcuts} />
-<nav class="header">
-	<ul>
-		<li>
-			<button class="link" type="button" on:click={showConfig}
-				>{config.lang.openConfigDialog}</button
-			>
-		</li>
-		<li>
-			<button class="link" type="button" on:click={showAudioDialog}
-				>{config.lang.openTtsDialog}</button
-			>
-		</li>
-		<li>
-			<button class="link" type="button" on:click={showUserStatsDialog}
-				>{config.lang.openUserStatsDialog}</button
-			>
-		</li>
-	</ul>
-</nav>
+<div class="frame">
+	<header class="header">
+		<ul>
+			<li>
+				<button class="link" type="button" on:click={showConfig}
+					>{config.lang.openConfigDialog}</button
+				>
+			</li>
+			<li>
+				<button class="link" type="button" on:click={showAudioDialog}
+					>{config.lang.openTtsDialog}</button
+				>
+			</li>
+			<li>
+				<button class="link" type="button" on:click={showUserStatsDialog}
+					>{config.lang.openUserStatsDialog}</button
+				>
+			</li>
+		</ul>
+	</header>
 
-{#if !finished}
-	<div class="tutor-title">
-		{lesson.baseLesson().getName(config.lang)}
-	</div>
-
-	<div class="tutor-center">
-		<div class="tutor-center-wrapper">
+	{#if !finished}
+		<nav>
 			<div class="tutor-above">
 				<div class="tutor-menu">
 					<button type="button" class="link" on:click={showSessionStatsDialog}
@@ -313,53 +309,60 @@
 					{config.lang.notStarted}
 				{/if}
 			</div>
-			<div class="tutor-words" class:paused class:char-mode={config.checkMode === CheckMode.Char}>
-				<span bind:this={historyNode} class="history" /><Word
-					bind:span={activeWord}
-					word={tutor.word.wordChars}
-					state={tutor.word.state}
-					active={true}
-				/><span class="queue">
-					{#each tutor.queue as q}
-						<QueuedWord word={q} />{' '}
-					{/each}
-				</span>
-			</div>
-		</div>
-	</div>
+		</nav>
 
-	<div class="tutor-bottom">
-		{#if paused && !started}
-			<input
-				class="tutor-input"
-				bind:this={textbox}
-				placeholder={config.lang.inputNotStarted}
-				on:keydown={startInput}
-			/>
-		{:else if paused && started}
-			<input
-				class="tutor-input"
-				bind:this={textbox}
-				placeholder={config.lang.inputPaused}
-				on:keydown={unpause}
-			/>
-		{:else}
-			<input
-				class="tutor-input"
-				bind:this={textbox}
-				value={tutor.word.input}
-				on:blur={pause}
-				on:beforeinput={handleBeforeInput}
-				on:keydown={handleKeydown}
-				on:selectstart|preventDefault={() => {}}
-				on:mousedown|preventDefault={() => {}}
-				on:click|preventDefault={handleClick}
-			/>
-		{/if}
-	</div>
-{:else}
-	<button type="button" on:click={() => reset()}>Again!</button>
-{/if}
+		<!-- <section class="tutor"> -->
+		<h1 class="tutor-title">
+			{lesson.baseLesson().getName(config.lang)}
+		</h1>
+
+		<div class="tutor-words" class:paused class:char-mode={config.checkMode === CheckMode.Char}>
+			<span bind:this={historyNode} class="history" /><Word
+				bind:span={activeWord}
+				word={tutor.word.wordChars}
+				state={tutor.word.state}
+				active={true}
+			/><span class="spacer" /><span class="queue">
+				{#each tutor.queue as q}
+					<QueuedWord word={q} />{' '}
+				{/each}
+			</span>
+		</div>
+		<!-- </section> -->
+
+		<div class="tutor-bottom">
+			{#if paused && !started}
+				<input
+					class="tutor-input"
+					bind:this={textbox}
+					placeholder={config.lang.inputNotStarted}
+					on:keydown={startInput}
+				/>
+			{:else if paused && started}
+				<input
+					class="tutor-input"
+					bind:this={textbox}
+					placeholder={config.lang.inputPaused}
+					on:keydown={unpause}
+				/>
+			{:else}
+				<input
+					class="tutor-input"
+					bind:this={textbox}
+					value={tutor.word.input}
+					on:blur={pause}
+					on:beforeinput={handleBeforeInput}
+					on:keydown={handleKeydown}
+					on:selectstart|preventDefault={() => {}}
+					on:mousedown|preventDefault={() => {}}
+					on:click|preventDefault={handleClick}
+				/>
+			{/if}
+		</div>
+	{:else}
+		<button type="button" on:click={() => reset()}>Again!</button>
+	{/if}
+</div>
 
 <style>
 	.tutor-center {
@@ -387,25 +390,44 @@
 		margin: 0px 0px 2rem 0px;
 	}
 
+	.tutor {
+		margin: auto;
+		/* padding-bottom: 10rem; */
+	}
+
 	.tutor-title {
 		font-size: 2rem;
 		text-align: center;
+		font-family: var(--font-transitional);
+		font-weight: normal;
+		margin: auto;
 	}
 
 	.tutor-words {
-		background: white;
-		font-family: var(--font-system);
-		font-size: min(max(5vh, 1.5rem), 2rem);
-		font-size: clamp(1rem, 5vh, 2rem);
-		margin: auto;
-		padding: 0px;
-		width: 100%;
-		overflow-x: hidden;
-		overflow-y: hidden;
-		white-space: nowrap;
-		border-radius: 0.3rem;
+		--border-color: rgba(36, 58, 92, 0.4);
+		--drop-shadow-color: rgba(36, 58, 92, 0.1);
+		border: 1px solid var(--border-color);
+		border-radius: 0.4rem;
+		background: rgba(255, 255, 255, 1);
+		font-family: var(--font-monospace);
+		/* font-size: min(max(5vh, 1.5rem), 2rem); */
+		/* font-size: clamp(1.4rem, 2vw, 1.8rem); */
+		font-size: 1.7rem;
+		margin: 0px auto;
+		padding: 0px 1em;
+		width: 80%;
+		max-width: 28em;
+		height: 12em;
+		overflow: auto;
+		text-align: justify;
+		line-height: 2.8em;
+		word-spacing: 0.3em;
+		/* text-rendering: optimizeLegibility; */
 		scroll-behavior: smooth;
-		scroll-snap-type: x mandatory;
+		scroll-snap-type: y mandatory;
+		filter: drop-shadow(1px 1px 2px var(--drop-shadow-color))
+			drop-shadow(2px 2px 4px var(--drop-shadow-color))
+			drop-shadow(4px 4px 8px var(--drop-shadow-color));
 	}
 
 	.tutor-bottom {
@@ -444,7 +466,7 @@
 		width: 100%;
 		max-width: calc(40ch + 2.4rem + 2px);
 		margin: 0rem auto 0px;
-        text-align: center;
+		text-align: center;
 		/* justify-content: space-between; */
 	}
 
