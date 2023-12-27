@@ -107,8 +107,7 @@
 		started = false;
 		paused = true;
 		finished = false;
-		sessionStats = new SessionStats(tutor.lessonConfig.checkMode);
-		// historyNode.childNodes
+		sessionStats = new SessionStats(tutor.config.checkMode);
 
 		let child;
 		while ((child = historyNode.firstChild)) historyNode.removeChild(child);
@@ -365,24 +364,6 @@
 </div>
 
 <style>
-	.tutor-center {
-		margin: 0px 0px;
-		height: 100%;
-		width: 100%;
-		display: flex;
-		position: absolute;
-		align-items: center;
-		top: 0px;
-		bottom: 0px;
-		left: 0px;
-		right: 0px;
-		z-index: -10;
-	}
-
-	.tutor-center-wrapper {
-		padding: 0rem 0px 20vh;
-		width: 100%;
-	}
 
 	.tutor-above {
 		width: 100%;
