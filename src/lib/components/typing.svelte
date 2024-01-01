@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
+	import { base } from '$app/paths';
 
 	import Word from './typing/word.svelte';
 	import QueuedWord from './typing/queued_word.svelte';
@@ -18,6 +19,7 @@
 		showStatsDialog,
 		showVoiceDialog
 	} from '$lib/dialog';
+	import Timer from './timer.svelte';
 
 	export let config: Config;
 	export let lesson: Lesson;
@@ -289,102 +291,132 @@
 		</ul>
 	</header>
 
-	{#if !finished}
-		<nav>
-			<div class="tutor-above">
-				<div class="tutor-menu">
-					<button type="button" class="link" on:click={showSessionStatsDialog}
-						>{config.lang.openSessionStatsDialog}</button
-					>
-					<button class="link" on:click={showLessonConfig}
-						>{config.lang.openLessonConfigDialog}</button
-					>
+	<section>
+		{#if !finished}
+			<!-- <section class="tutor"> -->
+			<h1 class="tutor-title">
+				{lesson.baseLesson().getName(config.lang)}
+			</h1>
 
-					<button class="link stop-button" disabled={!started} on:click={confirmEndLesson}
-						>{config.lang.stop}</button
-					>
+			<nav class="lesson-buttons">
+				<div class="tutor-above">
+					<div class="counter" class:active={!paused}>
+						{#if !started}
+							{config.lang.notStarted}
+						{:else}
+							<Timer stats={sessionStats} lang={config.lang} />
+						{/if}
+					</div>
+					<div class="tutor-menu">
+						<button
+							type="button"
+							class="link icon"
+							on:click={showSessionStatsDialog}
+							title={config.lang.openSessionStatsDialog}
+							><img src="{base}/imgs/stats.svg" alt={config.lang.openSessionStatsDialog} /></button
+						>
+						<button
+							class="link icon"
+							on:click={showLessonConfig}
+							title={config.lang.openLessonConfigDialog}
+							><img src="{base}/imgs/gear.svg" alt={config.lang.openLessonConfigDialog} /></button
+						>
+
+						<button
+							class="link icon stop-button"
+							disabled={!started}
+							on:click={confirmEndLesson}
+							title={config.lang.stop}
+							><img src="{base}/imgs/stop.svg" alt={config.lang.stop} /></button
+						>
+					</div>
 				</div>
-				{#if !started}
-					{config.lang.notStarted}
+			</nav>
+
+			<div class="tutor-words" class:paused class:char-mode={config.checkMode === CheckMode.Char}>
+				<span bind:this={historyNode} class="history" /><Word
+					bind:span={activeWord}
+					word={tutor.word.wordChars}
+					state={tutor.word.state}
+					active={true}
+				/><span class="spacer" /><span class="queue">
+					{#each tutor.queue as q}
+						<QueuedWord word={q} />{' '}
+					{/each}
+				</span>
+			</div>
+			<!-- </section> -->
+
+			<div class="tutor-bottom">
+				{#if paused && !started}
+					<input
+						class="tutor-input"
+						bind:this={textbox}
+						placeholder={config.lang.inputNotStarted}
+						on:keydown={startInput}
+					/>
+				{:else if paused && started}
+					<input
+						class="tutor-input"
+						bind:this={textbox}
+						placeholder={config.lang.inputPaused}
+						on:keydown={unpause}
+					/>
+				{:else}
+					<input
+						class="tutor-input"
+						bind:this={textbox}
+						value={tutor.word.input}
+						on:blur={pause}
+						on:beforeinput={handleBeforeInput}
+						on:keydown={handleKeydown}
+						on:selectstart|preventDefault={() => {}}
+						on:mousedown|preventDefault={() => {}}
+						on:click|preventDefault={handleClick}
+					/>
 				{/if}
 			</div>
-		</nav>
-
-		<!-- <section class="tutor"> -->
-		<h1 class="tutor-title">
-			{lesson.baseLesson().getName(config.lang)}
-		</h1>
-
-		<div class="tutor-words" class:paused class:char-mode={config.checkMode === CheckMode.Char}>
-			<span bind:this={historyNode} class="history" /><Word
-				bind:span={activeWord}
-				word={tutor.word.wordChars}
-				state={tutor.word.state}
-				active={true}
-			/><span class="spacer" /><span class="queue">
-				{#each tutor.queue as q}
-					<QueuedWord word={q} />{' '}
-				{/each}
-			</span>
-		</div>
-		<!-- </section> -->
-
-		<div class="tutor-bottom">
-			{#if paused && !started}
-				<input
-					class="tutor-input"
-					bind:this={textbox}
-					placeholder={config.lang.inputNotStarted}
-					on:keydown={startInput}
-				/>
-			{:else if paused && started}
-				<input
-					class="tutor-input"
-					bind:this={textbox}
-					placeholder={config.lang.inputPaused}
-					on:keydown={unpause}
-				/>
-			{:else}
-				<input
-					class="tutor-input"
-					bind:this={textbox}
-					value={tutor.word.input}
-					on:blur={pause}
-					on:beforeinput={handleBeforeInput}
-					on:keydown={handleKeydown}
-					on:selectstart|preventDefault={() => {}}
-					on:mousedown|preventDefault={() => {}}
-					on:click|preventDefault={handleClick}
-				/>
-			{/if}
-		</div>
-	{:else}
-		<button type="button" on:click={() => reset()}>Again!</button>
-	{/if}
+		{:else}
+			<button type="button" on:click={() => reset()}>Again!</button>
+		{/if}
+	</section>
 </div>
 
 <style>
-
 	.tutor-above {
-		width: 100%;
+		width: var(--width);
+		max-width: var(--max-width);
 		text-align: center;
-		margin: 0px 0px 2rem 0px;
+		margin: 0px auto 2rem;
 	}
 
-	.tutor {
-		margin: auto;
-		/* padding-bottom: 10rem; */
+	.counter {
+		font-family: var(--font-sans-serif);
+		display: flex;
+		width: fit-content;
+		margin: 0px auto 1rem;
+		transition-property: background-color, color;
+		transition-duration: 0.5s;
+		transition-timing-function: ease-in-out;
+		padding: 0.4rem;
+		border-radius: 0.3rem;
+	}
+
+	.counter.active {
+		color: white;
+		background-color: #155b77;
 	}
 
 	.tutor-title {
-		font-size: 2rem;
+		font-size: 2.5rem;
 		text-align: center;
-		font-family: var(--font-transitional);
-		font-weight: normal;
+		font-family: var(--font-title);
+		font-weight: bold;
 		margin: auto;
 	}
 
 	.tutor-words {
+		box-sizing: border-box;
 		--border-color: rgba(36, 58, 92, 0.4);
 		--drop-shadow-color: rgba(36, 58, 92, 0.1);
 		border: 1px solid var(--border-color);
@@ -396,13 +428,13 @@
 		font-size: 1.7rem;
 		margin: 0px auto;
 		padding: 0px 1em;
-		width: 80%;
-		max-width: 28em;
+		width: var(--width);
+		max-width: var(--max-width);
 		height: 12em;
 		overflow: auto;
-		text-align: justify;
 		line-height: 2.8em;
-		word-spacing: 0.3em;
+		/* text-align: justify; */
+		/* word-spacing: 0.3em; */
 		/* text-rendering: optimizeLegibility; */
 		scroll-behavior: smooth;
 		scroll-snap-type: y mandatory;
@@ -444,10 +476,12 @@
 	.tutor-menu {
 		font-size: 1.2rem;
 		display: flex;
-		width: 100%;
-		max-width: calc(40ch + 2.4rem + 2px);
-		margin: 0rem auto 0px;
+		/* width: var(--width); */
+		/* max-width: var(--max-width); */
+		/* max-width: calc(var(--max-width) * 0.7); */
+		/* margin: 0.4rem auto 0px; */
 		text-align: center;
+		justify-content: right;
 		/* justify-content: space-between; */
 	}
 
@@ -459,5 +493,9 @@
 		0% {
 			opacity: 0;
 		}
+	}
+
+	.icon.stats {
+		background: url('{base}/imgs/stats_color.svg');
 	}
 </style>

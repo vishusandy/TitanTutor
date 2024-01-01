@@ -16,7 +16,9 @@ body>div {
 }
 
 header.header {
-    width: 100%;
+    width: var(--width);
+    max-width: var(--max-width);
+    margin: 0px auto 2rem;
 }
 
 header ul {
@@ -39,10 +41,91 @@ html {
 .frame {
     display: grid;
     height: 100%;
-    grid-template-rows: repeat(2, min-content) 1fr 8fr;
+    grid-template-rows: repeat(1, min-content) 1fr 8fr;
+}
+
+button.link {
+    cursor: pointer;
+    --button-bg: transparent;
+    border-radius: 0.3rem;
+    font-family: var(--font-sans-serif);
+    font-size: 1.2rem;
+    padding: 0.2rem 0.3rem;
+    margin: 0.2rem 0.6rem;
+    border: 1px solid transparent;
+    color: #252525;
+    transition: background-color 0.2s ease-in-out;
+    text-decoration: underline;
+    box-shadow: none !important;
+}
+
+button.link:focus {
+    color: red;
+}
+
+button.link:hover:not(:active):not(:disabled) {
+    color: #5a5a5a;
+}
+
+button.link:active:not(:disabled) {
+    color: #bb3737;
+    box-shadow: none;
+    outline: 0px;
+}
+
+button.link:disabled {
+    color: #7a7a7a;
+    text-decoration: line-through;
+    cursor: not-allowed;
 }
 
 
+.icon {
+    display: flex;
+    padding: 0px !important;
+    margin: 0.1em !important;
+}
+
+.icon img {
+    filter: grayscale(100%);
+    width: 1.7em;
+    height: 1.7em;
+    box-sizing: border-box;
+    margin: auto;
+    // object-fit: contain;
+}
+
+.icon:focus-within:not(:disabled),
+.icon:hover:not(:disabled) {
+    // border: 1px solid #63719e;
+    background-color: #585f66;
+    box-shadow: 0px 0px 4px #425594 !important;
+    // transition: background-color 0.2s ease-in;
+}
+
+.icon:disabled img {
+    filter: grayscale(100%);
+}
+
+.icon:not(:disabled) img:hover {
+    filter: grayscale(0%);
+    animation: greyscale 0.2s ease-in;
+    filter: drop-shadow(0px 0px 2px #7c7c7c);
+}
+
+.icon:not(:disabled):focus img {
+    filter: drop-shadow(0px 0px 2px #7c7c7c);
+}
+
+@keyframes greyscale {
+    0% {
+        filter: grayscale(100%);
+    }
+
+    100% {
+        filter: grayscale(0%);
+    }
+}
 
 :root {
     --font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -60,4 +143,6 @@ html {
     --button-bg: #cdced1;
     --button-bg-disabled: #e3e3e3;
     --button-bg-focus: #b3b3b6;
+    --width: 90%;
+    --max-width: 47.6rem;
 }

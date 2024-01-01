@@ -22,6 +22,10 @@ $queue-color: #202d33;
     background: transparent;
 }
 
+.word:after {
+    content: '\200B';
+}
+
 
 .word.active {
     font-size: 140%;
@@ -43,10 +47,13 @@ $queue-color: #202d33;
 
 .queue {
     color: $queue-color;
+    display: contents;
 }
 
 
 .history {
+    display: contents;
+
     .word.success {
         animation: word-added 0.3s ease-in-out 0s 1;
 
@@ -97,7 +104,10 @@ $queue-color: #202d33;
 }
 
 .missed-space::before {
+    // add a zero-width space for         line breaks
     content: ' ';
+    color: $error-color;
+    border-bottom: 1px solid $error-color;
 }
 
 
