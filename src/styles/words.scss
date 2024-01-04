@@ -1,18 +1,18 @@
 // $success-color: #50ce95;
-$success-color: #202d33;
-
 // $error-letters: #3f5a66;
-$error-letters: $success-color;
-$error-color: #bb3737;
-$error-border: none;
-$error-bg: transparent;
 // $error-bg: #fde9e9;
 // $error-border: 1px solid #ce5f50;
 
+
+$success-color: #696e70;
+$error-letters: $success-color;
+$error-color: #942c2c;
+$error-border: none;
+$error-bg: transparent;
 $active-color: black;
+$active-letter: #b39a0d;
 $active-error: #bb3737;
 $active-complete: #20b0e9;
-
 $queue-color: #202d33;
 
 
@@ -20,6 +20,7 @@ $queue-color: #202d33;
     display: inline-block;
     scroll-snap-align: center;
     background: transparent;
+    margin: 1.4rem 0px;
 }
 
 .word:after {
@@ -28,18 +29,25 @@ $queue-color: #202d33;
 
 
 .word.active {
-    font-size: 140%;
+    // font-size: 140%;
     color: $active-color;
 
-    .letter.complete {
-        color: $success-color;
+    .letter {
+        border-bottom: 1px solid $active-color;
+    }
+
+    .letter.active {
+        color: $active-letter;
+        border-bottom: 1px solid $active-letter;
     }
 
     .letter.error {
         color: $active-error;
+        border-bottom: 1px solid $active-error;
     }
 
     .letter.complete {
+        border-bottom: 1px solid $active-complete;
         color: $active-complete;
     }
 }
@@ -77,6 +85,11 @@ $queue-color: #202d33;
     }
 }
 
+// .tutor-words.paused .word.active .letter.active {
+//     // border-bottom: 1px solid $active-color;
+//     border-bottom: 1px solid #b39a0d;
+//     color: #b39a0d;
+// }
 
 .tutor-words:not(.paused) {
     .word.active {
@@ -151,7 +164,7 @@ $queue-color: #202d33;
     }
 
     25% {
-        transform: rotate(1deg);
+        transform: rotate(2deg);
     }
 
     50% {
@@ -159,7 +172,7 @@ $queue-color: #202d33;
     }
 
     75% {
-        transform: rotate(-1deg);
+        transform: rotate(-2deg);
     }
 
     100% {

@@ -95,12 +95,15 @@ button.link:disabled {
     // object-fit: contain;
 }
 
-.icon:focus-within:not(:disabled),
-.icon:hover:not(:disabled) {
+.icon:focus-within:not(:disabled) {
     // border: 1px solid #63719e;
-    background-color: #585f66;
-    box-shadow: 0px 0px 4px #425594 !important;
+    background-color: #8b949c;
+    // box-shadow: 0px 0px 4px #425594 !important;
     // transition: background-color 0.2s ease-in;
+}
+
+.icon:hover:not(:disabled) {
+    box-shadow: 0px 0px 4px #425594 !important;
 }
 
 .icon:disabled img {

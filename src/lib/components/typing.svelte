@@ -30,6 +30,7 @@
 	let started: boolean = false;
 	let paused: boolean = true;
 	let finished: boolean = false;
+
 	let activeWord: HTMLElement | undefined;
 	let textbox: HTMLInputElement | undefined;
 	let historyNode: HTMLElement;
@@ -291,9 +292,8 @@
 		</ul>
 	</header>
 
-	<section>
+	<section class:paused>
 		{#if !finished}
-			<!-- <section class="tutor"> -->
 			<h1 class="tutor-title">
 				{lesson.baseLesson().getName(config.lang)}
 			</h1>
@@ -308,6 +308,9 @@
 						{/if}
 					</div>
 					<div class="tutor-menu">
+						{#if tutor.config.until !== null}
+							<div class="word-progress">{tutor.history.length}/{tutor.config.until}</div>
+						{/if}
 						<button
 							type="button"
 							class="link icon"
@@ -345,7 +348,6 @@
 					{/each}
 				</span>
 			</div>
-			<!-- </section> -->
 
 			<div class="tutor-bottom">
 				{#if paused && !started}
@@ -390,6 +392,12 @@
 		margin: 0px auto 2rem;
 	}
 
+	.word-progress {
+		align-self: center;
+		margin: 0px 1rem;
+		font-family: var(--font-humanist);
+	}
+
 	.counter {
 		font-family: var(--font-sans-serif);
 		display: flex;
@@ -416,15 +424,13 @@
 	}
 
 	.tutor-words {
+		--drop-shadow-color: rgba(206, 74, 12, 0.1);
+		--border-color: rgba(206, 74, 12, 0.3);
 		box-sizing: border-box;
-		--border-color: rgba(36, 58, 92, 0.4);
-		--drop-shadow-color: rgba(36, 58, 92, 0.1);
 		border: 1px solid var(--border-color);
 		border-radius: 0.4rem;
 		background: rgba(255, 255, 255, 1);
 		font-family: var(--font-monospace);
-		/* font-size: min(max(5vh, 1.5rem), 2rem); */
-		/* font-size: clamp(1.4rem, 2vw, 1.8rem); */
 		font-size: 1.7rem;
 		margin: 0px auto;
 		padding: 0px 1em;
@@ -432,10 +438,7 @@
 		max-width: var(--max-width);
 		height: 12em;
 		overflow: auto;
-		line-height: 2.8em;
-		/* text-align: justify; */
-		/* word-spacing: 0.3em; */
-		/* text-rendering: optimizeLegibility; */
+		text-align: center;
 		scroll-behavior: smooth;
 		scroll-snap-type: y mandatory;
 		filter: drop-shadow(1px 1px 2px var(--drop-shadow-color))
@@ -443,46 +446,45 @@
 			drop-shadow(4px 4px 8px var(--drop-shadow-color));
 	}
 
+	.tutor-words.paused {
+		--drop-shadow-color: rgba(36, 58, 92, 0.1);
+		--border-color: rgba(36, 58, 92, 0.4);
+	}
+
 	.tutor-bottom {
 		text-align: center;
-		position: absolute;
-		bottom: 0px;
-		left: 0px;
-		width: 100%;
-		margin: 0px auto;
-		z-index: -20;
+		width: var(--width);
+		max-width: var(--max-width);
+		margin: 1.5rem auto;
 	}
 
 	.tutor-input {
-		/* border: 1px solid #bcc2c9;
-		border-bottom-left-radius: 0px;
-		border-bottom-right-radius: 0px;
-		box-sizing: border-box; */
-		border: 0px;
 		box-shadow: none !important;
 		font-size: 1.2rem;
 		width: 100%;
-		max-width: 40ch;
+		max-width: 30ch;
 		text-align: center;
-		padding: 1.2rem 2rem;
+		padding: 0.8rem 2rem;
 		caret-color: transparent;
 	}
 
-	/* .tutor-input:focus {
-		border-color: #f5c0ab;
-		box-shadow: 0px 0px 4px #f5c0ab;
-	} */
+	.tutor-input:focus,
+	.tutor-input {
+		font-size: 1.5rem;
+		--drop-shadow-color: rgba(206, 74, 12, 0.1);
+		--input-border: rgba(36, 58, 92, 0.4);
+	}
+
+	.paused .tutor-input:focus {
+		--drop-shadow-color: rgba(129, 47, 15, 0.1);
+		--input-border: rgba(36, 58, 92, 0.4);
+	}
 
 	.tutor-menu {
 		font-size: 1.2rem;
 		display: flex;
-		/* width: var(--width); */
-		/* max-width: var(--max-width); */
-		/* max-width: calc(var(--max-width) * 0.7); */
-		/* margin: 0.4rem auto 0px; */
 		text-align: center;
 		justify-content: right;
-		/* justify-content: space-between; */
 	}
 
 	.stop-button:not(.hidden) {
@@ -493,9 +495,5 @@
 		0% {
 			opacity: 0;
 		}
-	}
-
-	.icon.stats {
-		background: url('{base}/imgs/stats_color.svg');
 	}
 </style>
