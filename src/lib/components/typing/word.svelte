@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { LetterState } from '$lib/types';
+	import { LetterState } from '$lib/types/types';
 
 	export let word: string[];
 	export let state: LetterState[];

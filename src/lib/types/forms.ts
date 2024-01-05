@@ -1,4 +1,4 @@
-import type { LessonTypingConfig } from "./lessons/lessons";
+import type { LessonTypingConfig } from "../lessons/lesson";
 
 export type UserValue<T> = T | 'user';
 export type FormUserValue<T> = UserValue<T> | 'disabled';

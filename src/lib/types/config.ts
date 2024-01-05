@@ -1,9 +1,10 @@
-import { Audio } from "./audio";
-import { defaultTtsLangs } from "./locales";
-import { defaultMap, Remap } from "./remap";
-import { Language } from "./language";
-import { UserStats, type UserStatsObject } from "./stats";
-import type { LessonTypingConfig } from '$lib/lessons/lessons'
+import { Audio } from "../audio";
+import { defaultTtsLangs } from "../data/locales";
+import { Remap } from "../data/remap";
+import { defaultMap } from '$lib/conf/kbmaps';
+import { Language } from "../data/language";
+import { UserStats, type UserStatsObject } from "../stats";
+import type { LessonTypingConfig } from '$lib/lessons/lesson'
 
 export const storagePrefix = 'vkTutor_'
 export const configKey = storagePrefix + 'config';

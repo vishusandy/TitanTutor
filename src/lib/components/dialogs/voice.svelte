@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { defaultTtsLangs } from '$lib/locales';
-	import type { Config } from '$lib/config';
+	import { defaultTtsLangs } from '$lib/data/locales';
+	import type { Config } from '$lib/types/config';
 	import {
 		loadVoiceLangMap,
 		displayVoice,

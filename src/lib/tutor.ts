@@ -1,16 +1,15 @@
-import { type Config, CheckMode } from './config';
-import type { Lesson, LessonTypingConfig } from './lessons/lessons';
+import { type Config, CheckMode } from './types/config';
+import type { Lesson, LessonTypingConfig } from './lessons/lesson';
 import type { SessionStats } from './stats';
-import { Action, LetterState } from './types';
+import { Action, LetterState } from './types/types';
 import { WordState, CompletedWord } from './word_state';
-import { controlKeys } from './remap';
+import { controlKeys, type Remap } from './data/remap';
 
 export class Tutor {
     config: Config;
     lesson: Lesson;
     stats: SessionStats;
     overrides: Partial<LessonTypingConfig>;
-    // lessonConfig: LessonTypingConfig;
     word: WordState;
     history: CompletedWord[];
     queue: string[];
@@ -24,9 +23,38 @@ export class Tutor {
         this.queue = [];
         this.history = [];
         this.audioQueue = 0;
-        // this.lessonConfig = config.lessonConfigOverrides(this.overrides);
-        this.config = config.mergeLessonConfig(this.overrides);
+        this.config = config.mergeLessonConfig(lessonOverrides);
         this.nextWord();
+    }
+
+    isBackspace(config: Config, e: KeyboardEvent): boolean {
+        if (e.key !== 'Backspace') return false;
+
+        this.word.addBackspace(config);
+        e.preventDefault();
+        return true;
+    }
+
+    isChar(config: Config, kbmap: Remap, e: InputEvent): Action {
+        if (!e.data) return Action.None;
+
+        let act = Action.None;
+
+        // allow multiple chars (eg mobile input)
+        for (const c of e.data) {
+            const mapped = kbmap.get(c);
+            if (mapped !== undefined) {
+                this.word.addChar(mapped);
+                act = Action.CharAdded;
+            }
+        }
+
+        if (act != Action.None) {
+            this.word.addKeystroke();
+            e.preventDefault();
+        }
+
+        return act;
     }
 
     private checkAudioQueue() {
@@ -114,7 +142,7 @@ export class Tutor {
     // https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/inputType
     // https://rawgit.com/w3c/input-events/v1/index.html#interface-InputEvent-Attributes
     handleKeydown(e: KeyboardEvent): Action {
-        if (this.word.isBackspace(this.config, e)) {
+        if (this.isBackspace(this.config, e)) {
             return Action.Refresh;
         }
 
@@ -142,6 +170,6 @@ export class Tutor {
             return Action.None;
         }
 
-        return this.word.isChar(this.config, this.config.remap, e);
+        return this.isChar(this.config, this.config.remap, e);
     }
 }

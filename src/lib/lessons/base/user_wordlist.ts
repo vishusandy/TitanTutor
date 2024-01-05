@@ -1,4 +1,4 @@
-import { BaseWordList, type StorableBaseWordList } from "./wordlist_base";
+import { BaseWordList, type StorableBaseWordList } from "./wordlist";
 
 export type StorableUserWordlist = { type: 'userwordlist', words: string[] } & StorableBaseWordList;
 

@@ -1,9 +1,9 @@
-import { Lesson, type BaseLesson, type StorableBaseLesson } from "$lib/lessons/lessons";
-import { defaultBatch } from "$lib/util";
-import type { Language } from "$lib/language";
-import type { BaseWordList } from "./wordlist_base";
-import { storagePrefix } from "$lib/config";
-import { BinaryTree } from "$lib/bst";
+import { Lesson, type BaseLesson, type StorableBaseLesson } from "$lib/lessons/lesson";
+import { defaultBatch } from "$lib/util/util";
+import type { Language } from "$lib/data/language";
+import type { BaseWordList } from "./wordlist";
+import { storagePrefix } from "$lib/types/config";
+import { BinaryTree } from "$lib/util/bst";
 
 const lessonTypoPrefix = `${storagePrefix}lesson_typos`;
 

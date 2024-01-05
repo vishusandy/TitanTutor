@@ -1,6 +1,6 @@
-import { Lesson, type StorableLesson, type BaseLesson } from "$lib/lessons/lessons";
-import type { LessonFormState } from "$lib/forms";
-import { defaultBatch } from "$lib/util";
+import { Lesson, type StorableLesson, type BaseLesson } from "$lib/lessons/lesson";
+import type { LessonFormState } from "$lib/types/forms";
+import { defaultBatch } from "$lib/util/util";
 
 export type StorableUntil = { type: "until", max: number, lesson: StorableLesson };
 
@@ -63,7 +63,7 @@ export class UntilN implements Lesson {
     batch(n: number): string[] {
         return defaultBatch(this, n);
     }
-    
-    lessonEnd(): void {}
+
+    lessonEnd(): void { }
 
 }

@@ -1,8 +1,8 @@
 export const prerender = true;
 export const ssr = false;
 
-import { Config, configKey } from "$lib/config";
-import { showVoiceDialog } from '$lib/dialog';
+import { Config, configKey } from "$lib/types/config";
+import { showVoiceDialog } from '$lib/util/dialog';
 import type { Audio } from '$lib/audio';
 
 export async function load({ fetch }) {

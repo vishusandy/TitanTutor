@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Language } from '$lib/language';
+	import type { Language } from '$lib/data/language';
 	import type { SessionStats } from '$lib/stats';
-	import { formatDuration } from '$lib/util';
+	import { formatDuration } from '$lib/util/util';
 
 	export let stats: SessionStats;
 	export let lang: Language;

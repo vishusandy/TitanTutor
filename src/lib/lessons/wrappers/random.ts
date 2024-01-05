@@ -1,7 +1,7 @@
-import { Lesson, type BaseLesson, type StorableLesson } from "$lib/lessons/lessons";
-import type { LessonFormState } from "$lib/forms";
-import { shuffle, defaultBatch } from "$lib/util";
-import type { BaseWordList } from "../base/wordlist_base";
+import { Lesson, type BaseLesson, type StorableLesson } from "$lib/lessons/lesson";
+import type { LessonFormState } from "$lib/types/forms";
+import { shuffle, defaultBatch } from "$lib/util/util";
+import type { BaseWordList } from "../base/wordlist";
 
 export type StorableRandom = { type: "random", base: StorableLesson };
 

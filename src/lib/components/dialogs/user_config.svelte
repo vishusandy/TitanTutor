@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { CheckMode, Config } from '$lib/config';
-	import { Language } from '$lib/language';
-	import { Remap, keyboardRemappings } from '$lib/remap';
-	import { defaultTtsLangs, languageList } from '$lib/locales';
+	import { CheckMode, Config } from '$lib/types/config';
+	import { Language } from '$lib/data/language';
+	import { Remap } from '$lib/data/remap';
+	import { keyboardRemappings } from '$lib/conf/kbmaps';
+	import { defaultTtsLangs } from '$lib/data/locales';
+	import { languageList } from '$lib/conf/locales';
 	import OptionalNumber from './form_inputs/optional_number.svelte';
 
 	export let config: Config;

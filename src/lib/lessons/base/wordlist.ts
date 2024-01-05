@@ -1,38 +1,66 @@
-import { base } from "$app/paths";
-import { BaseWordList, type StorableBaseWordList } from "./wordlist_base";
+import type { BaseLesson, Lesson, StorableBaseLesson } from "$lib/lessons/lesson";
+import type { Language } from "$lib/data/language";
 
-// filename is the json file located within data/words/
-export type StorableStockList = { type: 'wordlist', filename: string } & StorableBaseWordList;
+export type StorableBaseWordList = { name: string } & StorableBaseLesson;
 
-export class StockWordList extends BaseWordList {
+export abstract class BaseWordList implements BaseLesson {
+    words: string[];
+    pos: number;
+    id: string;
+    name: string;
+
     constructor(words: string[], id: string, name: string) {
-        super(words, id, name);
+        if (words.length === 0) {
+            throw new Error("Invalid word list: the list must contain at least one element");
+        }
+
+        this.pos = 0;
+        this.words = words;
+        this.id = id;
+        this.name = name;
     }
 
-    getType(): string {
-        return 'wordlist'
+    abstract storable(): StorableBaseLesson;
+    abstract getType(): string;
+
+    [Symbol.iterator]() {
+        return this;
     }
 
-    storable(): StorableStockList {
-        return {
-            type: 'wordlist',
-            id: this.id,
-            name: this.name,
-            filename: this.id,
-        };
+    next(): IteratorResult<string> {
+        if (this.pos >= this.words.length) {
+            this.pos = 0;
+        }
+
+        return { done: false, value: this.words[this.pos++] }
     }
 
-    static async fromStorable(s: StorableStockList, fetchFn: typeof fetch = fetch): Promise<StockWordList> {
-        const req = new Request(`${base}/data/words/${s.filename}`);
-
-        return fetchFn(req)
-            .then((resp) => resp.json())
-            .then((words: string[]) => {
-                return new StockWordList(words, s.id, s.name);
-            });
+    toJSON(): string {
+        return JSON.stringify(this.storable());
     }
 
-    static newStorable(id: string, filename: string, name: string): StorableStockList {
-        return { type: 'wordlist', id, filename, name }
+
+    getChild(): Lesson | undefined {
+        return undefined;
     }
+
+
+    getName(_: Language): string {
+        return this.name;
+    }
+
+    baseLesson(): BaseLesson {
+        return this;
+    }
+
+    batch(n: number): string[] {
+        let words: string[] = []
+        for (let i = 0, p = this.pos; i < n; i++, p = p + 1 % this.words.length) {
+            words.push(this.words[p]);
+        }
+        this.pos += n;
+        return words;
+    }
+
+    lessonEnd(): void {  }
 }

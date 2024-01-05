@@ -1,15 +1,8 @@
 import { base } from '$app/paths';
-import type { Config } from './config';
-
-export const defaultMap: string = 'no_map';
+import type { Config } from '../types/config';
 
 type RemapJSON = { name: string, arr: [string, string][] };
 
-type RemapItem = { name: string, id: string };
-export const keyboardRemappings: RemapItem[] = [
-    { name: 'none', id: 'no_map' },
-    { name: 'Qwerty -> Dvorak', id: 'qwerty_to_dvorak' },
-];
 
 export abstract class Remap {
     abstract getId(): string;

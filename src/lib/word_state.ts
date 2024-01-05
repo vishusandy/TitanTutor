@@ -1,7 +1,7 @@
-import { LetterState } from './types';
-import type { Config } from './config';
-import { Action } from './types';
-import type { Remap } from './remap';
+import { LetterState } from './types/types';
+import type { Config } from './types/config';
+import { Action } from './types/types';
+import type { Remap } from './data/remap';
 
 export class CompletedWord {
     word: string[];
@@ -59,39 +59,6 @@ export class WordState {
         return this.getWord() === this.input;
     }
 
-    isBackspace(config: Config, e: KeyboardEvent): boolean {
-        if (e.key !== 'Backspace') {
-            return false;
-        }
-
-        this.addBackspace(config);
-
-        e.preventDefault();
-        return true;
-    }
-
-    isChar(config: Config, kbmap: Remap, e: InputEvent): Action {
-        if (!e.data) return Action.None;
-
-        let act = Action.None;
-
-        // allow multiple chars (eg mobile input)
-        for (const c of e.data) {
-            const mapped = kbmap.get(c);
-            if (mapped !== undefined) {
-                this.addChar(mapped);
-                act = Action.CharAdded;
-            }
-        }
-
-        if (act != Action.None) {
-            this.addKeystroke();
-            e.preventDefault();
-        }
-
-        return act;
-    }
-
     addKeystroke() {
         this.keystrokes += 1;
     }
@@ -117,7 +84,7 @@ export class WordState {
         return false;
     }
 
-    private addChar(char: string) {
+    addChar(char: string) {
         this.input += char;
         this.inputChars = [...this.input];
         this.state = this.mapState();

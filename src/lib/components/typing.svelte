@@ -5,20 +5,21 @@
 	import Word from './typing/word.svelte';
 	import QueuedWord from './typing/queued_word.svelte';
 
-	import { CheckMode, type Config } from '$lib/config';
+	import { addMissedSpace, addSpace } from '$lib/util/dom';
+	import { CheckMode, type Config } from '$lib/types/config';
 	import { SessionStats } from '$lib/stats';
 	import type { WordState } from '$lib/word_state';
 	import { Tutor } from '$lib/tutor';
-	import { Action } from '$lib/types';
+	import { Action } from '$lib/types/types';
 	import type { Audio } from '$lib/audio';
-	import { Lesson, type LessonTypingConfig } from '$lib/lessons/lessons';
+	import { Lesson, type LessonTypingConfig } from '$lib/lessons/lesson';
 	import {
 		showConfigDialog,
 		showLessonConfigDialog,
 		showStatsConfirmDialog,
 		showStatsDialog,
 		showVoiceDialog
-	} from '$lib/dialog';
+	} from '$lib/util/dialog';
 	import Timer from './timer.svelte';
 
 	export let config: Config;
@@ -60,7 +61,7 @@
 	async function startInput(e: Event) {
 		if ('key' in e) {
 			if (e.key === 'Tab') return;
-			if (e.key === config.pause) {
+			if (e.key === tutor.config.pause) {
 				e.preventDefault();
 				return;
 			}
@@ -96,7 +97,7 @@
 	}
 
 	function confirmEndLesson() {
-		if (window.confirm(config.lang.stopMsg)) {
+		if (window.confirm(tutor.config.lang.stopMsg)) {
 			endLesson();
 		}
 	}
@@ -134,7 +135,7 @@
 	}
 
 	async function shortcuts(e: KeyboardEvent) {
-		if (e.key === config.pause || e.key === 'Escape') {
+		if (e.key === tutor.config.pause || e.key === 'Escape') {
 			if (paused) {
 				unpause();
 				textbox?.focus();
@@ -143,7 +144,7 @@
 			}
 			if (!started) started = true;
 			e.preventDefault();
-		} else if (e.key === config.stop && started) {
+		} else if (e.key === tutor.config.stop && started) {
 			e.preventDefault();
 			pause(e);
 			confirmEndLesson();
@@ -175,7 +176,7 @@
 				break;
 			case Action.MissedSpace:
 				handleAction(Action.NextWord, true);
-				addMissedSpace();
+				addMissedSpace(config.lang, historyNode);
 				break;
 			case Action.NextWord:
 				const n = tutor.nextWord();
@@ -185,7 +186,7 @@
 				}
 				if (n[0] !== undefined) {
 					addToHistory(n[0]);
-					if (ctx === undefined) addSpace();
+					if (ctx === undefined) addSpace(config.lang, historyNode);
 				}
 				tutor = tutor;
 				break;
@@ -209,24 +210,6 @@
 		});
 	}
 
-	function addSpace() {
-		const el = document.createElement('div');
-		el.classList.add('spacer');
-		// el.innerHTML =
-		// 	"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><path  d='M14.1 27.2l7.1 7.2 16.7-16.8'/></svg>";
-		el.title = config.lang.space;
-		historyNode.appendChild(el);
-	}
-
-	function addMissedSpace() {
-		const el = document.createElement('div');
-		el.classList.add('missed-space');
-		// el.innerHTML =
-		// 	"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><path  d='M14.1 27.2l7.1 7.2 16.7-16.8'/></svg>";
-		el.title = config.lang.missedSpace;
-		historyNode.appendChild(el);
-	}
-
 	async function showSessionStatsDialog() {
 		showStatsDialog(config.lang.statsDialogSessionTitle, config, sessionStats);
 	}
@@ -244,7 +227,7 @@
 		});
 	}
 
-	async function showLessonConfig(): Promise<void> {
+	async function showLessonOptions(): Promise<void> {
 		return showLessonConfigDialog(config, lesson, tutor.overrides).then(
 			(data?: [Lesson, Partial<LessonTypingConfig>]) => {
 				if (data !== undefined) {
@@ -257,7 +240,7 @@
 		);
 	}
 
-	async function showConfig(_: Event) {
+	async function showUserConfig(_: Event) {
 		showConfigDialog(config).then((conf?: Config) => {
 			if (conf !== undefined) {
 				console.log(conf);
@@ -275,7 +258,7 @@
 	<header class="header">
 		<ul>
 			<li>
-				<button class="link" type="button" on:click={showConfig}
+				<button class="link" type="button" on:click={showUserConfig}
 					>{config.lang.openConfigDialog}</button
 				>
 			</li>
@@ -320,7 +303,7 @@
 						>
 						<button
 							class="link icon"
-							on:click={showLessonConfig}
+							on:click={showLessonOptions}
 							title={config.lang.openLessonConfigDialog}
 							><img src="{base}/imgs/gear.svg" alt={config.lang.openLessonConfigDialog} /></button
 						>

@@ -1,14 +1,14 @@
-import Dialog from "./components/dialog.svelte";
-import Voice from "./components/dialogs/voice.svelte";
-import Stats from "./components/dialogs/stats.svelte";
-import LessonConfig from "./components/dialogs/lesson_config.svelte";
+import Dialog from "../components/dialog.svelte";
+import Voice from "../components/dialogs/voice.svelte";
+import Stats from "../components/dialogs/stats.svelte";
+import LessonConfig from "../components/dialogs/lesson_options.svelte";
 
-import type { Audio } from "./audio";
-import type { Config } from "./config";
-import type { BaseStats } from "./stats";
-import type { InnerDialogComponent, CloseFn } from "./types";
-import type { Lesson, LessonTypingConfig } from "$lib/lessons/lessons";
-import User from "./components/dialogs/user.svelte";
+import type { Audio } from "../audio";
+import type { Config } from "../types/config";
+import type { BaseStats } from "../stats";
+import type { InnerDialogComponent, CloseFn } from "../types/types";
+import type { Lesson, LessonTypingConfig } from "$lib/lessons/lesson";
+import User from "../components/dialogs/user_config.svelte";
 
 
 export function showVoiceDialog(config: Config) {

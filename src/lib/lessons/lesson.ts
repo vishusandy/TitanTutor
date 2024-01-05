@@ -1,29 +1,25 @@
-import { StockWordList, type StorableStockList } from './base/wordlist';
+import { StockWordList, type StorableStockList } from './base/stock_wordlist';
 import { RandomList, type StorableRandom } from './wrappers/random';
 import { UntilN, type StorableUntil } from './wrappers/until_n';
-import { defaultLessonName } from '$lib/locales';
-import { storagePrefix, Config, CheckMode } from '$lib/config';
-import type { Language } from '$lib/language';
+import { defaultLessonName } from '$lib/data/locales';
+import { storagePrefix, Config, CheckMode } from '$lib/types/config';
+import type { Language } from '$lib/data/language';
 import { UserWordList, type StorableUserWordlist } from './base/user_wordlist';
-import type { BaseWordList } from './base/wordlist_base';
+import type { BaseWordList } from './base/wordlist';
 import { AdaptiveList, type StorableAdaptive } from './base/adaptive_list';
+import { stockLessons } from '$lib/conf/lessons';
 
-
-export const stockLessons: Map<string, StorableBaseLesson> = new Map([
-    ['en-test-words', StockWordList.newStorable('en-test-words', 'test_words.json', 'Test Words')],
-    ['dvorak_en-US_1', StockWordList.newStorable('dvorak_en-US_1', 'dvorak_en-US/lesson_1_homerow_basic.json', 'Dvorak homerow')],
-    ['dvorak_en-US_2', StockWordList.newStorable('dvorak_en-US_2', 'dvorak_en-US/lesson_2_homerow_basic.json', 'Dvorak homerow + widdle')],
-    ['dvorak_en-US_3', StockWordList.newStorable('dvorak_en-US_3', 'dvorak_en-US/lesson_3_homerow_basic.json', 'Dvorak toprow')],
-    ['dvorak_en-US_4', StockWordList.newStorable('dvorak_en-US_4', 'dvorak_en-US/lesson_4_homerow_basic.json', 'Dvorak toprow + middle')],
-    ['dvorak_en-US_5', StockWordList.newStorable('dvorak_en-US_5', 'dvorak_en-US/lesson_5_homerow_basic.json', 'Dvorak bottomrow + middle')],
-    ['dvorak_en-US_6', StockWordList.newStorable('dvorak_en-US_6', 'dvorak_en-US/lesson_6_homerow_basic.json', 'Dvorak bottomrow + middle')],
-]);
 
 
 const userLessonPrefix = `${storagePrefix}user_lesson_`;
 const lastLessonPrefix = `${storagePrefix}last_lesson_`;
 const lessonOptionsPrefix = `${storagePrefix}lesson_options_`;
 
+
+export type Series = {
+    name: string,
+    lessons: string[]
+};
 
 export type LessonTypingConfig = {
     random: boolean,
@@ -173,4 +169,17 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     static saveLast(lesson: Lesson) {
         localStorage.setItem(lastLessonPrefix, lesson.baseLesson().id);
     }
+}
+
+export function defaultBatch(lesson: Lesson, n: number) {
+    let words: string[] = [];
+
+    let word: string, iter = lesson.next(), i = 0;
+    while (i < n && iter.done !== true && (word = iter.value)) {
+        words.push(word);
+        iter = lesson.next();
+        i += 1;
+    }
+
+    return words;
 }

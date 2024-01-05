@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BinaryTree } from '$lib/bst';
+	import { BinaryTree } from '$lib/util/bst';
 
 	console.log('starting test');
 	const arr: [number, string][] = [
@@ -18,5 +18,5 @@
 	console.log('tree created.');
 	console.log(bst);
 	bst.print();
-	console.log(bst.search(0.01));
+	// console.log(bst.search(0.01));
 </script>

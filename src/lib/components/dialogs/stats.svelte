@@ -1,7 +1,7 @@
 <script lang="ts" generics="T extends BaseStats">
-	import type { Config } from '$lib/config';
+	import type { Config } from '$lib/types/config';
 	import type { UserStats, BaseStats } from '$lib/stats';
-	import { formatDuration } from '$lib/util';
+	import { formatDuration } from '$lib/util/util';
 
 	export let stats: T;
 	export let config: Config;

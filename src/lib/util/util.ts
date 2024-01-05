@@ -1,5 +1,5 @@
-import type { Language } from "./language";
-import type { Lesson } from "./lessons/lessons";
+import type { Language } from "../data/language";
+import type { Lesson } from "../lessons/lesson";
 
 // Create a new shuffled array
 // Modified from: https://www.freecodecamp.org/news/how-to-shuffle-an-array-of-items-using-javascript-or-typescript/

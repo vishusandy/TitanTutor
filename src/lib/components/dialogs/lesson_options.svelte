@@ -4,13 +4,13 @@
 	import Bool from './user_form_inputs/bool.svelte';
 	import Select from './user_form_inputs/select.svelte';
 
-	import { CheckMode, type Config } from '$lib/config';
-	import { Lesson, type LessonTypingConfig } from '$lib/lessons/lessons';
+	import { CheckMode, type Config } from '$lib/types/config';
+	import { Lesson, type LessonTypingConfig } from '$lib/lessons/lesson';
 	import {
 		defaultLessonFormState,
 		type FormUserValueReturn,
 		type LessonFormState
-	} from '$lib/forms';
+	} from '$lib/types/forms';
 
 	export let config: Config;
 	export let lesson: Lesson;
