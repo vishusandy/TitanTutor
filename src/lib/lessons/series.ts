@@ -2,12 +2,14 @@
 export class Series {
     id: string;
     name: string;
+    langs: RegExp;
     lessons: string[]
 
-    constructor(id: string, name: string, lessons: string[]) {
+    constructor(id: string, name: string, langs: RegExp, lessons: string[]) {
         this.id = id;
         this.name = name;
         this.lessons = lessons;
+        this.langs = langs;
     }
 
     lessonPos(lesson: string): number | null {

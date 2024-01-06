@@ -37,7 +37,7 @@ export const stockLessons: Map<string, StorableBaseLesson> = new Map([
 ]);
 
 export const lessonPlans: Map<string, Series> = new Map([
-    ['dvorak_en-US', new Series('dvorak_en-US', 'Dvorak', [
+    ['dvorak_en-US', new Series('dvorak_en-US', 'Dvorak', /^en\W/, [
         'dvorak_en-US_1',
         'dvorak_en-US_2',
         'dvorak_en-US_3',
@@ -45,7 +45,7 @@ export const lessonPlans: Map<string, Series> = new Map([
         'dvorak_en-US_5',
         'dvorak_en-US_6',
     ])],
-    ['colemak_en-US', new Series('colemak_en-US', 'Colemak', [
+    ['colemak_en-US', new Series('colemak_en-US', 'Colemak', /^en\W/, [
         'colemak_en-US_1',
         'colemak_en-US_2',
         'colemak_en-US_3',
@@ -53,7 +53,7 @@ export const lessonPlans: Map<string, Series> = new Map([
         'colemak_en-US_5',
         'colemak_en-US_6',
     ])],
-    ['qwerty_en-US', new Series('qwerty_en-US', 'Qwerty', [
+    ['qwerty_en-US', new Series('qwerty_en-US', 'Qwerty', /^en\W/, [
         'qwerty_en-US_1',
         'qwerty_en-US_2',
         'qwerty_en-US_3',
