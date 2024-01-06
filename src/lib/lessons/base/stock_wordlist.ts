@@ -32,7 +32,7 @@ export class StockWordList extends BaseWordList {
             });
     }
 
-    static newStorable(id: string, filename: string, name: string): StorableStockList {
+    static newStorable(id: string, name: string, filename: string): StorableStockList {
         return { type: 'wordlist', id, filename, name }
     }
 }

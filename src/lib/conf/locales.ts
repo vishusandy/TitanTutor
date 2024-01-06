@@ -5,7 +5,6 @@ export const languageList: LangItem[] = [{ name: 'English - US', path: 'en-US' }
 
 export const defaultTtsList = ['English (America)', 'Google US English'];
 export const defaultInterfaceLanguage: string = 'en-US';
-export const defaultStockLesson = 'en-test-words';
 
 export const ttsDefaultsMap: Map<string, string[]> = new Map([
     // locale   array of acceptable default languages for tts

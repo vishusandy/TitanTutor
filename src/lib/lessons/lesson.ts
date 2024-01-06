@@ -8,18 +8,12 @@ import { UserWordList, type StorableUserWordlist } from './base/user_wordlist';
 import type { BaseWordList } from './base/wordlist';
 import { AdaptiveList, type StorableAdaptive } from './base/adaptive_list';
 import { stockLessons } from '$lib/conf/lessons';
-
+import { RandomChars, type StorableChars } from './base/chars';
 
 
 const userLessonPrefix = `${storagePrefix}user_lesson_`;
 const lastLessonPrefix = `${storagePrefix}last_lesson_`;
 const lessonOptionsPrefix = `${storagePrefix}lesson_options_`;
-
-
-export type Series = {
-    name: string,
-    lessons: string[]
-};
 
 export type LessonTypingConfig = {
     random: boolean,
@@ -66,6 +60,8 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         switch (s.type) {
             case 'wordlist':
                 return StockWordList.fromStorable(s as StorableStockList, fetchFn);
+            case 'chars':
+                return RandomChars.fromStorable(s as StorableChars, fetchFn);
             case 'userwordlist':
                 return UserWordList.fromStorable(s as StorableUserWordlist, fetchFn);
             case 'adaptive':

@@ -5,25 +5,44 @@ import { defaultBatch } from "$lib/util/util";
 import { randGen } from '$lib/util/random'
 import type { LessonFormState } from "$lib/types/forms";
 import type { Language } from "$lib/data/language";
+import { BinaryTree } from "$lib/util/bst";
 
 
-export type StorableChars = { type: "chars", name: string, chars: string[] } & StorableBaseLesson;
+export type StorableChars = { type: "chars", name: string, chars: string[], min: number, max: number, weights: number[] } & StorableBaseLesson;
 
 export class RandomChars implements BaseLesson {
     chars: string[];
-    length: number | [number, number] = 5;
-    id: string = '';
-    name: string = '';
+    // length: number | [number, number] = 5;
+    min: number;
+    max: number;
+    id: string;
+    name: string;
     rng: prand.RandomGenerator;
+    weights: number[];
+    bst: BinaryTree<string, number>;
+    len: () => number;
 
-    constructor(chars: string[], id: string, name: string) {
+    constructor(chars: [string, number][], id: string, name: string, minChars: number = 5, maxChars: number = 5) {
         if (chars.length === 0) {
             throw new Error("Invalid random letter lesson: the list of characters must contain at least one element");
         }
+
+        if (minChars <= maxChars) {
+            this.min = minChars;
+            this.max = maxChars;
+        } else {
+            this.max = minChars;
+            this.min = maxChars;
+        }
+
         this.id = id;
         this.name = name;
-        this.chars = chars;
+        this.chars = chars.map((c) => c[0]);
         this.rng = randGen();
+        this.weights = chars.map((c) => c[1]);
+        this.bst = BinaryTree.normalized(chars);
+        // @ts-ignore
+        this.len = (minChars !== maxChars) ? () => prand.unsafeUniformIntDistribution(this.min, this.max, this.rng) : () => this.min;
     }
 
     [Symbol.iterator]() {
@@ -31,17 +50,11 @@ export class RandomChars implements BaseLesson {
     }
 
     next(): IteratorResult<string> {
-        let length: number, n: number, chars: string = '';
-
-        if (Array.isArray(this.length)) {
-            length = prand.unsafeUniformIntDistribution(this.length[0], this.length[1], this.rng);
-        } else {
-            length = this.length;
-        }
+        let length: number = this.len();
+        let chars: string = '';
 
         for (let i = 0; i < length; i++) {
-            n = prand.unsafeUniformIntDistribution(0, this.chars.length, this.rng);
-            chars += this.chars[n];
+            chars += this.bst.search(Math.random());
         }
 
         return { done: false, value: chars }
@@ -57,11 +70,21 @@ export class RandomChars implements BaseLesson {
             id: this.id,
             name: this.name,
             chars: this.chars,
+            min: this.min,
+            max: this.max,
+            weights: this.weights
         };
     }
 
     static async fromStorable(s: StorableChars, _: typeof fetch = fetch): Promise<RandomChars> {
-        return new RandomChars(s.chars, s.id, s.name);
+        const chars: [string, number][] = s.chars.map((c, i) => [c, s.weights[i]])
+        return new RandomChars(chars, s.id, s.name, s.min, s.max);
+    }
+
+    static newStorable(id: string, name: string, char_weights: [string, number][], min: number = 5, max: number = 5): StorableChars {
+        const chars = char_weights.map((cw) => cw[0]);
+        const weights = char_weights.map((cw) => cw[1]);
+        return { type: 'chars', id, chars, name, min, max, weights }
     }
 
     getChild(): Lesson | undefined {
