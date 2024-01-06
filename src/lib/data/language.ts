@@ -11,6 +11,7 @@ export class Language {
     inputPaused: string = '';
     notStarted: string = '';
     paused: string = '';
+    restartLesson: string = '';
     yes: string = '';
     no: string = '';
     on: string = '';

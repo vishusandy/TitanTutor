@@ -8,7 +8,7 @@
 	import { addMissedSpace, addSpace } from '$lib/util/dom';
 	import { CheckMode, type Config } from '$lib/types/config';
 	import { SessionStats } from '$lib/stats';
-	import type { WordState } from '$lib/word_state';
+	import { WordState } from '$lib/word_state';
 	import { Tutor } from '$lib/tutor';
 	import { Action } from '$lib/types/types';
 	import type { Audio } from '$lib/audio';
@@ -21,12 +21,17 @@
 		showVoiceDialog
 	} from '$lib/util/dialog';
 	import Timer from './timer.svelte';
+	import { lessonInSeries, lessonPlans } from '$lib/conf/lessons';
 
 	export let config: Config;
 	export let lesson: Lesson;
 	export let sessionStats: SessionStats;
 
 	let tutor = new Tutor(config, lesson, Lesson.getOverrides(lesson.baseLesson().id), sessionStats);
+	let lessonPlan: string | undefined = lessonInSeries.get(lesson.baseLesson().id);
+	let lessonSeries = lessonPlan !== undefined ? lessonPlans.get(lessonPlan) : undefined;
+	let planIdx =
+		lessonSeries !== undefined ? lessonSeries.lessons.findIndex((v) => v == lessonPlan) : undefined;
 
 	let started: boolean = false;
 	let paused: boolean = true;
@@ -119,6 +124,8 @@
 
 	async function endLesson() {
 		if (sessionStats.chars !== 0) {
+			paused = true;
+			sessionStats.pause();
 			lesson.lessonEnd();
 
 			if (config.logStats) {
@@ -171,6 +178,8 @@
 				tutor = tutor;
 				break;
 			case Action.LessonCompleted:
+				if (!tutor.word.empty()) addToHistory(tutor.word);
+				tutor.word = new WordState('');
 				tutor = tutor;
 				lessonCompleted();
 				break;
@@ -276,62 +285,62 @@
 	</header>
 
 	<section class:paused>
-		{#if !finished}
-			<h1 class="tutor-title">
-				{lesson.baseLesson().getName(config.lang)}
-			</h1>
+		<h1 class="tutor-title">
+			{lesson.baseLesson().getName(config.lang)}
+		</h1>
 
-			<nav class="lesson-buttons">
-				<div class="tutor-above">
-					<div class="counter" class:active={!paused}>
-						{#if !started}
-							{config.lang.notStarted}
-						{:else}
-							<Timer stats={sessionStats} lang={config.lang} />
-						{/if}
-					</div>
-					<div class="tutor-menu">
-						{#if tutor.config.until !== null}
-							<div class="word-progress">{tutor.history.length}/{tutor.config.until}</div>
-						{/if}
-						<button
-							type="button"
-							class="link icon"
-							on:click={showSessionStatsDialog}
-							title={config.lang.openSessionStatsDialog}
-							><img src="{base}/imgs/stats.svg" alt={config.lang.openSessionStatsDialog} /></button
-						>
-						<button
-							class="link icon"
-							on:click={showLessonOptions}
-							title={config.lang.openLessonConfigDialog}
-							><img src="{base}/imgs/gear.svg" alt={config.lang.openLessonConfigDialog} /></button
-						>
-
-						<button
-							class="link icon stop-button"
-							disabled={!started}
-							on:click={confirmEndLesson}
-							title={config.lang.stop}
-							><img src="{base}/imgs/stop.svg" alt={config.lang.stop} /></button
-						>
-					</div>
+		<nav class="lesson-buttons">
+			<div class="tutor-above">
+				<div class="counter" class:active={!paused}>
+					{#if !started}
+						{config.lang.notStarted}
+					{:else}
+						<Timer stats={sessionStats} lang={config.lang} />
+					{/if}
 				</div>
-			</nav>
+				<div class="tutor-menu">
+					{#if tutor.config.until !== null}
+						<div class="word-progress">{tutor.history.length}/{tutor.config.until}</div>
+					{/if}
+					<button
+						type="button"
+						class="link icon"
+						on:click={showSessionStatsDialog}
+						title={config.lang.openSessionStatsDialog}
+						><img src="{base}/imgs/stats.svg" alt={config.lang.openSessionStatsDialog} /></button
+					>
+					<button
+						class="link icon"
+						on:click={showLessonOptions}
+						title={config.lang.openLessonConfigDialog}
+						><img src="{base}/imgs/gear.svg" alt={config.lang.openLessonConfigDialog} /></button
+					>
 
-			<div class="tutor-words" class:paused class:char-mode={config.checkMode === CheckMode.Char}>
-				<span bind:this={historyNode} class="history" /><Word
-					bind:span={activeWord}
-					word={tutor.word.wordChars}
-					state={tutor.word.state}
-					active={true}
-				/><span class="spacer" /><span class="queue">
-					{#each tutor.queue as q}
-						<QueuedWord word={q} />{' '}
-					{/each}
-				</span>
+					<button
+						class="link icon stop-button"
+						disabled={!started}
+						on:click={confirmEndLesson}
+						title={config.lang.stop}
+						><img src="{base}/imgs/stop.svg" alt={config.lang.stop} /></button
+					>
+				</div>
 			</div>
+		</nav>
 
+		<div class="tutor-words" class:paused class:char-mode={config.checkMode === CheckMode.Char}>
+			<span bind:this={historyNode} class="history" /><Word
+				bind:span={activeWord}
+				word={tutor.word.wordChars}
+				state={tutor.word.state}
+				active={true}
+			/><span class="spacer" /><span class="queue">
+				{#each tutor.queue as q}
+					<QueuedWord word={q} />{' '}
+				{/each}
+			</span>
+		</div>
+
+		{#if !finished}
 			<div class="tutor-bottom">
 				{#if paused && !started}
 					<input
@@ -362,7 +371,9 @@
 				{/if}
 			</div>
 		{:else}
-			<button type="button" on:click={() => reset()}>Again!</button>
+			<div class="finished">
+				<button type="button" on:click={() => reset()}>{config.lang.restartLesson}</button>
+			</div>
 		{/if}
 	</section>
 </div>
@@ -449,6 +460,13 @@
 		text-align: center;
 		padding: 0.8rem 2rem;
 		caret-color: transparent;
+	}
+
+	.finished {
+		width: 100%;
+		max-width: 30ch;
+		text-align: center;
+		margin: 2rem auto;
 	}
 
 	.tutor-input:focus,

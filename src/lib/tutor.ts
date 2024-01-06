@@ -88,7 +88,7 @@ export class Tutor {
 
         let next = this.queue.shift();
         if (next === undefined) {
-            this.word = new WordState('');
+            // this.word = new WordState('');
             return Action.LessonCompleted;
         }
 
