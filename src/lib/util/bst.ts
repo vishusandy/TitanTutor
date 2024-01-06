@@ -53,6 +53,7 @@ function build<L, N>(nodes: Child<L, N>[]): Child<L, N> {
 export class BinaryTree<L, N> {
     root: Child<L, N>;
 
+    /// Create a new binary tree.  Expects an array of [value, probability] where the probability inceases for each item
     constructor(arr: [L, N][]) {
         const a = [...arr].sort(([, a], [, b]) =>
             (a > b) ? 1 : (a === b) ? 0 : -1
@@ -61,10 +62,26 @@ export class BinaryTree<L, N> {
         this.root = build(a.map(([v, n]) => new Leaf(n, v)));
     }
 
-    static normalized<L>(arr: [L, number][], probSum: number | undefined) {
-        const sum = probSum ?? arr.reduce((acc, [, v]) => acc + v, 0);
+    /**
+     * Create a normalized bst with incementing probabilities.  Ex array:
+     * [['a', 0.25], ['b', 0.5], ['c', 0.75], ['d', 1]]
+     * @param arr   Array with 
+     * @param probSum 
+     * @returns 
+     */
+    static normalized_cumulative<L>(arr: [L, number][], sum: number) {
         const a: [L, number][] = Array.from(arr.map(([w, n]) => [w, n / sum]));
         return new BinaryTree(a);
+    }
+
+    static normalized<L>(arr: [L, number][]) {
+        const a: [L, number][] = [];
+        let sum = 0;
+        arr.forEach(([l, n]) => {
+            sum += n;
+            a.push([l, sum]);
+        });
+        return BinaryTree.normalized_cumulative(a, sum);
     }
 
     search(n: N): L {

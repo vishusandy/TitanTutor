@@ -45,13 +45,14 @@ export class AdaptiveList implements Lesson {
 
         wordlist.forEach((w) => {
             let p = 0;
-            for (const c of [...w])
+            for (const c of [...w]) {
                 p += charProb.get(c) ?? 0;
+            }
             arr.push([w, p]);
             sum += p;
         });
 
-        return BinaryTree.normalized(arr, sum);
+        return BinaryTree.normalized_cumulative(arr, sum);
     }
 
     /**
