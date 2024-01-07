@@ -1,6 +1,19 @@
 
 
-can user choose thier interface lang?
+
+add lesson option overrides that can override all user/lesson options
+
+fix user_ prefix in user_wordlist
+
+lesson/series selection
+
+add length property to measure word progress
+
+add adaptive option
+
+in char mode count space as a character
+  how to handle optional space??
+
 
 
 adaptive list must process word state for typos
