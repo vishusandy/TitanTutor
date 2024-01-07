@@ -88,6 +88,7 @@ export class Tutor {
 
         let next = this.queue.shift();
         if (next === undefined) {
+            this.word = new WordState('');
             return Action.LessonCompleted;
         }
 
@@ -123,6 +124,7 @@ export class Tutor {
 
     private handleKeydownCharMode(e: KeyboardEvent): Action {
         if (this.word.atEnd()) {
+            console.log('at end')
             if (e.key === ' ') {
                 e.preventDefault();
                 return Action.NextWord;

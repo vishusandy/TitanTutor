@@ -91,7 +91,7 @@
 	function pause(_: Event) {
 		if (textbox === undefined) return;
 		paused = true;
-		if (tutor.word.atEnd() && tutor.word.word === tutor.word.input) {
+		if (tutor.word.atEnd()) {
 			handleAction(Action.NextWord);
 		}
 		sessionStats.pause();
@@ -126,7 +126,6 @@
 		if (sessionStats.chars !== 0) {
 			paused = true;
 			sessionStats.pause();
-			sessionStats = sessionStats;
 			lesson.lessonEnd();
 
 			if (config.logStats) {
