@@ -14,9 +14,9 @@
 
 	export let config: Config;
 	export let lesson: Lesson;
-	export let lessonConfigOverrides: Partial<LessonTypingConfig>;
+	export let lessonOptions: Partial<LessonTypingConfig>;
 
-	const state: LessonFormState = getFormState(lesson, config, lessonConfigOverrides);
+	const state: LessonFormState = getFormState(lesson, config, lessonOptions);
 
 	const wordModeChoices = [
 		{
@@ -35,7 +35,7 @@
 	let checkModeDataFn: () => FormUserValueReturn<CheckMode>;
 
 	export function getData(): [Lesson, Partial<LessonTypingConfig>] {
-		const lessonOverrides: Partial<LessonTypingConfig> = {
+		const lessonOptions: Partial<LessonTypingConfig> = {
 			until: untilDataFn(),
 			random: randomDataFn(),
 			minQueue: minQueueDataFn(),
@@ -44,26 +44,26 @@
 			checkMode: checkModeDataFn()
 		};
 
-		const userOverrides = config.lessonConfigOverrides(lessonOverrides);
+		const userOverrides = config.lessonOptions(lessonOptions);
 		const result = Lesson.addWrappers(lesson.baseLesson(), userOverrides);
 
-		return [result, lessonOverrides];
+		return [result, lessonOptions];
 	}
 
 	function getFormState(
 		lesson: Lesson,
 		config: Config,
-		lessonConfigOverrides: Partial<LessonTypingConfig>
+		lessonOptions: Partial<LessonTypingConfig>
 	): LessonFormState {
 		let s: LessonFormState = {
 			...defaultLessonFormState
 		};
 
-		for (const key in lessonConfigOverrides) {
+		for (const key in lessonOptions) {
 			// @ts-ignore
-			if (lessonConfigOverrides[key] !== undefined) {
+			if (lessonOptions[key] !== undefined) {
 				// @ts-ignore
-				s[key] = lessonConfigOverrides[key];
+				s[key] = lessonOptions[key];
 			}
 		}
 
@@ -95,7 +95,7 @@
 		label={config.lang.configRandom}
 		onLabel={config.lang.on}
 		offLabel={config.lang.off}
-		initialState={Lesson.canRandomize(lesson.baseLesson().getType()) ? state.random : 'disabled'}
+		initialState={Lesson.allowRandom(lesson.baseLesson().getType()) ? state.random : 'disabled'}
 	/>
 
 	<Number

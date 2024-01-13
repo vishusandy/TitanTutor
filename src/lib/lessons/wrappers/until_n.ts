@@ -1,13 +1,18 @@
 import { Lesson, type StorableLesson, type BaseLesson } from "$lib/lessons/lesson";
-import type { LessonFormState } from "$lib/types/forms";
+import { defaultLessonOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { defaultBatch } from "$lib/util/util";
 
-export type StorableUntil = { type: "until", max: number, lesson: StorableLesson };
+const typeid = "until";
+export type StorableUntil = { type: typeof typeid, max: number, lesson: StorableLesson };
 
 export class UntilN implements Lesson {
     lesson: Lesson;
     num: number;
     max: number;
+
+    static getTypeId(): string {
+        return typeid;
+    }
 
     constructor(lesson: Lesson, max: number) {
         this.lesson = lesson;
@@ -29,7 +34,7 @@ export class UntilN implements Lesson {
 
     storable(): StorableUntil {
         return {
-            type: 'until',
+            type: typeid,
             max: this.max,
             lesson: this.lesson.storable(),
         };
@@ -45,7 +50,7 @@ export class UntilN implements Lesson {
     }
 
     static newStorable(s: StorableLesson, max: number): StorableUntil {
-        return { type: 'until', max, lesson: s }
+        return { type: typeid, max, lesson: s }
     }
 
     getChild(): Lesson | undefined {
@@ -53,7 +58,7 @@ export class UntilN implements Lesson {
     }
 
     getType(): string {
-        return 'until';
+        return typeid;
     }
 
     baseLesson(): BaseLesson {
@@ -62,6 +67,10 @@ export class UntilN implements Lesson {
 
     batch(n: number): string[] {
         return defaultBatch(this, n);
+    }
+
+    overrides(): LessonOptsAvailable {
+        return defaultLessonOptsAvail;
     }
 
     lessonEnd(): void { }

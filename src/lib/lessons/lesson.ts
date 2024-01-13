@@ -1,23 +1,37 @@
-import { StockWordList, type StorableStockList } from './base/stock_wordlist';
-import { RandomList, type StorableRandom } from './wrappers/random';
-import { UntilN, type StorableUntil } from './wrappers/until_n';
+import { StockWordList } from './base/stock_wordlist';
+import { RandomList } from './wrappers/random';
+import { UntilN } from './wrappers/until_n';
 import { defaultLessonName } from '$lib/data/locales';
 import { storagePrefix, Config, CheckMode } from '$lib/types/config';
 import type { Language } from '$lib/data/language';
-import { UserWordList, type StorableUserWordlist } from './base/user_wordlist';
+import { UserWordList } from './base/user_wordlist';
 import type { BaseWordList } from './base/wordlist';
-import { AdaptiveList, type StorableAdaptive } from './base/adaptive_list';
+import { AdaptiveList } from './base/adaptive_list';
 import { stockLessons } from '$lib/conf/lessons';
-import { RandomChars, type StorableChars } from './base/chars';
+import { RandomChars } from './base/chars';
+import type { LessonOptsAvailable } from '$lib/types/forms';
 
 
 const userLessonPrefix = `${storagePrefix}user_lesson_`;
 const lastLessonPrefix = `${storagePrefix}last_lesson_`;
 const lessonOptionsPrefix = `${storagePrefix}lesson_options_`;
 
-export type LessonTypingConfig = {
+export const lessonClasses = [
+    StockWordList,
+    UserWordList,
+    RandomChars,
+    AdaptiveList,
+    RandomList,
+    UntilN
+];
+
+export type LessonWrappers = {
     random: boolean,
     until: number | null,
+    adaptive: boolean,
+};
+
+export type LessonTypingConfig = LessonWrappers & {
     wordBatchSize: number,
     minQueue: number,
     checkMode: CheckMode,
@@ -37,8 +51,10 @@ export interface StorableBaseLesson extends StorableLesson {
 }
 
 export interface StorableLesson {
-    type: 'wordlist' | 'random' | 'until' | 'userwordlist' | 'chars' | 'adaptive';
+    // type: 'wordlist' | 'random' | 'until' | 'userwordlist' | 'chars' | 'adaptive';
+    type: string;
 }
+
 
 export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract batch(n: number): string[];
@@ -50,37 +66,13 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract getType(): string;
     abstract baseLesson(): BaseLesson;
     abstract lessonEnd(): void;
+    abstract overrides(): LessonOptsAvailable;
 
-
-    static canRandomize(type: string): boolean {
-        return type === 'wordlist' || type === 'userwordlist';
-    }
-
-    static async deserialize(s: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-        switch (s.type) {
-            case 'wordlist':
-                return StockWordList.fromStorable(s as StorableStockList, fetchFn);
-            case 'chars':
-                return RandomChars.fromStorable(s as StorableChars, fetchFn);
-            case 'userwordlist':
-                return UserWordList.fromStorable(s as StorableUserWordlist, fetchFn);
-            case 'adaptive':
-                return AdaptiveList.fromStorable(s as StorableAdaptive, fetchFn);
-            case 'random':
-                return RandomList.fromStorable(s as StorableRandom, fetchFn);
-            case 'until':
-                return UntilN.fromStorable(s as StorableUntil, fetchFn);
-            // case 'weighted':
-            //     return WeightedShuffle.fromStorable(o as StorableWeightedShuffle, fetchFn);
-            default:
-                throw new Error(`Attempted to load lesson with invalid type`)
-        }
-    }
 
     static addWrappers(lesson: Lesson, opts: LessonTypingConfig): Lesson {
         let result: Lesson;
 
-        if (opts.random === true && Lesson.canRandomize(lesson.baseLesson().getType())) {
+        if (opts.random === true && Lesson.allowRandom(lesson.baseLesson().getType())) {
             result = new RandomList(lesson as BaseWordList);
         } else {
             result = lesson;
@@ -92,6 +84,19 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         }
 
         return result;
+    }
+
+    static allowRandom(type: string): boolean {
+        return type === 'wordlist' || type === 'userwordlist';
+    }
+
+    static async deserialize(s: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+        for (const c of lessonClasses) {
+            if (s.type === c.getTypeId()) {
+                return c.fromStorable(s as any, fetchFn);
+            }
+        }
+        throw new Error(`Attempted to load lesson with invalid type`);
     }
 
     static async default(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
@@ -122,20 +127,20 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         return Lesson.load(lastLesson, config, fetchFn);
     }
 
-    static getOverrides(id: string): Partial<LessonTypingConfig> {
+    static getLessonOptions(id: string): Partial<LessonTypingConfig> {
         const opts = localStorage.getItem(`${lessonOptionsPrefix}${id}`);
 
         return (opts !== null) ? JSON.parse(opts) : {};
     }
 
-    static saveOverrides(id: string, overrides: Partial<LessonTypingConfig>) {
-        localStorage.setItem(`${lessonOptionsPrefix}${id}`, JSON.stringify(overrides));
+    static saveLessonOptions(id: string, opts: Partial<LessonTypingConfig>) {
+        localStorage.setItem(`${lessonOptionsPrefix}${id}`, JSON.stringify(opts));
     }
 
-    static async deserializeFromOverrides(s: StorableBaseLesson, opts: LessonTypingConfig, fetchFn: typeof fetch = fetch) {
+    static async deserializeFromLessonOptions(s: StorableBaseLesson, opts: LessonTypingConfig, fetchFn: typeof fetch = fetch) {
         let storable: StorableLesson = s;
 
-        if (opts.random && Lesson.canRandomize(s.type)) {
+        if (opts.random && Lesson.allowRandom(s.type)) {
             storable = RandomList.newStorable(storable);
         }
 
@@ -148,9 +153,9 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     }
 
     static async deserializeFromConfig(id: string, s: StorableBaseLesson, config: Config, fetchFn: typeof fetch = fetch) {
-        const opts = config.lessonConfigOverrides(Lesson.getOverrides(id));
+        const opts = config.lessonOptions(Lesson.getLessonOptions(id));
 
-        return Lesson.deserializeFromOverrides(s, opts, fetchFn);
+        return Lesson.deserializeFromLessonOptions(s, opts, fetchFn);
     }
 
     static save(lesson: Lesson, saveAsLastLesson: boolean = true) {

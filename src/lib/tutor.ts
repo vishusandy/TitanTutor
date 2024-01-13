@@ -9,21 +9,21 @@ export class Tutor {
     config: Config;
     lesson: Lesson;
     stats: SessionStats;
-    overrides: Partial<LessonTypingConfig>;
+    lessonOptions: Partial<LessonTypingConfig>;
     word: WordState;
     history: CompletedWord[];
     queue: string[];
     audioQueue: number;
 
-    constructor(config: Config, lesson: Lesson, lessonOverrides: Partial<LessonTypingConfig>, stats: SessionStats) {
+    constructor(config: Config, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>, stats: SessionStats) {
         this.stats = stats;
         this.lesson = lesson;
-        this.overrides = lessonOverrides;
+        this.lessonOptions = lessonOptions;
         this.word = new WordState('');
         this.queue = [];
         this.history = [];
         this.audioQueue = 0;
-        this.config = config.mergeLessonConfig(lessonOverrides);
+        this.config = config.mergeLessonConfig(lessonOptions);
         this.nextWord();
     }
 

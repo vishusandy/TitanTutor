@@ -70,7 +70,8 @@ export class Config implements ConfigProps {
             userStats,
             spaceOptional: false,
             random: true,
-            until: 100
+            until: 100,
+            adaptive: false
         });
     }
 
@@ -124,10 +125,11 @@ export class Config implements ConfigProps {
             checkMode: this.checkMode,
             backspace: this.backspace,
             spaceOptional: this.spaceOptional,
+            adaptive: this.adaptive
         }
     }
 
-    lessonConfigOverrides(opts: Partial<LessonTypingConfig>): LessonTypingConfig {
+    lessonOptions(opts: Partial<LessonTypingConfig>): LessonTypingConfig {
         return {
             random: opts.random ?? this.random,
             until: opts.until === undefined ? this.until : opts.until,
@@ -136,6 +138,7 @@ export class Config implements ConfigProps {
             checkMode: opts.checkMode ?? this.checkMode,
             backspace: opts.backspace ?? this.backspace,
             spaceOptional: opts.spaceOptional ?? this.spaceOptional,
+            adaptive: opts.adaptive ?? this.adaptive
         }
     }
 
@@ -157,7 +160,9 @@ export class Config implements ConfigProps {
             spaceOptional: opts.spaceOptional ?? this.spaceOptional,
             random: opts.random ?? this.random,
             until: opts.until === undefined ? this.until : opts.until,
+            adaptive: opts.adaptive === undefined ? this.adaptive : opts.adaptive
         };
+
         return new Config(props)
     }
 }

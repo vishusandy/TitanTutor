@@ -2,20 +2,26 @@ import { base } from "$app/paths";
 import { BaseWordList, type StorableBaseWordList } from "./wordlist";
 
 // filename is the json file located within data/words/
-export type StorableStockList = { type: 'wordlist', filename: string } & StorableBaseWordList;
+const typeid = 'wordlist';
+export type StorableStockList = { type: typeof typeid, filename: string } & StorableBaseWordList;
 
 export class StockWordList extends BaseWordList {
+    static getTypeId(): string {
+        return typeid;
+    }
+
     constructor(words: string[], id: string, name: string) {
         super(words, id, name);
     }
 
+
     getType(): string {
-        return 'wordlist'
+        return typeid;
     }
 
     storable(): StorableStockList {
         return {
-            type: 'wordlist',
+            type: typeid,
             id: this.id,
             name: this.name,
             filename: this.id,
@@ -33,6 +39,6 @@ export class StockWordList extends BaseWordList {
     }
 
     static newStorable(id: string, name: string, filename: string): StorableStockList {
-        return { type: 'wordlist', id, filename, name }
+        return { type: typeid, id, filename, name }
     }
 }

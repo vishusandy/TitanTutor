@@ -1,19 +1,24 @@
 import { BaseWordList, type StorableBaseWordList } from "./wordlist";
 
-export type StorableUserWordlist = { type: 'userwordlist', words: string[] } & StorableBaseWordList;
+const typeid = "userwordlist"
+export type StorableUserWordlist = { type: typeof typeid, words: string[] } & StorableBaseWordList;
 
 export class UserWordList extends BaseWordList {
     constructor(words: string[], id: string, name: string) {
         super(words, id, name);
     }
 
+    static getTypeId(): string {
+        return typeid;
+    }
+
     getType(): string {
-        return 'userwordlist'
+        return typeid;
     }
 
     storable(): StorableUserWordlist {
         return {
-            type: 'userwordlist',
+            type: typeid,
             id: this.id,
             name: this.name,
             words: this.words,
@@ -25,6 +30,6 @@ export class UserWordList extends BaseWordList {
     }
 
     static newStorable(id: string, name: string, words: string[]): StorableUserWordlist {
-        return { type: 'userwordlist', id, name, words }
+        return { type: typeid, id, name, words }
     }
 }

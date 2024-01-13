@@ -3,16 +3,15 @@ import prand from "pure-rand";
 import type { Lesson, BaseLesson, StorableBaseLesson } from "$lib/lessons/lesson";
 import { defaultBatch } from "$lib/util/util";
 import { randGen } from '$lib/util/random'
-import type { LessonFormState } from "$lib/types/forms";
+import type { LessonOptsAvailable } from "$lib/types/forms";
 import type { Language } from "$lib/data/language";
 import { BinaryTree } from "$lib/util/bst";
 
-
-export type StorableChars = { type: "chars", name: string, chars: string[], min: number, max: number, weights: number[] } & StorableBaseLesson;
+const typeid = "chars";
+export type StorableChars = { type: typeof typeid, name: string, chars: string[], min: number, max: number, weights: number[] } & StorableBaseLesson;
 
 export class RandomChars implements BaseLesson {
     chars: string[];
-    // length: number | [number, number] = 5;
     min: number;
     max: number;
     id: string;
@@ -21,6 +20,10 @@ export class RandomChars implements BaseLesson {
     weights: number[];
     bst: BinaryTree<string, number>;
     len: () => number;
+
+    static getTypeId(): string {
+        return typeid;
+    }
 
     constructor(chars: [string, number][], id: string, name: string, minChars: number = 5, maxChars: number = 5) {
         if (chars.length === 0) {
@@ -66,7 +69,7 @@ export class RandomChars implements BaseLesson {
 
     storable(): StorableChars {
         return {
-            type: 'chars',
+            type: typeid,
             id: this.id,
             name: this.name,
             chars: this.chars,
@@ -84,7 +87,7 @@ export class RandomChars implements BaseLesson {
     static newStorable(id: string, name: string, char_weights: [string, number][], min: number = 5, max: number = 5): StorableChars {
         const chars = char_weights.map((cw) => cw[0]);
         const weights = char_weights.map((cw) => cw[1]);
-        return { type: 'chars', id, chars, name, min, max, weights }
+        return { type: typeid, id, chars, name, min, max, weights }
     }
 
     getChild(): Lesson | undefined {
@@ -92,7 +95,7 @@ export class RandomChars implements BaseLesson {
     }
 
     getType(): string {
-        return 'chars'
+        return typeid;
     }
 
     getName(_: Language): string {
@@ -105,6 +108,19 @@ export class RandomChars implements BaseLesson {
 
     batch(n: number): string[] {
         return defaultBatch(this, n);
+    }
+
+    overrides(): LessonOptsAvailable {
+        return {
+            random: true,
+            until: 'enabled',
+            checkMode: 'enabled',
+            backspace: 'enabled',
+            wordBatchSize: 'enabled',
+            minQueue: 'enabled',
+            spaceOptional: 'enabled',
+            adaptive: 'enabled',
+        };
     }
 
     lessonEnd(): void { }

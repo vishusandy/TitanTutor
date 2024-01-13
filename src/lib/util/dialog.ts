@@ -32,9 +32,9 @@ export function showConfigDialog(config: Config) {
     return createDialog<Config>(dialogProps);
 }
 
-export function showLessonConfigDialog(config: Config, lesson: Lesson, lessonConfigOverrides: Partial<LessonTypingConfig>) {
+export function showLessonConfigDialog(config: Config, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>) {
     const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, confirmPrompt: config.lang.lessonConfigConfirmSubmit };
-    const passProps = { lesson, lessonConfigOverrides };
+    const passProps = { lesson, lessonOptions };
     return createDialog<[Lesson, Partial<LessonTypingConfig>]>(dialogProps, passProps);
 }
 

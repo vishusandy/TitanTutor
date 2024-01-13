@@ -27,7 +27,12 @@
 	export let lesson: Lesson;
 	export let sessionStats: SessionStats;
 
-	let tutor = new Tutor(config, lesson, Lesson.getOverrides(lesson.baseLesson().id), sessionStats);
+	let tutor = new Tutor(
+		config,
+		lesson,
+		Lesson.getLessonOptions(lesson.baseLesson().id),
+		sessionStats
+	);
 	let lessonPlan: string | undefined = lessonInSeries.get(lesson.baseLesson().id);
 	let lessonSeries = lessonPlan !== undefined ? lessonPlans.get(lessonPlan) : undefined;
 	let planIdx =
@@ -107,12 +112,12 @@
 		}
 	}
 
-	async function reset(overrides?: Partial<LessonTypingConfig>) {
+	async function reset(lessonOpts?: Partial<LessonTypingConfig>) {
 		const id = lesson.baseLesson().id;
-		if (overrides === undefined) overrides = Lesson.getOverrides(id);
+		if (lessonOpts === undefined) lessonOpts = Lesson.getLessonOptions(id);
 
 		lesson = await Lesson.load(id, config);
-		tutor = new Tutor(config, lesson, overrides, sessionStats);
+		tutor = new Tutor(config, lesson, lessonOpts, sessionStats);
 		started = false;
 		paused = true;
 		finished = false;
@@ -211,7 +216,6 @@
 	}
 
 	function addToHistory(w: WordState) {
-		console.log(`adding ${w.word}`);
 		const c = new Word({
 			target: historyNode,
 			props: {
@@ -239,13 +243,13 @@
 	}
 
 	async function showLessonOptions(): Promise<void> {
-		return showLessonConfigDialog(config, lesson, tutor.overrides).then(
+		return showLessonConfigDialog(config, lesson, tutor.lessonOptions).then(
 			(data?: [Lesson, Partial<LessonTypingConfig>]) => {
 				if (data !== undefined) {
-					let overrides: Partial<LessonTypingConfig>;
-					[lesson, overrides] = data;
-					Lesson.saveOverrides(lesson.baseLesson().id, overrides);
-					reset(overrides);
+					let lessonOptions: Partial<LessonTypingConfig>;
+					[lesson, lessonOptions] = data;
+					Lesson.saveLessonOptions(lesson.baseLesson().id, lessonOptions);
+					reset(lessonOptions);
 				}
 			}
 		);

@@ -1,5 +1,6 @@
 import type { BaseLesson, Lesson, StorableBaseLesson } from "$lib/lessons/lesson";
 import type { Language } from "$lib/data/language";
+import { defaultLessonOptsAvail, type LessonOptsAvailable } from "$lib/types/forms";
 
 export type StorableBaseWordList = { name: string } & StorableBaseLesson;
 
@@ -62,5 +63,9 @@ export abstract class BaseWordList implements BaseLesson {
         return words;
     }
 
+    overrides(): LessonOptsAvailable {
+        return defaultLessonOptsAvail;
+    }
+    
     lessonEnd(): void {  }
 }

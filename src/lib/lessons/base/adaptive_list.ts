@@ -4,16 +4,22 @@ import type { Language } from "$lib/data/language";
 import type { BaseWordList } from "./wordlist";
 import { storagePrefix } from "$lib/types/config";
 import { BinaryTree } from "$lib/util/bst";
+import { defaultLessonOptsAvail, type LessonOptsAvailable } from "$lib/types/forms";
 
 const lessonTypoPrefix = `${storagePrefix}lesson_typos`;
 
-export type StorableAdaptive = { type: "adaptive", base: StorableBaseLesson };
+const typeid = "adaptive"
+export type StorableAdaptive = { type: typeof typeid, base: StorableBaseLesson };
 
 export class AdaptiveList implements Lesson {
     base: BaseWordList;
     pos: number;
     typos: Map<string, number>;
     wordProbTree: BinaryTree<string, number>;
+
+    static getTypeId(): string {
+        return typeid;
+    }
 
     constructor(base: BaseWordList) {
         this.pos = 0;
@@ -100,7 +106,7 @@ export class AdaptiveList implements Lesson {
 
     storable(): StorableAdaptive {
         return {
-            type: 'adaptive',
+            type: typeid,
             base: this.base.storable(),
         };
     }
@@ -115,7 +121,7 @@ export class AdaptiveList implements Lesson {
     }
 
     getType(): string {
-        return 'chars'
+        return typeid;
     }
 
     getName(_: Language): string {
@@ -128,6 +134,10 @@ export class AdaptiveList implements Lesson {
 
     batch(n: number): string[] {
         return defaultBatch(this, n);
+    }
+
+    overrides(): LessonOptsAvailable {
+        return defaultLessonOptsAvail;
     }
 
     lessonEnd(): void {

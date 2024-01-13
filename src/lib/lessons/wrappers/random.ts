@@ -1,14 +1,19 @@
 import { Lesson, type BaseLesson, type StorableLesson } from "$lib/lessons/lesson";
-import type { LessonFormState } from "$lib/types/forms";
+import { defaultLessonOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { shuffle, defaultBatch } from "$lib/util/util";
 import type { BaseWordList } from "../base/wordlist";
 
-export type StorableRandom = { type: "random", base: StorableLesson };
+const typeid = "random";
+export type StorableRandom = { type: typeof typeid, base: StorableLesson };
 
 export class RandomList implements Lesson {
     base: BaseWordList;
     words: string[];
     pos: number;
+
+    static getTypeId(): string {
+        return typeid;
+    }
 
     constructor(base: BaseWordList) {
         this.pos = 0;
@@ -31,7 +36,7 @@ export class RandomList implements Lesson {
 
     storable(): StorableRandom {
         return {
-            type: 'random',
+            type: typeid,
             base: this.base.storable(),
         };
     }
@@ -42,7 +47,7 @@ export class RandomList implements Lesson {
     }
 
     static newStorable(lesson: StorableLesson): StorableRandom {
-        return { type: 'random', base: lesson };
+        return { type: typeid, base: lesson };
     }
 
     toJSON(): string {
@@ -54,7 +59,7 @@ export class RandomList implements Lesson {
     }
 
     getType(): string {
-        return 'random';
+        return typeid;
     }
 
     baseLesson(): BaseLesson {
@@ -63,6 +68,10 @@ export class RandomList implements Lesson {
 
     batch(n: number): string[] {
         return defaultBatch(this, n);
+    }
+
+    overrides(): LessonOptsAvailable {
+        return defaultLessonOptsAvail;
     }
 
     lessonEnd(): void { }
