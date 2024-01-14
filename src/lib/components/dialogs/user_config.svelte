@@ -20,7 +20,8 @@
 	let lang: Language = config.lang;
 	let spaceOptional: boolean = config.spaceOptional;
 	let random: boolean = config.random;
-	let until: number | null = config.until;
+	let untilFn: () => number | null;
+	let adaptive: boolean = config.adaptive;
 
 	let selectedKbMapping: string = config.remap.getId();
 	let selectedLang: string = config.lang.lang;
@@ -30,6 +31,7 @@
 
 	export function getData(): Config {
 		return new Config({
+			user: config.user,
 			version: 1,
 			tts: config.tts,
 			stop,
@@ -41,11 +43,12 @@
 			userStats: config.userStats,
 			spaceOptional,
 			random,
-			until,
+			until: untilFn(),
 			minQueue,
 			wordBatchSize,
 			checkMode,
-			backspace
+			backspace,
+			adaptive
 		});
 	}
 
@@ -101,10 +104,14 @@
 		{config.lang.configCharModeOnly}
 	</div>
 
+	<label for="adaptive">{config.lang.configAdaptive}</label>
+	<input id="adaptive" type="checkbox" bind:checked={adaptive} />
+
 	<label for="random">{config.lang.configRandom}</label>
 	<input id="random" type="checkbox" bind:checked={random} />
 
 	<OptionalNumber
+		bind:getData={untilFn}
 		{config}
 		label={config.lang.configUntil}
 		initialState={config.until}

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Config } from '$lib/types/config';
-	import type { FormUserValue, FormUserValueReturn } from '$lib/types/forms';
 	import { onMount } from 'svelte';
 
 	export let config: Config;
