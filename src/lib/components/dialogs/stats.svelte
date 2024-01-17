@@ -5,6 +5,7 @@
 
 	export let stats: T;
 	export let config: Config;
+    export let db: IDBDatabase;
 
 	const userStats = (stats as unknown as UserStats).sessions !== undefined;
 
@@ -37,7 +38,7 @@
 	function clearUserStats() {
 		if (!window.confirm(config.lang.statsResetPrompt)) return;
 
-		config.saveUserConfig();
+		config.saveUserConfig(db);
 		config = config;
 		stats.reset();
 		stats = stats;
@@ -48,7 +49,7 @@
 		trackStats = trackStatsCheckbox.checked;
 		config.logStats = trackStats;
 		config = config;
-		config.saveUserConfig();
+		config.saveUserConfig(db);
 	}
 </script>
 

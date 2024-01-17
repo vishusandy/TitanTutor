@@ -9,8 +9,10 @@
 
 	export let data: PageData;
 
+	let db = data.db;
 	let config = data.config;
 	let lesson = data.lesson;
+	let lessonOpts = data.lessonOpts;
 	let sessionStats = new SessionStats(config.checkMode);
 </script>
 
@@ -18,4 +20,4 @@
 	<title>Keyboard Tutor</title>
 </svelte:head>
 
-<Typing {config} {lesson} {sessionStats} />
+<Typing {config} {lesson} {sessionStats} {db} {lessonOpts} />

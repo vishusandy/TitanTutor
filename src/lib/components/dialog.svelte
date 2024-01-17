@@ -7,6 +7,7 @@
 	export let title: string;
 	export let passProps: any;
 	export let config: Config;
+	export let db: IDBDatabase;
 	export let hasSubmit: boolean;
 	export let closeCallback: CloseFn<T>;
 	export let content: InnerDialogComponent;
@@ -55,9 +56,15 @@
 			</header>
 			<div class="content">
 				{#if hasSubmit}
-					<svelte:component this={content} bind:getData={submitData} bind:config {...passProps} />
+					<svelte:component
+						this={content}
+						bind:getData={submitData}
+						bind:config
+						bind:db
+						{...passProps}
+					/>
 				{:else}
-					<svelte:component this={content} bind:config {...passProps} />
+					<svelte:component this={content} bind:config bind:db {...passProps} />
 				{/if}
 			</div>
 			<footer>

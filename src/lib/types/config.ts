@@ -5,9 +5,12 @@ import { defaultMap } from '$lib/conf/kbmaps';
 import { Language } from "../data/language";
 import { UserStats, type UserStatsObject } from "../stats";
 import type { LessonTypingConfig } from '$lib/lessons/lesson'
+import { config_store, get } from "$lib/db";
 
 export const storagePrefix = 'vkTutor_'
 export const configKey = storagePrefix + 'config';
+export const configUserKey = storagePrefix + 'user';
+export const defaultUserId = 'default';
 
 export const enum CheckMode {
     Char = 0,
@@ -22,6 +25,8 @@ export const enum BackspaceMode {
 
 
 type ConfigProps = {
+    user: string,
+    lastLesson: string | null;
     version: number;
     tts: Audio | undefined;
     stop: string;
@@ -39,7 +44,6 @@ export interface Config extends ConfigProps { }
 
 export class Config implements ConfigProps {
     constructor(c: ConfigProps) {
-
         for (const key in c) {
             // @ts-ignore
             this[key] = c[key];
@@ -55,6 +59,8 @@ export class Config implements ConfigProps {
         const tts = undefined;
 
         return new Config({
+            user: defaultUserId,
+            lastLesson: null,
             version: 1,
             checkMode: CheckMode.WordRepeat,
             backspace: true,
@@ -90,11 +96,12 @@ export class Config implements ConfigProps {
     }
 
     serialize(): string {
+        // implicitly calls toJSON()
         return JSON.stringify(this);
     }
 
-    static async deserialize(s: string, fetchFn: typeof fetch = fetch): Promise<Config> {
-        const o: ConfigStorable = JSON.parse(s);
+    static async deserialize(s: ConfigStorable, fetchFn: typeof fetch = fetch): Promise<Config> {
+        const o: ConfigStorable = s;
 
         const lang = await Language.load(o.lang, fetchFn);
         const remap = await Remap.load(o.remap, fetchFn);
@@ -105,28 +112,20 @@ export class Config implements ConfigProps {
         return new Config(c);
     }
 
-    static async loadUserConfig(fetchFn: typeof fetch = fetch): Promise<Config> {
-        const s = localStorage.getItem(configKey);
-        if (s !== null)
-            return Config.deserialize(s, fetchFn);
-        return Config.default(fetchFn);
+    static async loadUserConfig(db: IDBDatabase): Promise<Config> {
+        const user = localStorage.getItem(configUserKey) ?? defaultUserId;
+        return await get<ConfigStorable, Promise<Config>, Promise<Config>>(db, config_store, user, (res) => Config.deserialize(res), () => Config.default(), () => Config.default());
     }
 
-    saveUserConfig() {
-        localStorage.setItem(configKey, this.serialize())
-    }
+    saveUserConfig(db: IDBDatabase) {
+        const t = db.transaction([config_store], "readwrite");
 
-    lessonConfig(): LessonTypingConfig {
-        return {
-            random: this.random,
-            until: this.until,
-            wordBatchSize: this.wordBatchSize,
-            minQueue: this.minQueue,
-            checkMode: this.checkMode,
-            backspace: this.backspace,
-            spaceOptional: this.spaceOptional,
-            adaptive: this.adaptive
-        }
+        const data = this.toJSON();
+        const c = t.objectStore(config_store);
+        c.put(data);
+
+        localStorage.setItem(configUserKey, this.user);
+        // localStorage.setItem(configKey, this.serialize());
     }
 
     lessonOptions(opts: Partial<LessonTypingConfig>): LessonTypingConfig {
@@ -144,6 +143,8 @@ export class Config implements ConfigProps {
 
     mergeLessonConfig(opts: Partial<LessonTypingConfig>): Config {
         const props = {
+            user: this.user,
+            lastLesson: this.lastLesson,
             version: this.version,
             checkMode: opts.checkMode ?? this.checkMode,
             backspace: opts.backspace ?? this.backspace,

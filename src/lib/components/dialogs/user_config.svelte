@@ -32,6 +32,7 @@
 	export function getData(): Config {
 		return new Config({
 			user: config.user,
+			lastLesson: config.lastLesson,
 			version: 1,
 			tts: config.tts,
 			stop,

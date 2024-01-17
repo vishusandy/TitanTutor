@@ -23,14 +23,17 @@
 	import Timer from './timer.svelte';
 	import { lessonInSeries, lessonPlans } from '$lib/conf/lessons';
 
+	export let db: IDBDatabase;
 	export let config: Config;
 	export let lesson: Lesson;
+    export let lessonOpts: Partial<LessonTypingConfig>;
 	export let sessionStats: SessionStats;
 
+    
 	let tutor = new Tutor(
 		config,
 		lesson,
-		Lesson.getLessonOptions(lesson.baseLesson().id),
+		lessonOpts,
 		sessionStats
 	);
 	let lessonPlan: string | undefined = lessonInSeries.get(lesson.baseLesson().id);
@@ -61,7 +64,7 @@
 			textbox.focus();
 		}
 
-		Lesson.saveLast(lesson);
+		Lesson.saveLast(lesson, config, db);
 	});
 
 	function handleBodyClick(_: Event) {
@@ -114,9 +117,10 @@
 
 	async function reset(lessonOpts?: Partial<LessonTypingConfig>) {
 		const id = lesson.baseLesson().id;
-		if (lessonOpts === undefined) lessonOpts = Lesson.getLessonOptions(id);
+		// if (lessonOpts === undefined) lessonOpts = await Lesson.getLessonOptions(id, db);
+        if (lessonOpts === undefined) lessonOpts = {};
 
-		lesson = await Lesson.load(id, config);
+		lesson = await Lesson.load(id, config, db);
 		tutor = new Tutor(config, lesson, lessonOpts, sessionStats);
 		started = false;
 		paused = true;
@@ -135,10 +139,10 @@
 			lesson.lessonEnd();
 
 			if (config.logStats) {
-				await showStatsConfirmDialog(config, sessionStats).then((v: boolean | undefined) => {
+				await showStatsConfirmDialog(config, db, sessionStats).then((v: boolean | undefined) => {
 					if (v === true) {
 						config.userStats.add(sessionStats);
-						config.saveUserConfig();
+						config.saveUserConfig(db);
 					}
 				});
 			}
@@ -226,29 +230,29 @@
 	}
 
 	async function showSessionStatsDialog() {
-		showStatsDialog(config.lang.statsDialogSessionTitle, config, sessionStats);
+		showStatsDialog(config.lang.statsDialogSessionTitle, config, db, sessionStats);
 	}
 
 	async function showUserStatsDialog() {
-		showStatsDialog(config.lang.statsDialogUserTitle, config, config.userStats);
+		showStatsDialog(config.lang.statsDialogUserTitle, config, db, config.userStats);
 	}
 
 	async function showAudioDialog(_: Event) {
-		showVoiceDialog(config).then((audio?: Audio) => {
+		showVoiceDialog(config, db).then((audio?: Audio) => {
 			if (audio !== undefined) {
 				config.tts = audio;
-				config.saveUserConfig();
+				config.saveUserConfig(db);
 			}
 		});
 	}
 
 	async function showLessonOptions(): Promise<void> {
-		return showLessonConfigDialog(config, lesson, tutor.lessonOptions).then(
+		return showLessonConfigDialog(config, db, lesson, tutor.lessonOptions).then(
 			(data?: [Lesson, Partial<LessonTypingConfig>]) => {
 				if (data !== undefined) {
 					let lessonOptions: Partial<LessonTypingConfig>;
 					[lesson, lessonOptions] = data;
-					Lesson.saveLessonOptions(lesson.baseLesson().id, lessonOptions);
+					Lesson.saveLessonOptions(lesson.baseLesson().id, lessonOptions, db);
 					reset(lessonOptions);
 				}
 			}
@@ -256,12 +260,11 @@
 	}
 
 	async function showUserConfig(_: Event) {
-		showConfigDialog(config).then((conf?: Config) => {
+		showConfigDialog(config, db).then((conf?: Config) => {
 			if (conf !== undefined) {
-				console.log(conf);
 				config = conf;
 				reset();
-				config.saveUserConfig();
+				config.saveUserConfig(db);
 				reset();
 			}
 		});

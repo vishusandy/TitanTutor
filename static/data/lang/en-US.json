@@ -72,6 +72,7 @@
     "openConfigDialog": "Settings",
     "configDialogTitile": "User Settings",
     "configSpaceOptional": "Space optional",
+    "configAdaptive": "Adaptive",
     "configCharModeOnly": "(character mode only)",
     "configRandom": "Randomize",
     "configUntil": "Max words",

@@ -77,6 +77,7 @@ export class Language {
     openConfigDialog: string = '';
     configDialogTitile: string = '';
     configSpaceOptional: string = '';
+    configAdaptive: string = '';
     configCharModeOnly: string = '';
     configRandom: string = '';
     configUntil: string = '';

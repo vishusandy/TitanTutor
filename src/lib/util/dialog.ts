@@ -11,29 +11,29 @@ import type { Lesson, LessonTypingConfig } from "$lib/lessons/lesson";
 import User from "../components/dialogs/user_config.svelte";
 
 
-export function showVoiceDialog(config: Config) {
-    const dialogProps = { title: config.lang.ttsDialogTitle, content: Voice, hasSubmit: true, config }
+export function showVoiceDialog(config: Config, db: IDBDatabase) {
+    const dialogProps = { title: config.lang.ttsDialogTitle, content: Voice, hasSubmit: true, config, db }
     return createDialog<Audio>(dialogProps);
 }
 
-export function showStatsDialog<T extends BaseStats>(title: string, config: Config, stats: T) {
-    const dialogProps: DialogProps = { title, content: Stats, hasSubmit: false, config };
+export function showStatsDialog<T extends BaseStats>(title: string, config: Config, db: IDBDatabase, stats: T) {
+    const dialogProps: DialogProps = { title, content: Stats, hasSubmit: false, config, db };
     const passProps = { stats };
     return createDialog<boolean>(dialogProps, passProps);
 }
-export function showStatsConfirmDialog<T extends BaseStats>(config: Config, stats: T) {
-    const dialogProps: DialogProps = { title: config.lang.statsDialogSaveTitle, content: Stats, hasSubmit: true, config, cancelLabel: config.lang.no, submitLabel: config.lang.yes };
+export function showStatsConfirmDialog<T extends BaseStats>(config: Config, db: IDBDatabase, stats: T) {
+    const dialogProps: DialogProps = { title: config.lang.statsDialogSaveTitle, content: Stats, hasSubmit: true, config, db, cancelLabel: config.lang.no, submitLabel: config.lang.yes };
     const passProps = { stats };
     return createDialog<boolean>(dialogProps, passProps);
 }
 
-export function showConfigDialog(config: Config) {
-    const dialogProps: DialogProps = { title: config.lang.configDialogTitile, content: User, hasSubmit: true, config };
+export function showConfigDialog(config: Config, db: IDBDatabase) {
+    const dialogProps: DialogProps = { title: config.lang.configDialogTitile, content: User, hasSubmit: true, config, db };
     return createDialog<Config>(dialogProps);
 }
 
-export function showLessonConfigDialog(config: Config, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>) {
-    const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, confirmPrompt: config.lang.lessonConfigConfirmSubmit };
+export function showLessonConfigDialog(config: Config, db: IDBDatabase, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>) {
+    const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, db, confirmPrompt: config.lang.lessonConfigConfirmSubmit };
     const passProps = { lesson, lessonOptions };
     return createDialog<[Lesson, Partial<LessonTypingConfig>]>(dialogProps, passProps);
 }
@@ -43,6 +43,7 @@ interface DialogProps {
     content: InnerDialogComponent;
     hasSubmit: boolean;
     config: Config;
+    db: IDBDatabase;
     closeLabel?: string;
     submitLabel?: string;
     cancelLabel?: string;

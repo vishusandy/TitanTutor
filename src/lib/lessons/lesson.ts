@@ -2,19 +2,15 @@ import { StockWordList } from './base/stock_wordlist';
 import { RandomList } from './wrappers/random';
 import { UntilN } from './wrappers/until_n';
 import { defaultLessonName } from '$lib/data/locales';
-import { storagePrefix, Config, CheckMode } from '$lib/types/config';
+import type { Config, CheckMode } from '$lib/types/config';
 import type { Language } from '$lib/data/language';
-import { UserWordList } from './base/user_wordlist';
+import { UserWordList, loadUserLesson } from './base/user_wordlist';
 import type { BaseWordList } from './base/wordlist';
 import { AdaptiveList } from './base/adaptive_list';
 import { stockLessons } from '$lib/conf/lessons';
 import { RandomChars } from './base/chars';
 import type { LessonOptsAvailable } from '$lib/types/forms';
-
-
-const userLessonPrefix = `${storagePrefix}user_lesson_`;
-const lastLessonPrefix = `${storagePrefix}last_lesson_`;
-const lessonOptionsPrefix = `${storagePrefix}lesson_options_`;
+import { get, lesson_opts_store } from '$lib/db';
 
 export const lessonClasses = [
     StockWordList,
@@ -25,13 +21,13 @@ export const lessonClasses = [
     UntilN
 ];
 
-export type LessonWrappers = {
+export type LessonWrapperConfig = {
     random: boolean,
     until: number | null,
     adaptive: boolean,
 };
 
-export type LessonTypingConfig = LessonWrappers & {
+export type LessonTypingConfig = LessonWrapperConfig & {
     wordBatchSize: number,
     minQueue: number,
     checkMode: CheckMode,
@@ -51,7 +47,6 @@ export interface StorableBaseLesson extends StorableLesson {
 }
 
 export interface StorableLesson {
-    // type: 'wordlist' | 'random' | 'until' | 'userwordlist' | 'chars' | 'adaptive';
     type: string;
 }
 
@@ -72,6 +67,7 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     static addWrappers(lesson: Lesson, opts: LessonTypingConfig): Lesson {
         let result: Lesson;
 
+        // TODO: add wrappers in a better way
         if (opts.random === true && Lesson.allowRandom(lesson.baseLesson().getType())) {
             result = new RandomList(lesson as BaseWordList);
         } else {
@@ -99,47 +95,51 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         throw new Error(`Attempted to load lesson with invalid type`);
     }
 
-    static async default(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+    static async default(config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
         const lesson = defaultLessonName(config.lang.lang);
-        return Lesson.load(lesson, config, fetchFn);
+        return Lesson.load(lesson, config, db, fetchFn);
     }
 
-    static async load(id: string, config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+    static async load(id: string, config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
         if (id.startsWith('user_')) {
-            const storable = localStorage.getItem(userLessonPrefix + id);
-            if (storable === null) throw new Error(`Could not find user lesson '${id}'`);
-            return Lesson.deserializeFromConfig(id, JSON.parse(storable), config, fetchFn);
+            return loadUserLesson(config, db, id, fetchFn);
         }
 
         const storable = stockLessons.get(id);
-
         if (storable === undefined)
             throw new Error(`Could not find lesson '${id}'`);
-        return Lesson.deserializeFromConfig(id, storable, config, fetchFn);
+        return Lesson.deserializeFromConfig(id, storable, config, db, fetchFn);
     }
 
-    static async getLast(config: Config, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-        const lastLesson = localStorage.getItem(lastLessonPrefix);
-
-        if (lastLesson === null)
-            return Lesson.default(config, fetchFn);
-
-        return Lesson.load(lastLesson, config, fetchFn);
+    static async loadLast(config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+        if (config.lastLesson === null) {
+            return Lesson.default(config, db, fetch);
+        } else {
+            return Lesson.load(config.lastLesson, config, db, fetchFn);
+        }
     }
 
-    static getLessonOptions(id: string): Partial<LessonTypingConfig> {
-        const opts = localStorage.getItem(`${lessonOptionsPrefix}${id}`);
-
-        return (opts !== null) ? JSON.parse(opts) : {};
+    static async getLessonOptions(id: string, db: IDBDatabase): Promise<Partial<LessonTypingConfig>> {
+        return get<Partial<LessonTypingConfig>, Partial<LessonTypingConfig>, Partial<LessonTypingConfig>>(
+            db, lesson_opts_store, id,
+            (res: Partial<LessonTypingConfig>) => res,
+            () => new Object() as Partial<LessonTypingConfig>,
+            () => new Object() as Partial<LessonTypingConfig>,
+        );
     }
 
-    static saveLessonOptions(id: string, opts: Partial<LessonTypingConfig>) {
-        localStorage.setItem(`${lessonOptionsPrefix}${id}`, JSON.stringify(opts));
+    static saveLessonOptions(id: string, opts: Partial<LessonTypingConfig>, db: IDBDatabase) {
+        const t = db.transaction(lesson_opts_store, "readwrite");
+        const s = t.objectStore(lesson_opts_store);
+        s.put(opts);
     }
 
-    static async deserializeFromLessonOptions(s: StorableBaseLesson, opts: LessonTypingConfig, fetchFn: typeof fetch = fetch) {
+    static async deserializeFromConfig(id: string, s: StorableBaseLesson, config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+        const o = await Lesson.getLessonOptions(id, db);
+        const opts = config.lessonOptions(o);
         let storable: StorableLesson = s;
 
+        // TODO: add wrappers in better way
         if (opts.random && Lesson.allowRandom(s.type)) {
             storable = RandomList.newStorable(storable);
         }
@@ -149,26 +149,20 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         }
 
         return Lesson.deserialize(storable, fetchFn);
-
     }
 
-    static async deserializeFromConfig(id: string, s: StorableBaseLesson, config: Config, fetchFn: typeof fetch = fetch) {
-        const opts = config.lessonOptions(Lesson.getLessonOptions(id));
+    // static save(lesson: Lesson, db: IDBDatabase, saveAsLastLesson: boolean = true) {
+    //     const storable = lesson.storable();
+    //     localStorage.setItem(userLessonPrefix + lesson.baseLesson().id, JSON.stringify(storable));
 
-        return Lesson.deserializeFromLessonOptions(s, opts, fetchFn);
-    }
+    //     if (saveAsLastLesson) {
+    //         Lesson.saveLast(lesson, db);
+    //     }
+    // }
 
-    static save(lesson: Lesson, saveAsLastLesson: boolean = true) {
-        const storable = lesson.storable();
-        localStorage.setItem(userLessonPrefix + lesson.baseLesson().id, JSON.stringify(storable));
-
-        if (saveAsLastLesson) {
-            Lesson.saveLast(lesson);
-        }
-    }
-
-    static saveLast(lesson: Lesson) {
-        localStorage.setItem(lastLessonPrefix, lesson.baseLesson().id);
+    static saveLast(lesson: Lesson, config: Config, db: IDBDatabase) {
+        config.lastLesson = lesson.baseLesson().id;
+        config.saveUserConfig(db);
     }
 }
 

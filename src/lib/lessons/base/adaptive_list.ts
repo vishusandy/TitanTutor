@@ -11,6 +11,11 @@ const lessonTypoPrefix = `${storagePrefix}lesson_typos`;
 const typeid = "adaptive"
 export type StorableAdaptive = { type: typeof typeid, base: StorableBaseLesson };
 
+type TypoData = {
+    'lesson_id': string,
+    'typos': [string, number][],
+};
+
 export class AdaptiveList implements Lesson {
     base: BaseWordList;
     pos: number;
