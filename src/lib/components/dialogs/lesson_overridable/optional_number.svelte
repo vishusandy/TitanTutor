@@ -86,7 +86,7 @@
 	<label class:disabled={override !== 'enabled' || state === 'disabled'} for={id}>{label}</label>
 </div>
 {#if state === 'user'}
-	<div class="check-value">{userLabel}</div>
+	<div class="label check-value">{userLabel}</div>
 {:else if state === null}
 	<div class="label check-value" class:disabled={override !== 'enabled'}>{nullLabel}</div>
 {:else if Number.isInteger(state)}

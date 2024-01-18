@@ -54,7 +54,6 @@ export function get<Result, Success, Err>(db: IDBDatabase, store_name: string, k
         const req = store.get(key);
         req.onsuccess = _ => {
             const rst = req.result;
-            // console.log(`store: ${store_name} value: ${req.result}`, v)
             if (rst !== undefined) {
                 result = getValue(req.result);
             } else {

@@ -151,15 +151,6 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         return Lesson.deserialize(storable, fetchFn);
     }
 
-    // static save(lesson: Lesson, db: IDBDatabase, saveAsLastLesson: boolean = true) {
-    //     const storable = lesson.storable();
-    //     localStorage.setItem(userLessonPrefix + lesson.baseLesson().id, JSON.stringify(storable));
-
-    //     if (saveAsLastLesson) {
-    //         Lesson.saveLast(lesson, db);
-    //     }
-    // }
-
     static saveLast(lesson: Lesson, config: Config, db: IDBDatabase) {
         config.lastLesson = lesson.baseLesson().id;
         config.saveUserConfig(db);

@@ -161,7 +161,7 @@ export class Config implements ConfigProps {
             spaceOptional: opts.spaceOptional ?? this.spaceOptional,
             random: opts.random ?? this.random,
             until: opts.until === undefined ? this.until : opts.until,
-            adaptive: opts.adaptive === undefined ? this.adaptive : opts.adaptive
+            adaptive: opts.adaptive ?? this.adaptive
         });
     }
 
