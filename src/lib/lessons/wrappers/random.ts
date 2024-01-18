@@ -1,5 +1,5 @@
 import { Lesson, type BaseLesson, type StorableLesson } from "$lib/lessons/lesson";
-import { defaultLessonOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
+import { defaultLessonOptsAvail, mergeOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { shuffle, defaultBatch } from "$lib/util/util";
 import type { BaseWordList } from "../base/wordlist";
 
@@ -71,7 +71,7 @@ export class RandomList implements Lesson {
     }
 
     overrides(): LessonOptsAvailable {
-        return defaultLessonOptsAvail;
+        return mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail);
     }
 
     lessonEnd(): void { }

@@ -7,8 +7,9 @@ export type FormUserValueReturn<T> = T | undefined;
 
 export type LessonFormState = { [P in keyof LessonTypingConfig]: FormUserValue<LessonTypingConfig[P]> };
 
-/// enabled | disabled | forced(P)
-export type LessonOptsAvailable = { [K in keyof LessonTypingConfig]: 'enabled' | 'disabled' | LessonTypingConfig[K] };
+/// enabled | disabled | forced(T)
+export type OptAvailable<T> = 'enabled' | 'disabled' | T;
+export type LessonOptsAvailable = { [K in keyof LessonTypingConfig]: OptAvailable<LessonTypingConfig[K]> };
 
 export const defaultLessonFormState: LessonFormState = {
     random: 'user',

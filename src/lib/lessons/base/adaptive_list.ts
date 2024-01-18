@@ -4,7 +4,7 @@ import type { Language } from "$lib/data/language";
 import type { BaseWordList } from "./wordlist";
 import { storagePrefix } from "$lib/types/config";
 import { BinaryTree } from "$lib/util/bst";
-import { defaultLessonOptsAvail, type LessonOptsAvailable } from "$lib/types/forms";
+import { defaultLessonOptsAvail, mergeOptsAvail, type LessonOptsAvailable } from "$lib/types/forms";
 
 const lessonTypoPrefix = `${storagePrefix}lesson_typos`;
 
@@ -142,7 +142,7 @@ export class AdaptiveList implements Lesson {
     }
 
     overrides(): LessonOptsAvailable {
-        return defaultLessonOptsAvail;
+        return mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail);
     }
 
     lessonEnd(): void {

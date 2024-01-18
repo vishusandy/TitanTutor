@@ -1,5 +1,5 @@
 import { Lesson, type StorableLesson, type BaseLesson } from "$lib/lessons/lesson";
-import { defaultLessonOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
+import { defaultLessonOptsAvail, mergeOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { defaultBatch } from "$lib/util/util";
 
 const typeid = "until";
@@ -70,7 +70,7 @@ export class UntilN implements Lesson {
     }
 
     overrides(): LessonOptsAvailable {
-        return defaultLessonOptsAvail;
+        return mergeOptsAvail(this.lesson.overrides(), defaultLessonOptsAvail);
     }
 
     lessonEnd(): void { }

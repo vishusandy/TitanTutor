@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Config } from '$lib/types/config';
-	import type { FormUserValue, FormUserValueReturn } from '$lib/types/forms';
+	import type { FormUserValue, FormUserValueReturn, OptAvailable } from '$lib/types/forms';
 	import { onMount } from 'svelte';
 
 	export let config: Config;
@@ -10,10 +10,11 @@
 	export let onLabel: string = config.lang.on;
 	export let offLabel: string = config.lang.off;
 	export let initialState: FormUserValue<boolean>;
+	export let override: OptAvailable<boolean>;
 
 	let checkboxInput: HTMLInputElement;
 
-	let state: FormUserValue<boolean> = initialState;
+	let state: FormUserValue<boolean> = override !== 'enabled' ? override : initialState;
 
 	onMount(() => {
 		updateCheckbox();
@@ -46,6 +47,8 @@
 	}
 
 	function nextCheckboxState() {
+		if (override !== 'enabled') return;
+
 		switch (state) {
 			case 'disabled':
 				break;
@@ -67,15 +70,21 @@
 </script>
 
 <div class="optional">
-	<input bind:this={checkboxInput} on:click={nextCheckboxState} {id} type="checkbox" />
-	<label for={id}>{label}</label>
+	<input
+		disabled={override !== 'enabled' || state === 'disabled'}
+		bind:this={checkboxInput}
+		on:click={nextCheckboxState}
+		{id}
+		type="checkbox"
+	/>
+	<label for={id} class:disabled={override !== 'enabled' || state === 'disabled'}>{label}</label>
 </div>
-<div>
+<div class="label" class:disabled={override !== 'enabled' || state === 'disabled'}>
 	{#if state === 'user'}
 		{userLabel}
 	{:else if state === true}
 		{onLabel}
-	{:else}
+	{:else if state === false}
 		{offLabel}
 	{/if}
 </div>

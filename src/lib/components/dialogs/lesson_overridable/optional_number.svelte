@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Config } from '$lib/types/config';
-	import type { FormUserValue, FormUserValueReturn } from '$lib/types/forms';
+	import type { FormUserValue, FormUserValueReturn, OptAvailable } from '$lib/types/forms';
 	import { onMount } from 'svelte';
 
 	export let config: Config;
@@ -13,11 +13,12 @@
 	export let min: number | undefined = undefined;
 	export let max: number | undefined = undefined;
 	export let step: number | undefined = 1;
+	export let override: OptAvailable<number | null>;
 
 	let checkboxInput: HTMLInputElement;
 	let numberInput: HTMLInputElement;
 
-	let state: FormUserValue<number | null> = initialState;
+	let state: FormUserValue<number | null> = override !== 'enabled' ? override : initialState;
 	let value: number = Number.isInteger(state) ? (state as number) : defaultValue;
 
 	onMount(() => {
@@ -56,6 +57,8 @@
 	}
 
 	function nextCheckboxState() {
+		if (override !== 'enabled') return;
+
 		switch (state) {
 			case 'disabled':
 				break;
@@ -73,13 +76,19 @@
 </script>
 
 <div class="optional">
-	<input bind:this={checkboxInput} on:click={nextCheckboxState} {id} type="checkbox" />
-	<label for={id}>{label}</label>
+	<input
+		disabled={override !== 'enabled' || state === 'disabled'}
+		bind:this={checkboxInput}
+		on:click={nextCheckboxState}
+		{id}
+		type="checkbox"
+	/>
+	<label class:disabled={override !== 'enabled' || state === 'disabled'} for={id}>{label}</label>
 </div>
 {#if state === 'user'}
 	<div class="check-value">{userLabel}</div>
 {:else if state === null}
-	<div class="check-value">{nullLabel}</div>
+	<div class="label check-value" class:disabled={override !== 'enabled'}>{nullLabel}</div>
 {:else if Number.isInteger(state)}
 	<div class="check-value input">
 		<input

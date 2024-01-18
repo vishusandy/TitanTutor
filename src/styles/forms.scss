@@ -126,10 +126,10 @@ label,
     font-style: italic;
 }
 
-label.disabled {
+label.disabled,
+.label.disabled {
     color: #888;
 }
-
 
 fieldset[disabled],
 fieldset[disabled] * {

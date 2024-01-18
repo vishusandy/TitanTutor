@@ -6,6 +6,7 @@ import { Language } from "../data/language";
 import { UserStats, type UserStatsObject } from "../stats";
 import type { LessonTypingConfig } from '$lib/lessons/lesson'
 import { config_store, get } from "$lib/db";
+import { defaultLessonOptsAvail, type LessonOptsAvailable } from "./forms";
 
 export const storagePrefix = 'vkTutor_'
 export const configKey = storagePrefix + 'config';
@@ -96,7 +97,7 @@ export class Config implements ConfigProps {
     }
 
     serialize(): string {
-        // implicitly calls toJSON()
+        // implicitly calls the toJSON() method
         return JSON.stringify(this);
     }
 
@@ -125,7 +126,6 @@ export class Config implements ConfigProps {
         c.put(data);
 
         localStorage.setItem(configUserKey, this.user);
-        // localStorage.setItem(configKey, this.serialize());
     }
 
     lessonOptions(opts: Partial<LessonTypingConfig>): LessonTypingConfig {
@@ -141,8 +141,8 @@ export class Config implements ConfigProps {
         }
     }
 
-    mergeLessonConfig(opts: Partial<LessonTypingConfig>): Config {
-        const props = {
+    mergeLessonOptions(opts: Partial<LessonTypingConfig>): Config {
+        return new Config({
             user: this.user,
             lastLesson: this.lastLesson,
             version: this.version,
@@ -162,9 +162,19 @@ export class Config implements ConfigProps {
             random: opts.random ?? this.random,
             until: opts.until === undefined ? this.until : opts.until,
             adaptive: opts.adaptive === undefined ? this.adaptive : opts.adaptive
-        };
+        });
+    }
 
-        return new Config(props)
+    mergeAvailable(a: LessonOptsAvailable): Config {
+        let k: keyof typeof defaultLessonOptsAvail;
+        let out: Config = { ...this };
+        for (k in defaultLessonOptsAvail) {
+            if (a[k] !== 'disabled' && a[k] !== 'enabled') {
+                // @ts-ignore
+                out[k] = a[k];
+            }
+        }
+        return out;
     }
 }
 

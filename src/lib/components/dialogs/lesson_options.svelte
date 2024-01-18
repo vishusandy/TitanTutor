@@ -12,9 +12,13 @@
 		type LessonFormState
 	} from '$lib/types/forms';
 
+	export let db: IDBDatabase;
 	export let config: Config;
 	export let lesson: Lesson;
 	export let lessonOptions: Partial<LessonTypingConfig>;
+	db; // suppress the unused-export-let warning from above
+
+	let overrides = lesson.overrides();
 
 	const state: LessonFormState = getFormState(lesson, config, lessonOptions);
 
@@ -86,6 +90,7 @@
 		nullLabel={config.lang.infinite}
 		min={1}
 		step={1}
+		override={overrides.until}
 	/>
 
 	<Bool
@@ -96,6 +101,7 @@
 		onLabel={config.lang.on}
 		offLabel={config.lang.off}
 		initialState={Lesson.allowRandom(lesson.baseLesson().getType()) ? state.random : 'disabled'}
+		override={overrides.random}
 	/>
 
 	<Number
@@ -107,6 +113,7 @@
 		defaultValue={config.minQueue}
 		min={1}
 		max={100}
+		override={overrides.minQueue}
 	/>
 
 	<Number
@@ -118,6 +125,7 @@
 		defaultValue={config.wordBatchSize}
 		min={1}
 		max={100}
+		override={overrides.wordBatchSize}
 	/>
 
 	<Bool
@@ -128,6 +136,7 @@
 		onLabel={config.lang.accept}
 		offLabel={config.lang.ignore}
 		initialState={state.backspace}
+		override={overrides.backspace}
 	/>
 
 	<Select
@@ -137,6 +146,7 @@
 		label={config.lang.configCheckMode}
 		choices={wordModeChoices}
 		initialValue={state.checkMode}
+		override={overrides.checkMode}
 	/>
 </div>
 

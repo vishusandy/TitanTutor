@@ -6,6 +6,7 @@ import { randGen } from '$lib/util/random'
 import type { LessonOptsAvailable } from "$lib/types/forms";
 import type { Language } from "$lib/data/language";
 import { BinaryTree } from "$lib/util/bst";
+import { CheckMode } from "$lib/types/config";
 
 const typeid = "chars";
 export type StorableChars = { type: typeof typeid, name: string, chars: string[], min: number, max: number, weights: number[] } & StorableBaseLesson;
@@ -121,6 +122,16 @@ export class RandomChars implements BaseLesson {
             spaceOptional: 'enabled',
             adaptive: 'enabled',
         };
+        // return {
+        //     random: false,
+        //     until: null,
+        //     checkMode: CheckMode.WordRepeat,
+        //     backspace: false,
+        //     wordBatchSize: 11,
+        //     minQueue: 7,
+        //     spaceOptional: true,
+        //     adaptive: true,
+        // };
     }
 
     lessonEnd(): void { }

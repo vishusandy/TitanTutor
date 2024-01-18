@@ -23,7 +23,7 @@ export class Tutor {
         this.queue = [];
         this.history = [];
         this.audioQueue = 0;
-        this.config = config.mergeLessonConfig(lessonOptions);
+        this.config = config.mergeLessonOptions(lessonOptions).mergeAvailable(lesson.overrides());
         this.nextWord();
     }
 

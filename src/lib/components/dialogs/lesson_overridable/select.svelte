@@ -1,6 +1,6 @@
 <script lang="ts" generics="T">
 	import type { Config } from '$lib/types/config';
-	import type { FormUserValue, FormUserValueReturn } from '$lib/types/forms';
+	import type { FormUserValue, FormUserValueReturn, OptAvailable } from '$lib/types/forms';
 	import { onMount } from 'svelte';
 
 	export let config: Config;
@@ -9,11 +9,16 @@
 	export let userLabel: string = config.lang.useUserValue;
 	export let choices: { key: string; label: string; value: T }[];
 	export let initialValue: FormUserValue<T>;
+	export let override: OptAvailable<T>;
 
 	let checkboxInput: HTMLInputElement | undefined;
 	let selectInput: HTMLSelectElement | undefined;
 
-	let state = initialValue;
+	if (override !== 'disabled' && override !== 'enabled') {
+		initialValue = override;
+	}
+
+	let state = override !== 'enabled' ? override : initialValue;
 
 	const map = new Map(Array.from(choices.map(({ key, value }) => [key, value])));
 	const rev = new Map(Array.from(choices.map(({ key, value }) => [value, key])));
@@ -51,6 +56,8 @@
 	}
 
 	function nextCheckboxState() {
+		if (override !== 'enabled') return;
+
 		switch (state) {
 			case 'disabled':
 				break;
@@ -76,13 +83,23 @@
 </script>
 
 <div class="optional">
-	<input bind:this={checkboxInput} on:click={nextCheckboxState} {id} type="checkbox" />
-	<label for={id}>{label}</label>
+	<input
+		disabled={override !== 'enabled' || state === 'disabled'}
+		bind:this={checkboxInput}
+		on:click={nextCheckboxState}
+		{id}
+		type="checkbox"
+	/>
+	<label class:disabled={override !== 'enabled' || state === 'disabled'} for={id}>{label}</label>
 </div>
 {#if state === 'user'}
 	<div class="check-value">{userLabel}</div>
 {:else}
-	<select bind:this={selectInput} on:change={selectChanged}>
+	<select
+		disabled={override !== 'enabled' || state === 'disabled'}
+		bind:this={selectInput}
+		on:change={selectChanged}
+	>
 		{#each choices as { key, label } (key)}
 			<option value={key} selected={selected === key}>{label}</option>
 		{/each}
