@@ -9,17 +9,36 @@ import type { BaseWordList } from './base/wordlist';
 import { AdaptiveList } from './base/adaptive_list';
 import { stockLessons } from '$lib/conf/lessons';
 import { RandomChars } from './base/chars';
-import type { LessonOptsAvailable } from '$lib/types/forms';
+import type { LessonFormState, LessonOptsAvailable } from '$lib/types/forms';
 import { get, lesson_opts_store } from '$lib/db';
 
-export const lessonClasses = [
+
+export const baseClasses = [
     StockWordList,
     UserWordList,
     RandomChars,
+];
+
+export const wrapperClasses = [
     AdaptiveList,
     RandomList,
-    UntilN
+    UntilN,
 ];
+
+const wrapperBuilders: ((lesson: Lesson, config: Config, form: LessonFormState) => Lesson)[] = [
+    AdaptiveList.fromForm,
+    RandomList.fromForm,
+    UntilN.fromForm,
+];
+
+export function buildFromForm(base: Lesson, config: Config, state: LessonFormState): Lesson {
+    let lesson = base;
+    for (const f of wrapperBuilders) {
+        lesson = f(base, config, state);
+    }
+    return lesson;
+}
+
 
 export type LessonWrapperConfig = {
     random: boolean,
@@ -34,7 +53,6 @@ export type LessonTypingConfig = LessonWrapperConfig & {
     backspace: boolean,
     spaceOptional: boolean
 };
-
 
 export interface BaseLesson extends Lesson {
     id: string;
@@ -63,7 +81,6 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract lessonEnd(): void;
     abstract overrides(): LessonOptsAvailable;
 
-
     static addWrappers(lesson: Lesson, opts: LessonTypingConfig): Lesson {
         let result: Lesson;
 
@@ -87,7 +104,12 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     }
 
     static async deserialize(s: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-        for (const c of lessonClasses) {
+        for (const c of baseClasses) {
+            if (s.type === c.getTypeId()) {
+                return c.fromStorable(s as any, fetchFn);
+            }
+        }
+        for (const c of wrapperClasses) {
             if (s.type === c.getTypeId()) {
                 return c.fromStorable(s as any, fetchFn);
             }
@@ -131,7 +153,7 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     static saveLessonOptions(id: string, opts: Partial<LessonTypingConfig>, db: IDBDatabase) {
         const t = db.transaction(lesson_opts_store, "readwrite");
         const s = t.objectStore(lesson_opts_store);
-        s.put(opts);
+        s.put({ lesson_id: id, ...opts });
     }
 
     static async deserializeFromConfig(id: string, s: StorableBaseLesson, config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {

@@ -1,4 +1,5 @@
 import { Lesson, type BaseLesson, type StorableLesson } from "$lib/lessons/lesson";
+import type { Config } from "$lib/types/config";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { shuffle, defaultBatch } from "$lib/util/util";
 import type { BaseWordList } from "../base/wordlist";
@@ -71,7 +72,16 @@ export class RandomList implements Lesson {
     }
 
     overrides(): LessonOptsAvailable {
-        return mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail);
+        return { ...mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail), adaptive: 'disabled' };
+    }
+
+    static fromForm(lesson: Lesson, config: Config, form: LessonFormState): Lesson {
+        const ovr = lesson.overrides().random;
+        if (ovr === 'disabled' || ovr === false || (lesson.getType() !== 'wordlist' && lesson.getType() !== 'userwordlist')) return lesson;
+        if (ovr === true || form.random === true || (form.random === 'user' && config.random === true)) {
+            return new RandomList(lesson.baseLesson() as BaseWordList);
+        }
+        return lesson;
     }
 
     lessonEnd(): void { }

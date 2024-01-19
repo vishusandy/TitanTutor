@@ -12,10 +12,10 @@
 		type LessonFormState
 	} from '$lib/types/forms';
 
-	export let db: IDBDatabase;
 	export let config: Config;
 	export let lesson: Lesson;
 	export let lessonOptions: Partial<LessonTypingConfig>;
+	export let db: IDBDatabase;
 	db; // suppress the unused-export-let warning from above
 
 	let overrides = lesson.overrides();
@@ -31,21 +31,21 @@
 		{ key: 'chars', label: config.lang.configCheckModeChars, value: CheckMode.Char }
 	];
 
-	let untilDataFn: () => FormUserValueReturn<number | null>;
-	let randomDataFn: () => FormUserValueReturn<boolean>;
-	let minQueueDataFn: () => FormUserValueReturn<number>;
-	let wordBatchSizeDataFn: () => FormUserValueReturn<number>;
-	let backspaceDataFn: () => FormUserValueReturn<boolean>;
-	let checkModeDataFn: () => FormUserValueReturn<CheckMode>;
+	let untilFn: () => FormUserValueReturn<number | null>;
+	let randomFn: () => FormUserValueReturn<boolean>;
+	let minQueueFn: () => FormUserValueReturn<number>;
+	let wordBatchSizeFn: () => FormUserValueReturn<number>;
+	let backspaceFn: () => FormUserValueReturn<boolean>;
+	let checkModeFn: () => FormUserValueReturn<CheckMode>;
 
 	export function getData(): [Lesson, Partial<LessonTypingConfig>] {
 		const lessonOptions: Partial<LessonTypingConfig> = {
-			until: untilDataFn(),
-			random: randomDataFn(),
-			minQueue: minQueueDataFn(),
-			wordBatchSize: wordBatchSizeDataFn(),
-			backspace: backspaceDataFn(),
-			checkMode: checkModeDataFn()
+			until: untilFn(),
+			random: randomFn(),
+			minQueue: minQueueFn(),
+			wordBatchSize: wordBatchSizeFn(),
+			backspace: backspaceFn(),
+			checkMode: checkModeFn()
 		};
 
 		const userOverrides = config.lessonOptions(lessonOptions);
@@ -81,7 +81,7 @@
 
 <div class="grid">
 	<OptionalNumber
-		bind:getData={untilDataFn}
+		bind:getData={untilFn}
 		{config}
 		id="until"
 		label={config.lang.configUntil}
@@ -94,18 +94,18 @@
 	/>
 
 	<Bool
-		bind:getData={randomDataFn}
+		bind:getData={randomFn}
 		{config}
 		id="random"
 		label={config.lang.configRandom}
 		onLabel={config.lang.on}
 		offLabel={config.lang.off}
-		initialState={Lesson.allowRandom(lesson.baseLesson().getType()) ? state.random : 'disabled'}
+		initialState={state.random}
 		override={overrides.random}
 	/>
 
 	<Number
-		bind:getData={minQueueDataFn}
+		bind:getData={minQueueFn}
 		{config}
 		id="min-queue"
 		label={config.lang.configMinQueue}
@@ -117,7 +117,7 @@
 	/>
 
 	<Number
-		bind:getData={wordBatchSizeDataFn}
+		bind:getData={wordBatchSizeFn}
 		{config}
 		id="word-batch-size"
 		label={config.lang.configWordBatchSize}
@@ -129,7 +129,7 @@
 	/>
 
 	<Bool
-		bind:getData={backspaceDataFn}
+		bind:getData={backspaceFn}
 		{config}
 		id="accept-backspace"
 		label={config.lang.configAcceptBackspace}
@@ -140,7 +140,7 @@
 	/>
 
 	<Select
-		bind:getData={checkModeDataFn}
+		bind:getData={checkModeFn}
 		{config}
 		id="check-mode"
 		label={config.lang.configCheckMode}

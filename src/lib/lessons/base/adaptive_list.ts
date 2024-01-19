@@ -2,9 +2,9 @@ import { Lesson, type BaseLesson, type StorableBaseLesson } from "$lib/lessons/l
 import { defaultBatch } from "$lib/util/util";
 import type { Language } from "$lib/data/language";
 import type { BaseWordList } from "./wordlist";
-import { storagePrefix } from "$lib/types/config";
+import { Config, storagePrefix } from "$lib/types/config";
 import { BinaryTree } from "$lib/util/bst";
-import { defaultLessonOptsAvail, mergeOptsAvail, type LessonOptsAvailable } from "$lib/types/forms";
+import { defaultLessonOptsAvail, mergeOptsAvail, type LessonOptsAvailable, type LessonFormState } from "$lib/types/forms";
 
 const lessonTypoPrefix = `${storagePrefix}lesson_typos`;
 
@@ -142,7 +142,21 @@ export class AdaptiveList implements Lesson {
     }
 
     overrides(): LessonOptsAvailable {
-        return mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail);
+        return { ...mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail), random: 'disabled' };
+    }
+
+    static fromForm(lesson: Lesson, config: Config, form: LessonFormState): Lesson {
+        const ovr = lesson.overrides().adaptive;
+
+        if (lesson.getType() !== 'wordlist' && lesson.getType() !== 'userwordlist') {
+            return lesson;
+        }
+
+        if (ovr === true || (ovr === 'enabled' && (form.adaptive === true || (form.adaptive === 'user' && config.adaptive === true)))) {
+            return new AdaptiveList(lesson.baseLesson() as BaseWordList);
+        }
+
+        return lesson;
     }
 
     lessonEnd(): void {

@@ -1,4 +1,5 @@
 import { Lesson, type StorableLesson, type BaseLesson } from "$lib/lessons/lesson";
+import type { Config } from "$lib/types/config";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { defaultBatch } from "$lib/util/util";
 
@@ -73,6 +74,23 @@ export class UntilN implements Lesson {
         return mergeOptsAvail(this.lesson.overrides(), defaultLessonOptsAvail);
     }
 
+    static fromForm(lesson: Lesson, config: Config, form: LessonFormState): Lesson {
+        const ovr = lesson.overrides().until;
+        if (ovr === 'disabled' || ovr === null) return lesson;
+
+        if (typeof ovr === 'number') {
+            return new UntilN(lesson, ovr);
+        }
+        if (typeof form.until === 'number') {
+            return new UntilN(lesson, form.until);
+        }
+        if (form.until === 'user' && typeof config.until === 'number') {
+            return new UntilN(lesson, config.until);
+        }
+
+        return lesson;
+    }
+    
     lessonEnd(): void { }
 
 }

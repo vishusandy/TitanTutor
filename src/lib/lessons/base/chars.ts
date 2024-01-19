@@ -3,10 +3,10 @@ import prand from "pure-rand";
 import type { Lesson, BaseLesson, StorableBaseLesson } from "$lib/lessons/lesson";
 import { defaultBatch } from "$lib/util/util";
 import { randGen } from '$lib/util/random'
-import type { LessonOptsAvailable } from "$lib/types/forms";
+import type { LessonFormState, LessonOptsAvailable } from "$lib/types/forms";
 import type { Language } from "$lib/data/language";
 import { BinaryTree } from "$lib/util/bst";
-import { CheckMode } from "$lib/types/config";
+import { CheckMode, Config } from "$lib/types/config";
 
 const typeid = "chars";
 export type StorableChars = { type: typeof typeid, name: string, chars: string[], min: number, max: number, weights: number[] } & StorableBaseLesson;
