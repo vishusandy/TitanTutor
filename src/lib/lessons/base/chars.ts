@@ -120,7 +120,7 @@ export class RandomChars implements BaseLesson {
             wordBatchSize: 'enabled',
             minQueue: 'enabled',
             spaceOptional: 'enabled',
-            adaptive: 'enabled',
+            adaptive: 'disabled',
         };
         // return {
         //     random: false,

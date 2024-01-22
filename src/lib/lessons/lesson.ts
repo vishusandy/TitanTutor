@@ -33,8 +33,9 @@ const wrapperBuilders: ((lesson: Lesson, config: Config, form: LessonFormState) 
 
 export function buildFromForm(base: Lesson, config: Config, state: LessonFormState): Lesson {
     let lesson = base;
-    for (const f of wrapperBuilders) {
-        lesson = f(base, config, state);
+    for (let i = 0; i < wrapperBuilders.length; i++) {
+        const f = wrapperBuilders[i];
+        lesson = f(lesson, config, state);
     }
     return lesson;
 }
@@ -81,23 +82,23 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract lessonEnd(): void;
     abstract overrides(): LessonOptsAvailable;
 
-    static addWrappers(lesson: Lesson, opts: LessonTypingConfig): Lesson {
-        let result: Lesson;
+    // static addWrappers(lesson: Lesson, opts: LessonTypingConfig): Lesson {
+    //     let result: Lesson;
 
-        // TODO: add wrappers in a better way
-        if (opts.random === true && Lesson.allowRandom(lesson.baseLesson().getType())) {
-            result = new RandomList(lesson as BaseWordList);
-        } else {
-            result = lesson;
-        }
+    //     // TODO: add wrappers in a better way
+    //     if (opts.random === true && Lesson.allowRandom(lesson.baseLesson().getType())) {
+    //         result = new RandomList(lesson as BaseWordList);
+    //     } else {
+    //         result = lesson;
+    //     }
 
-        const max = opts.until;
-        if (typeof max === 'number') {
-            result = new UntilN(result, max);
-        }
+    //     const max = opts.until;
+    //     if (typeof max === 'number') {
+    //         result = new UntilN(result, max);
+    //     }
 
-        return result;
-    }
+    //     return result;
+    // }
 
     static allowRandom(type: string): boolean {
         return type === 'wordlist' || type === 'userwordlist';

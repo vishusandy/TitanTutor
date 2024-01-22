@@ -1,7 +1,9 @@
 <script lang="ts">
 	import type { Config } from '$lib/types/config';
-	import type { FormUserValue, FormUserValueReturn, OptAvailable } from '$lib/types/forms';
+	import type { FormUserValue, OptAvailable } from '$lib/types/forms';
+	import { updateProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	export let config: Config;
 	export let label: string;
@@ -15,53 +17,58 @@
 	export let step: number | undefined = 1;
 	export let override: OptAvailable<number | null>;
 
+	const dispatch = createEventDispatcher();
+
 	let checkboxInput: HTMLInputElement;
 	let numberInput: HTMLInputElement;
 
 	let state: FormUserValue<number | null> = override !== 'enabled' ? override : initialState;
 	let value: number = Number.isInteger(state) ? (state as number) : defaultValue;
 
+	let isDisabled = override !== 'enabled' || state === 'disabled';
+	$: isDisabled = override !== 'enabled' || state === 'disabled';
+
 	onMount(() => {
 		if (numberInput) numberInput.value = value.toString();
 		updateCheckbox();
 	});
 
-	export function getData(): FormUserValueReturn<number | null> {
-		return state === 'disabled' || state === 'user' ? undefined : state;
+	export function getState(): FormUserValue<number | null> {
+		return state;
+	}
+
+	function sendUpdate() {
+		dispatch('updateForm', {});
 	}
 
 	function numberChanged() {
 		value = parseInt(numberInput.value);
 		state = value;
+		sendUpdate();
 	}
 
 	function updateCheckbox() {
+		if (isDisabled) {
+			updateProperties(checkboxInput, false, false, true);
+			return;
+		}
+
 		switch (state) {
-			case 'disabled':
-				checkboxInput.checked = false;
-				checkboxInput.indeterminate = false;
-				checkboxInput.disabled = true;
-				break;
 			case 'user':
-				checkboxInput.checked = false;
-				checkboxInput.indeterminate = true;
+				updateProperties(checkboxInput, false, true);
 				break;
 			case null:
-				checkboxInput.checked = false;
-				checkboxInput.indeterminate = false;
+				updateProperties(checkboxInput, false, false);
 				break;
 			default:
-				checkboxInput.checked = true;
-				checkboxInput.indeterminate = false;
+				updateProperties(checkboxInput, true, false);
 		}
 	}
 
 	function nextCheckboxState() {
-		if (override !== 'enabled') return;
+		if (isDisabled) return;
 
 		switch (state) {
-			case 'disabled':
-				break;
 			case null:
 				state = 'user';
 				break;
@@ -71,19 +78,21 @@
 			default:
 				state = null;
 		}
+
+		sendUpdate();
 		updateCheckbox();
 	}
 </script>
 
 <div class="optional">
 	<input
-		disabled={override !== 'enabled' || state === 'disabled'}
+		disabled={isDisabled}
 		bind:this={checkboxInput}
 		on:click={nextCheckboxState}
 		{id}
 		type="checkbox"
 	/>
-	<label class:disabled={override !== 'enabled' || state === 'disabled'} for={id}>{label}</label>
+	<label class:disabled={isDisabled} for={id}>{label}</label>
 </div>
 {#if state === 'user'}
 	<div class="label check-value">{userLabel}</div>

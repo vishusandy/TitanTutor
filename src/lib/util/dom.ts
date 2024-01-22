@@ -17,3 +17,9 @@ export function addMissedSpace(lang: Language, historyNode: HTMLElement) {
     el.title = lang.missedSpace;
     historyNode.appendChild(el);
 }
+
+export function updateProperties(checkboxInput: HTMLInputElement, checked: boolean, indeterminate: boolean, disabled: boolean = false) {
+    checkboxInput.checked = checked;
+    checkboxInput.indeterminate = indeterminate;
+    checkboxInput.disabled = disabled;
+}

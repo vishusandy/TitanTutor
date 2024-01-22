@@ -1,14 +1,16 @@
 import type { LessonTypingConfig } from "../lessons/lesson";
 
 export type UserValue<T> = T | 'user';
-export type FormUserValue<T> = UserValue<T> | 'disabled';
-export type FormUserValueReturn<T> = T | undefined;
 
+export type FormUserValue<T> = UserValue<T> | 'disabled';
+
+export type FormUserValueReturn<T> = T | undefined;
 
 export type LessonFormState = { [P in keyof LessonTypingConfig]: FormUserValue<LessonTypingConfig[P]> };
 
 /// enabled | disabled | forced(T)
 export type OptAvailable<T> = 'enabled' | 'disabled' | T;
+
 export type LessonOptsAvailable = { [K in keyof LessonTypingConfig]: OptAvailable<LessonTypingConfig[K]> };
 
 export const defaultLessonFormState: LessonFormState = {
@@ -18,8 +20,8 @@ export const defaultLessonFormState: LessonFormState = {
     backspace: 'user',
     wordBatchSize: 'user',
     minQueue: 'user',
-    spaceOptional: false,
-    adaptive: false,
+    spaceOptional: 'user',
+    adaptive: 'user',
 };
 
 export const defaultLessonOptsAvail: LessonOptsAvailable = {
@@ -51,3 +53,4 @@ export function mergeOptsAvail(a: LessonOptsAvailable, b: LessonOptsAvailable) {
 
     return out;
 }
+

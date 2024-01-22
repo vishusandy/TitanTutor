@@ -90,7 +90,7 @@ export class UntilN implements Lesson {
 
         return lesson;
     }
-    
+
     lessonEnd(): void { }
 
 }
