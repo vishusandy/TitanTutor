@@ -34,14 +34,9 @@ const wrapperBuilders: ((lesson: Lesson, config: Config, form: LessonFormState) 
 export function buildFromForm(base: Lesson, config: Config, state: LessonFormState): Lesson {
     let lesson = base;
     for (let i = 0; i < wrapperBuilders.length; i++) {
-        const f = wrapperBuilders[i];
-        lesson = f(lesson, config, state);
-        console.log(`after wrapper ${wrapperClasses[i].getTypeId()}:`, lesson.getType(), 'storable:', lesson.storable());
+        lesson = wrapperBuilders[i](lesson, config, state);
+        // console.log(`after wrapper ${wrapperClasses[i].getTypeId()}:`, lesson.getType(), 'storable:', lesson.storable());
     }
-
-    // for (const f of wrapperBuilders) {
-    //     lesson = f(base, config, state);
-    // }
     return lesson;
 }
 
@@ -87,26 +82,9 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract lessonEnd(): void;
     abstract overrides(): LessonOptsAvailable;
 
-    // static addWrappers(lesson: Lesson, opts: LessonTypingConfig): Lesson {
-    //     let result: Lesson;
-
-    //     // TODO: add wrappers in a better way
-    //     if (opts.random === true && Lesson.allowRandom(lesson.baseLesson().getType())) {
-    //         result = new RandomList(lesson as BaseWordList);
-    //     } else {
-    //         result = lesson;
-    //     }
-
-    //     const max = opts.until;
-    //     if (typeof max === 'number') {
-    //         result = new UntilN(result, max);
-    //     }
-
-    //     return result;
-    // }
-
-    static allowRandom(type: string): boolean {
-        return type === 'wordlist' || type === 'userwordlist';
+    static async default(config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+        const lesson = defaultLessonName(config.lang.lang);
+        return Lesson.load(lesson, config, db, fetchFn);
     }
 
     static async deserialize(s: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
@@ -121,11 +99,6 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
             }
         }
         throw new Error(`Attempted to load lesson with invalid type`);
-    }
-
-    static async default(config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-        const lesson = defaultLessonName(config.lang.lang);
-        return Lesson.load(lesson, config, db, fetchFn);
     }
 
     static async load(id: string, config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
@@ -166,17 +139,8 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         const o = await Lesson.getLessonOptions(id, db);
         const opts = config.lessonOptions(o);
         let storable: StorableLesson = s;
-
-        // TODO: add wrappers in better way
-        if (opts.random && Lesson.allowRandom(s.type)) {
-            storable = RandomList.newStorable(storable);
-        }
-
-        if (opts.until !== null) {
-            storable = UntilN.newStorable(storable, opts.until);
-        }
-
-        return Lesson.deserialize(storable, fetchFn);
+        const base = await Lesson.deserialize(s, fetchFn);
+        return buildFromForm(base, config, opts);
     }
 
     static saveLast(lesson: Lesson, config: Config, db: IDBDatabase) {
