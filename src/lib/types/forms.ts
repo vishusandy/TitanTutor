@@ -6,7 +6,7 @@ export type FormUserValue<T> = UserValue<T> | 'disabled';
 
 export type FormUserValueReturn<T> = T | undefined;
 
-export type LessonFormState = { [P in keyof LessonTypingConfig]: FormUserValue<LessonTypingConfig[P]> };
+export type LessonFormState = { [P in keyof LessonTypingConfig]: UserValue<LessonTypingConfig[P]> };
 
 /// enabled | disabled | forced(T)
 export type OptAvailable<T> = 'enabled' | 'disabled' | T;

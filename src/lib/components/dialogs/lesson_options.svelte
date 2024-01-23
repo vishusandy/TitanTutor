@@ -41,7 +41,7 @@
 		let s: LessonFormState = {};
 		let k: keyof LessonTypingConfig;
 		for (k in defaultLessonFormState) {
-			if (overrides[k] !== 'enabled') {
+			if (overrides[k] !== 'enabled' && overrides[k] !== 'disabled') {
 				// @ts-ignore
 				s[k] = overrides[k];
 				continue;
@@ -54,7 +54,6 @@
 			// @ts-ignore
 			s[k] = defaultLessonFormState[k];
 		}
-		console.log('initial:', s);
 		return s;
 	}
 
@@ -65,10 +64,9 @@
 			state[k] = dataFns[k]();
 		}
 		curLesson = buildFromForm(lesson.baseLesson(), config, state);
-		console.log(`[update] storable:`, curLesson.storable());
+		// console.log(`[update] storable:`, curLesson.storable());
 		overrides = curLesson.overrides();
 		state = state;
-		console.log('[update] state:', state, 'overrides:', overrides);
 	}
 
 	export function getData(): [Lesson, Partial<LessonTypingConfig>] {
@@ -78,7 +76,7 @@
 
 		let k: keyof LessonFormState;
 		for (k in defaultLessonFormState) {
-			if (state[k] === 'disabled' || state[k] === 'user') {
+			if (state[k] === 'user') {
 				newOpts[k] = undefined;
 			} else {
 				// @ts-ignore
@@ -87,9 +85,6 @@
 		}
 
 		const newLesson = buildFromForm(lesson.baseLesson(), config, state);
-		// const userOverrides = config.lessonOptions(newOpts);
-		// Lesson.addWrappers(lesson.baseLesson(), userOverrides);
-
 		return [newLesson, newOpts];
 	}
 </script>

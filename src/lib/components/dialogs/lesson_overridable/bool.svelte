@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Config } from '$lib/types/config';
-	import type { FormUserValue, OptAvailable } from '$lib/types/forms';
+	import type { OptAvailable, UserValue } from '$lib/types/forms';
 	import { updateProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
@@ -11,21 +11,18 @@
 	export let userLabel: string = config.lang.useUserValue;
 	export let onLabel: string = config.lang.on;
 	export let offLabel: string = config.lang.off;
-	export let initialState: FormUserValue<boolean>;
+	export let initialState: UserValue<boolean>;
 	export let override: OptAvailable<boolean>;
 
 	const dispatch = createEventDispatcher();
 	let checkboxInput: HTMLInputElement;
 
-	let state: FormUserValue<boolean> = override !== 'enabled' ? override : initialState;
-	$: state = override !== 'enabled' ? override : state;
-	let isDisabled: boolean = override !== 'enabled' || state === 'disabled';
+	let state: UserValue<boolean> =
+		override !== 'enabled' && override !== 'disabled' ? override : initialState;
+	$: state = override !== 'enabled' && override !== 'disabled' ? override : state;
+	let isDisabled: boolean = override !== 'enabled';
 	$: {
-		override;
-		console.log(`reacting to override change for ${id}`);
-	}
-	$: {
-		isDisabled = override !== 'enabled' || state === 'disabled';
+		isDisabled = override !== 'enabled';
 		if (checkboxInput) updateCheckbox();
 	}
 
@@ -33,7 +30,7 @@
 		updateCheckbox();
 	});
 
-	export function getState(): FormUserValue<boolean> {
+	export function getState(): UserValue<boolean> {
 		return state;
 	}
 
@@ -76,7 +73,7 @@
 				state = 'user';
 				break;
 			default:
-				state = 'disabled';
+				override = 'disabled';
 		}
 
 		sendUpdate();

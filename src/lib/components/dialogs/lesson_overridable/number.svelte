@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Config } from '$lib/types/config';
-	import type { FormUserValue, OptAvailable } from '$lib/types/forms';
+	import type { OptAvailable, UserValue } from '$lib/types/forms';
 	import { updateProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
@@ -9,7 +9,7 @@
 	export let label: string;
 	export let id: string;
 	export let userLabel: string = config.lang.useUserValue;
-	export let initialState: FormUserValue<number>;
+	export let initialState: UserValue<number>;
 	export let defaultValue: number;
 	export let min: number | undefined = undefined;
 	export let max: number | undefined = undefined;
@@ -21,19 +21,20 @@
 	let checkboxInput: HTMLInputElement;
 	let numberInput: HTMLInputElement;
 
-	let state: FormUserValue<number> = override !== 'enabled' ? override : initialState;
+	let state: UserValue<number> =
+		override !== 'enabled' && override !== 'disabled' ? override : initialState;
 	if (override !== 'enabled' && override !== 'disabled') defaultValue = override;
 	let value: number = Number.isInteger(state) ? (state as number) : defaultValue;
 
-	let isDisabled = override !== 'enabled' || state === 'disabled';
-	$: isDisabled = override !== 'enabled' || state === 'disabled';
+	let isDisabled = override !== 'enabled';
+	$: isDisabled = override !== 'enabled';
 
 	onMount(() => {
 		if (numberInput) numberInput.value = value.toString();
 		updateCheckbox();
 	});
 
-	export function getState(): FormUserValue<number> {
+	export function getState(): UserValue<number> {
 		return state;
 	}
 

@@ -1,6 +1,6 @@
 <script lang="ts" generics="T">
 	import type { Config } from '$lib/types/config';
-	import type { FormUserValue, OptAvailable } from '$lib/types/forms';
+	import type { OptAvailable, UserValue } from '$lib/types/forms';
 	import { updateProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
@@ -10,7 +10,7 @@
 	export let label: string;
 	export let userLabel: string = config.lang.useUserValue;
 	export let choices: { key: string; label: string; value: T }[];
-	export let initialValue: FormUserValue<T>;
+	export let initialValue: UserValue<T>;
 	export let override: OptAvailable<T>;
 
 	const dispatch = createEventDispatcher();
@@ -22,7 +22,7 @@
 		initialValue = override;
 	}
 
-	let state = override !== 'enabled' ? override : initialValue;
+	let state = override !== 'enabled' && override !== 'disabled' ? override : initialValue;
 
 	let isDisabled = override !== 'enabled' || state === 'disabled';
 	$: isDisabled = override !== 'enabled' || state === 'disabled';
@@ -39,7 +39,7 @@
 		updateCheckbox();
 	});
 
-	export function getState(): FormUserValue<T> {
+	export function getState(): UserValue<T> {
 		return state;
 	}
 

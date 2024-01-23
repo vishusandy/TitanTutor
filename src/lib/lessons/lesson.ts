@@ -36,7 +36,12 @@ export function buildFromForm(base: Lesson, config: Config, state: LessonFormSta
     for (let i = 0; i < wrapperBuilders.length; i++) {
         const f = wrapperBuilders[i];
         lesson = f(lesson, config, state);
+        console.log(`after wrapper ${wrapperClasses[i].getTypeId()}:`, lesson.getType(), 'storable:', lesson.storable());
     }
+
+    // for (const f of wrapperBuilders) {
+    //     lesson = f(base, config, state);
+    // }
     return lesson;
 }
 
@@ -177,6 +182,15 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     static saveLast(lesson: Lesson, config: Config, db: IDBDatabase) {
         config.lastLesson = lesson.baseLesson().id;
         config.saveUserConfig(db);
+    }
+
+    static printWrappers(lesson: Lesson) {
+        let l: Lesson, c: Lesson | undefined = lesson;
+        do {
+            l = c;
+            console.log(`wrapper: ${l.getType()}`);
+            c = l.getChild();
+        } while (c !== undefined);
     }
 }
 
