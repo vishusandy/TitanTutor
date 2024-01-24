@@ -1,8 +1,8 @@
 import { Lesson, type BaseLesson, type StorableBaseLesson } from "$lib/lessons/lesson";
-import { defaultBatch } from "$lib/util/util";
+import { defaultBatch, uniqueChars } from "$lib/util/util";
 import type { Language } from "$lib/data/language";
 import type { BaseWordList } from "./wordlist";
-import { Config, storagePrefix } from "$lib/types/config";
+import { CheckMode, Config, storagePrefix } from "$lib/types/config";
 import { BinaryTree } from "$lib/util/bst";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonOptsAvailable, type LessonFormState } from "$lib/types/forms";
 
@@ -15,6 +15,14 @@ type TypoData = {
     'lesson_id': string,
     'typos': [string, number][],
 };
+
+function blank(words: string[]): [string, number][] {
+    const arr: [string, number][] = [];
+    const chars = uniqueChars(words);
+    // const p = 1 / chars.size;
+    chars.forEach(c => arr.push([c, 1]));
+    return arr;
+}
 
 export class AdaptiveList implements Lesson {
     base: BaseWordList;
@@ -31,9 +39,10 @@ export class AdaptiveList implements Lesson {
         this.base = base;
 
         const s = localStorage.getItem(lessonTypoPrefix + base.id);
-        const typoFreq: [string, number][] = s !== null ? JSON.parse(s) : Array.from(base.words.map(w => [w, 0]));
+        const typoFreq: [string, number][] = s !== null ? JSON.parse(s) : blank(base.words);
         this.typos = new Map(typoFreq);
         this.wordProbTree = AdaptiveList.newWordProbTree(this.base.words, typoFreq);
+        this.wordProbTree.print();
     }
 
     save() {
@@ -50,20 +59,23 @@ export class AdaptiveList implements Lesson {
      * @returns - Binary tree that represents the probability of each word.
      */
     private static newWordProbTree(wordlist: string[], typoFreq: [string, number][]): BinaryTree<string, number> {
-        const charProb: Map<string, number> = new Map(AdaptiveList.charProb(typoFreq));
+        const cp = AdaptiveList.charProb(typoFreq);
+        console.log('char prob:', cp);
+        const charProb: Map<string, number> = new Map(cp);
         const arr: [string, number][] = [];
         let sum = 0;
 
         wordlist.forEach((w) => {
             let p = 0;
             for (const c of [...w]) {
-                p += charProb.get(c) ?? 0;
+                p += (charProb.get(c) ?? 0);
             }
             arr.push([w, p]);
             sum += p;
         });
+        console.log(`wordProb:`, arr)
 
-        return BinaryTree.normalized_cumulative(arr, sum);
+        return BinaryTree.normalized(arr);
     }
 
     /**
@@ -84,11 +96,12 @@ export class AdaptiveList implements Lesson {
         const arr: [string, number][] = [];
         const typoSum = typos.reduce((acc, [, e]) => acc + e, 0);
 
-        //    note: reciprocals are used in tf and d to eliminate division in the character loop for performance
         const tf = 1 / (typoSum * factor);
         const a = 1 - 1 / factor;
         const d = 1 / (typos.length * a + 1 / factor);
 
+        console.log(`typoSum=${typoSum} tf=${tf} a=${a} d=${d}`);
+        //    note: reciprocals are used in tf and d to eliminate division in the character loop for performance
         typos.forEach(([s, n]) => arr.push([s, (n * tf + a) * d]));
         return arr;
     }
@@ -142,7 +155,7 @@ export class AdaptiveList implements Lesson {
     }
 
     overrides(): LessonOptsAvailable {
-        return { ...mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail), random: 'disabled' };
+        return { ...mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail), random: 'disabled', checkMode: CheckMode.Char };
     }
 
     static fromForm(lesson: Lesson, config: Config, form: LessonFormState): Lesson {

@@ -5,7 +5,6 @@ import { defaultLessonName } from '$lib/data/locales';
 import type { Config, CheckMode } from '$lib/types/config';
 import type { Language } from '$lib/data/language';
 import { UserWordList, loadUserLesson } from './base/user_wordlist';
-import type { BaseWordList } from './base/wordlist';
 import { AdaptiveList } from './base/adaptive_list';
 import { stockLessons } from '$lib/conf/lessons';
 import { RandomChars } from './base/chars';
@@ -138,7 +137,6 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     static async deserializeFromConfig(id: string, s: StorableBaseLesson, config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
         const o = await Lesson.getLessonOptions(id, db);
         const opts = config.lessonOptions(o);
-        let storable: StorableLesson = s;
         const base = await Lesson.deserialize(s, fetchFn);
         return buildFromForm(base, config, opts);
     }

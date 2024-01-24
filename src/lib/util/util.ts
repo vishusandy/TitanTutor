@@ -40,3 +40,9 @@ export function defaultBatch(lesson: Lesson, n: number) {
 
     return words;
 }
+
+export function uniqueChars(arr: string[]): Set<string> {
+    let set: Set<string> = new Set();
+    arr.forEach(w => [...w].forEach(c => set.add(c)));
+    return set;
+}
