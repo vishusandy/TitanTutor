@@ -1,13 +1,14 @@
 import { base } from "$app/paths";
+
 import { BaseWordList, type StorableBaseWordList } from "./wordlist";
+import { wordlist_typeid } from "$lib/conf/lesson_types";
 
 // filename is the json file located within data/words/
-const typeid = 'wordlist';
-export type StorableStockList = { type: typeof typeid, filename: string } & StorableBaseWordList;
+export type StorableStockList = { type: typeof wordlist_typeid, filename: string } & StorableBaseWordList;
 
 export class StockWordList extends BaseWordList {
     static getTypeId(): string {
-        return typeid;
+        return wordlist_typeid;
     }
 
     constructor(words: string[], id: string, name: string, lang: string) {
@@ -16,12 +17,12 @@ export class StockWordList extends BaseWordList {
 
 
     getType(): string {
-        return typeid;
+        return wordlist_typeid;
     }
 
     storable(): StorableStockList {
         return {
-            type: typeid,
+            type: wordlist_typeid,
             id: this.id,
             name: this.name,
             lang: this.lang,
@@ -40,6 +41,6 @@ export class StockWordList extends BaseWordList {
     }
 
     static newStorable(id: string, name: string, lang: string, filename: string): StorableStockList {
-        return { type: typeid, id, filename, name, lang }
+        return { type: wordlist_typeid, id, filename, name, lang }
     }
 }

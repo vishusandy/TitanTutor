@@ -1,5 +1,6 @@
 import * as locales from '$lib/conf/locales';
-import { defaultStockLesson } from '$lib/conf/lessons';
+import { fallbackStockLesson } from '$lib/conf/lessons';
+
 
 export function defaultTtsLangs(locale: string): string[] {
     return recurseLocaleArray([locale, navigator.language, locales.fallbackLocale], locales.ttsDefaultsMap, locales.defaultTtsList);
@@ -10,7 +11,7 @@ export function interfaceLang(locale: string): string {
 }
 
 export function defaultLessonName(locale: string): string {
-    return recurseLocaleArray([locale, navigator.language, locales.fallbackLocale], locales.defaultStockLessonLocaleMap, defaultStockLesson);
+    return recurseLocaleArray([locale, navigator.language, locales.fallbackLocale], locales.defaultStockLessonLocaleMap, fallbackStockLesson);
 }
 
 

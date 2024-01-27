@@ -12,7 +12,8 @@
 	import { Tutor } from '$lib/tutor';
 	import { Action } from '$lib/types/types';
 	import type { Audio } from '$lib/audio';
-	import { Lesson, type LessonTypingConfig } from '$lib/lessons/lesson';
+	import { Lesson } from '$lib/lessons/lesson';
+    import type { LessonTypingConfig } from '$lib/types/lessons';
 	import {
 		showConfigDialog,
 		showLessonConfigDialog,
@@ -21,7 +22,7 @@
 		showVoiceDialog
 	} from '$lib/util/dialog';
 	import Timer from './timer.svelte';
-	import { lessonInSeries, lessonPlans } from '$lib/conf/lessons';
+	import { lessonInSeries, lessonPlans } from '$lib/conf/lesson_plans';
 
 	export let db: IDBDatabase;
 	export let config: Config;

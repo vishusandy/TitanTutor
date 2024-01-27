@@ -7,7 +7,8 @@ import type { Audio } from "../audio";
 import type { Config } from "../types/config";
 import type { BaseStats } from "../stats";
 import type { InnerDialogComponent, CloseFn } from "../types/types";
-import type { Lesson, LessonTypingConfig } from "$lib/lessons/lesson";
+import type { Lesson } from "$lib/lessons/lesson";
+import type { LessonTypingConfig } from "$lib/types/lessons";
 import User from "../components/dialogs/user_config.svelte";
 
 

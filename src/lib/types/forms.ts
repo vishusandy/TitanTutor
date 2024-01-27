@@ -1,4 +1,4 @@
-import type { LessonTypingConfig } from "../lessons/lesson";
+import type { LessonTypingConfig } from "./lessons";
 
 export type UserValue<T> = T | 'user';
 

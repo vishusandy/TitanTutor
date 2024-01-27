@@ -1,5 +1,6 @@
 import { type Config, CheckMode } from './types/config';
-import type { Lesson, LessonTypingConfig } from './lessons/lesson';
+import type { Lesson } from './lessons/lesson';
+import type { LessonTypingConfig } from './types/lessons';
 import type { LessonStats } from './stats';
 import { Action, LetterState } from './types/types';
 import { WordState, CompletedWord } from './word_state';

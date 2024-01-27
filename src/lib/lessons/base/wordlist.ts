@@ -1,4 +1,5 @@
-import type { BaseLesson, Lesson, StorableBaseLesson } from "$lib/lessons/lesson";
+import type { BaseLesson, Lesson } from "$lib/lessons/lesson";
+import type { StorableBaseLesson } from "../../types/lessons";
 import type { Language } from "$lib/data/language";
 import { defaultLessonOptsAvail, type LessonOptsAvailable } from "$lib/types/forms";
 
@@ -51,7 +52,7 @@ export abstract class BaseWordList implements BaseLesson {
     getName(_: Language): string {
         return this.name;
     }
-    
+
     language(): string {
         return this.lang;
     }

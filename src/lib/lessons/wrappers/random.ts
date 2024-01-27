@@ -1,11 +1,12 @@
-import { Lesson, type BaseLesson, type StorableLesson } from "$lib/lessons/lesson";
+import { Lesson, type BaseLesson } from "$lib/lessons/lesson";
+import type { StorableLesson } from "../../types/lessons";
 import type { Config } from "$lib/types/config";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { shuffle, defaultBatch } from "$lib/util/util";
 import type { BaseWordList } from "../base/wordlist";
+import { random_typeid, userwordlist_typeid, wordlist_typeid } from "$lib/conf/lesson_types";
 
-const typeid = "random";
-export type StorableRandom = { type: typeof typeid, base: StorableLesson };
+export type StorableRandom = { type: typeof random_typeid, base: StorableLesson };
 
 export class RandomList implements Lesson {
     base: BaseWordList;
@@ -13,7 +14,7 @@ export class RandomList implements Lesson {
     pos: number;
 
     static getTypeId(): string {
-        return typeid;
+        return random_typeid;
     }
 
     constructor(base: BaseWordList) {
@@ -37,7 +38,7 @@ export class RandomList implements Lesson {
 
     storable(): StorableRandom {
         return {
-            type: typeid,
+            type: random_typeid,
             base: this.base.storable(),
         };
     }
@@ -48,7 +49,7 @@ export class RandomList implements Lesson {
     }
 
     static newStorable(lesson: StorableLesson): StorableRandom {
-        return { type: typeid, base: lesson };
+        return { type: random_typeid, base: lesson };
     }
 
     toJSON(): string {
@@ -60,7 +61,7 @@ export class RandomList implements Lesson {
     }
 
     getType(): string {
-        return typeid;
+        return random_typeid;
     }
 
     baseLesson(): BaseLesson {
@@ -77,7 +78,7 @@ export class RandomList implements Lesson {
 
     static async fromForm(lesson: Lesson, config: Config, db: IDBDatabase, form: LessonFormState): Promise<Lesson> {
         const ovr = lesson.overrides().random;
-        if (ovr === 'disabled' || ovr === false || (lesson.getType() !== 'wordlist' && lesson.getType() !== 'userwordlist')) return lesson;
+        if (ovr === 'disabled' || ovr === false || (lesson.getType() !== wordlist_typeid && lesson.getType() !== userwordlist_typeid)) return lesson;
         if (ovr === true || form.random === true || (form.random === 'user' && config.random === true)) {
             return new RandomList(lesson.baseLesson() as BaseWordList);
         }

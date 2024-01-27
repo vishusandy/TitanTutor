@@ -4,7 +4,7 @@ import { Remap } from "../data/remap";
 import { defaultMap } from '$lib/conf/kbmaps';
 import { Language } from "../data/language";
 import { UserStats, type UserStatsObject } from "../stats";
-import type { LessonTypingConfig } from '$lib/lessons/lesson'
+import type { LessonTypingConfig } from '$lib/types/lessons'
 import { config_store, get } from "$lib/db";
 import { defaultLessonOptsAvail, type LessonOptsAvailable } from "./forms";
 

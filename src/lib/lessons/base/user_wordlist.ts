@@ -1,10 +1,11 @@
 import { get, user_lessons_store } from "$lib/db";
 import type { Config } from "$lib/types/config";
 import { BaseWordList, type StorableBaseWordList } from "./wordlist";
-import { Lesson, type StorableBaseLesson } from "../lesson";
+import { Lesson } from "../lesson";
+import type { StorableBaseLesson } from "../../types/lessons";
+import { userwordlist_typeid } from "$lib/conf/lesson_types";
 
-const typeid = "userwordlist"
-export type StorableUserWordlist = { type: typeof typeid, words: string[] } & StorableBaseWordList;
+export type StorableUserWordlist = { type: typeof userwordlist_typeid, words: string[] } & StorableBaseWordList;
 
 export class UserWordList extends BaseWordList {
     constructor(words: string[], id: string, name: string, lang: string) {
@@ -12,16 +13,16 @@ export class UserWordList extends BaseWordList {
     }
 
     static getTypeId(): string {
-        return typeid;
+        return userwordlist_typeid;
     }
 
     getType(): string {
-        return typeid;
+        return userwordlist_typeid;
     }
 
     storable(): StorableUserWordlist {
         return {
-            type: typeid,
+            type: userwordlist_typeid,
             id: this.id,
             name: this.name,
             lang: this.lang,
@@ -34,7 +35,7 @@ export class UserWordList extends BaseWordList {
     }
 
     static newStorable(id: string, name: string, lang: string, words: string[]): StorableUserWordlist {
-        return { type: typeid, id, name, words, lang }
+        return { type: userwordlist_typeid, id, name, words, lang }
     }
 }
 

@@ -1,4 +1,5 @@
-import { Lesson, type BaseLesson, type StorableBaseLesson } from "$lib/lessons/lesson";
+import { Lesson, type BaseLesson } from "$lib/lessons/lesson";
+import type { StorableBaseLesson } from "../../types/lessons";
 import { defaultBatch, uniqueChars } from "$lib/util/util";
 import type { Language } from "$lib/data/language";
 import type { BaseWordList } from "./wordlist";
@@ -7,10 +8,9 @@ import { BinaryTree } from "$lib/util/bst";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonOptsAvailable, type LessonFormState } from "$lib/types/forms";
 import type { UserWordList } from "./user_wordlist";
 import { adaptive_store, get, save } from "$lib/db";
+import { adaptive_typeid, userwordlist_typeid, wordlist_typeid } from "$lib/conf/lesson_types";
 
-
-const typeid = "adaptive"
-export type StorableAdaptive = { type: typeof typeid, base: StorableBaseLesson };
+export type StorableAdaptive = { type: typeof adaptive_typeid, base: StorableBaseLesson };
 
 type TypoList = [string, number][];
 
@@ -42,7 +42,7 @@ export class AdaptiveList implements Lesson {
     }
 
     static getTypeId(): string {
-        return typeid;
+        return adaptive_typeid;
     }
 
     static async loadTypos(base: BaseWordList | UserWordList, db: IDBDatabase): Promise<TypoList> {
@@ -128,7 +128,7 @@ export class AdaptiveList implements Lesson {
 
     storable(): StorableAdaptive {
         return {
-            type: typeid,
+            type: adaptive_typeid,
             base: this.base.storable(),
         };
     }
@@ -144,7 +144,7 @@ export class AdaptiveList implements Lesson {
     }
 
     getType(): string {
-        return typeid;
+        return adaptive_typeid;
     }
 
     getName(_: Language): string {
@@ -166,7 +166,7 @@ export class AdaptiveList implements Lesson {
     static async fromForm(lesson: Lesson, config: Config, db: IDBDatabase, form: LessonFormState): Promise<Lesson> {
         const ovr = lesson.overrides().adaptive;
 
-        if (lesson.getType() !== 'wordlist' && lesson.getType() !== 'userwordlist') {
+        if (lesson.getType() !== wordlist_typeid && lesson.getType() !== userwordlist_typeid) {
             return lesson;
         }
 

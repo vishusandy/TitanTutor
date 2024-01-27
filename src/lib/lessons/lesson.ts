@@ -1,58 +1,13 @@
-import { StockWordList } from './base/stock_wordlist';
-import { RandomList } from './wrappers/random';
-import { UntilN } from './wrappers/until_n';
 import { defaultLessonName } from '$lib/data/locales';
-import type { Config, CheckMode } from '$lib/types/config';
+import type { Config } from '$lib/types/config';
 import type { Language } from '$lib/data/language';
-import { UserWordList, loadUserLesson } from './base/user_wordlist';
-import { AdaptiveList } from './base/adaptive_list';
+import { loadUserLesson } from './base/user_wordlist';
 import { stockLessons } from '$lib/conf/lessons';
-import { RandomChars } from './base/chars';
-import type { LessonFormState, LessonOptsAvailable } from '$lib/types/forms';
+import type { LessonOptsAvailable } from '$lib/types/forms';
 import { get, lesson_opts_store } from '$lib/db';
+import type { StorableLesson, StorableBaseLesson, LessonTypingConfig } from '../types/lessons';
+import { addWrappers, baseClasses, wrapperClasses } from '$lib/data/lesson_classes';
 
-
-export const baseClasses = [
-    StockWordList,
-    UserWordList,
-    RandomChars,
-];
-
-export const wrapperClasses = [
-    AdaptiveList,
-    RandomList,
-    UntilN,
-];
-
-const wrapperBuilders: ((lesson: Lesson, config: Config, db: IDBDatabase, form: LessonFormState) => Promise<Lesson>)[] = [
-    AdaptiveList.fromForm,
-    RandomList.fromForm,
-    UntilN.fromForm,
-];
-
-export async function addWrappers(base: Lesson, config: Config, db: IDBDatabase, state: LessonFormState): Promise<Lesson> {
-    let lesson = base;
-    for (let i = 0; i < wrapperBuilders.length; i++) {
-        lesson = await wrapperBuilders[i](lesson, config, db, state);
-        // console.log(`after wrapper ${wrapperClasses[i].getTypeId()}:`, lesson.getType(), 'storable:', lesson.storable());
-    }
-    return lesson;
-}
-
-
-export type LessonWrapperConfig = {
-    random: boolean,
-    until: number | null,
-    adaptive: boolean,
-};
-
-export type LessonTypingConfig = LessonWrapperConfig & {
-    wordBatchSize: number,
-    minQueue: number,
-    checkMode: CheckMode,
-    backspace: boolean,
-    spaceOptional: boolean
-};
 
 export interface BaseLesson extends Lesson {
     id: string;
@@ -60,15 +15,6 @@ export interface BaseLesson extends Lesson {
     getName(lang: Language): string;
     language(): string;
 }
-
-export interface StorableBaseLesson extends StorableLesson {
-    id: string;
-}
-
-export interface StorableLesson {
-    type: string;
-}
-
 
 export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract batch(n: number): string[];
@@ -164,17 +110,4 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         } while (c !== undefined);
         return false;
     }
-}
-
-export function defaultBatch(lesson: Lesson, n: number) {
-    let words: string[] = [];
-
-    let word: string, iter = lesson.next(), i = 0;
-    while (i < n && iter.done !== true && (word = iter.value)) {
-        words.push(word);
-        iter = lesson.next();
-        i += 1;
-    }
-
-    return words;
 }

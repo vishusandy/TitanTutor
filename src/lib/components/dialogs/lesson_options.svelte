@@ -5,7 +5,9 @@
 	import Select from './lesson_overridable/select.svelte';
 
 	import { CheckMode, type Config } from '$lib/types/config';
-	import { Lesson, addWrappers, type LessonTypingConfig } from '$lib/lessons/lesson';
+	import type { Lesson } from '$lib/lessons/lesson';
+    import { addWrappers } from '$lib/data/lesson_classes';
+    import type { LessonTypingConfig } from '$lib/types/lessons';
 	import {
 		defaultLessonFormState,
 		type FormUserValueReturn,
