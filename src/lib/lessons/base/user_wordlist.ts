@@ -7,8 +7,8 @@ const typeid = "userwordlist"
 export type StorableUserWordlist = { type: typeof typeid, words: string[] } & StorableBaseWordList;
 
 export class UserWordList extends BaseWordList {
-    constructor(words: string[], id: string, name: string) {
-        super(words, id, name);
+    constructor(words: string[], id: string, name: string, lang: string) {
+        super(words, id, name, lang);
     }
 
     static getTypeId(): string {
@@ -24,16 +24,17 @@ export class UserWordList extends BaseWordList {
             type: typeid,
             id: this.id,
             name: this.name,
+            lang: this.lang,
             words: this.words,
         };
     }
 
     static async fromStorable(s: StorableUserWordlist, _: typeof fetch = fetch): Promise<UserWordList> {
-        return new UserWordList(s.words, s.id, s.name);
+        return new UserWordList(s.words, s.id, s.name, s.lang);
     }
 
-    static newStorable(id: string, name: string, words: string[]): StorableUserWordlist {
-        return { type: typeid, id, name, words }
+    static newStorable(id: string, name: string, lang: string, words: string[]): StorableUserWordlist {
+        return { type: typeid, id, name, words, lang }
     }
 }
 

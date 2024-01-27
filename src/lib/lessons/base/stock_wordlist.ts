@@ -10,8 +10,8 @@ export class StockWordList extends BaseWordList {
         return typeid;
     }
 
-    constructor(words: string[], id: string, name: string) {
-        super(words, id, name);
+    constructor(words: string[], id: string, name: string, lang: string) {
+        super(words, id, name, lang);
     }
 
 
@@ -24,6 +24,7 @@ export class StockWordList extends BaseWordList {
             type: typeid,
             id: this.id,
             name: this.name,
+            lang: this.lang,
             filename: this.id,
         };
     }
@@ -34,11 +35,11 @@ export class StockWordList extends BaseWordList {
         return fetchFn(req)
             .then((resp) => resp.json())
             .then((words: string[]) => {
-                return new StockWordList(words, s.id, s.name);
+                return new StockWordList(words, s.id, s.name, s.lang);
             });
     }
 
-    static newStorable(id: string, name: string, filename: string): StorableStockList {
-        return { type: typeid, id, filename, name }
+    static newStorable(id: string, name: string, lang: string, filename: string): StorableStockList {
+        return { type: typeid, id, filename, name, lang }
     }
 }

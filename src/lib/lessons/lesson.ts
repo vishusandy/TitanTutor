@@ -58,6 +58,7 @@ export interface BaseLesson extends Lesson {
     id: string;
     name: string;
     getName(lang: Language): string;
+    language(): string;
 }
 
 export interface StorableBaseLesson extends StorableLesson {

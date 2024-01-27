@@ -2,15 +2,16 @@ import type { BaseLesson, Lesson, StorableBaseLesson } from "$lib/lessons/lesson
 import type { Language } from "$lib/data/language";
 import { defaultLessonOptsAvail, type LessonOptsAvailable } from "$lib/types/forms";
 
-export type StorableBaseWordList = { name: string } & StorableBaseLesson;
+export type StorableBaseWordList = { name: string, lang: string } & StorableBaseLesson;
 
 export abstract class BaseWordList implements BaseLesson {
     words: string[];
     pos: number;
     id: string;
     name: string;
+    lang: string;
 
-    constructor(words: string[], id: string, name: string) {
+    constructor(words: string[], id: string, name: string, lang: string) {
         if (words.length === 0) {
             throw new Error("Invalid word list: the list must contain at least one element");
         }
@@ -19,6 +20,7 @@ export abstract class BaseWordList implements BaseLesson {
         this.words = words;
         this.id = id;
         this.name = name;
+        this.lang = lang;
     }
 
     abstract storable(): StorableBaseLesson;
@@ -48,6 +50,10 @@ export abstract class BaseWordList implements BaseLesson {
 
     getName(_: Language): string {
         return this.name;
+    }
+    
+    language(): string {
+        return this.lang;
     }
 
     baseLesson(): BaseLesson {
