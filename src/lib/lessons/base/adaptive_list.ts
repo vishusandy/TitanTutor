@@ -2,24 +2,26 @@ import { Lesson, type BaseLesson, type StorableBaseLesson } from "$lib/lessons/l
 import { defaultBatch, uniqueChars } from "$lib/util/util";
 import type { Language } from "$lib/data/language";
 import type { BaseWordList } from "./wordlist";
-import { CheckMode, Config, storagePrefix } from "$lib/types/config";
+import { CheckMode, Config } from "$lib/types/config";
 import { BinaryTree } from "$lib/util/bst";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonOptsAvailable, type LessonFormState } from "$lib/types/forms";
+import type { UserWordList } from "./user_wordlist";
+import { adaptive_store, get, save } from "$lib/db";
 
-const lessonTypoPrefix = `${storagePrefix}lesson_typos`;
 
 const typeid = "adaptive"
 export type StorableAdaptive = { type: typeof typeid, base: StorableBaseLesson };
 
+type TypoList = [string, number][];
+
 type TypoData = {
     'lesson_id': string,
-    'typos': [string, number][],
+    'typos': TypoList,
 };
 
-function blank(words: string[]): [string, number][] {
-    const arr: [string, number][] = [];
+function emptyTypoList(words: string[]): TypoList {
+    const arr: TypoList = [];
     const chars = uniqueChars(words);
-    // const p = 1 / chars.size;
     chars.forEach(c => arr.push([c, 1]));
     return arr;
 }
@@ -27,27 +29,31 @@ function blank(words: string[]): [string, number][] {
 export class AdaptiveList implements Lesson {
     base: BaseWordList;
     pos: number;
-    typos: Map<string, number>;
+    typoMap: Map<string, number>;
+    typos: TypoList;
     wordProbTree: BinaryTree<string, number>;
+
+    constructor(base: BaseWordList, typos: TypoList) {
+        this.pos = 0;
+        this.base = base;
+        this.typos = typos;
+        this.typoMap = new Map(typos);
+        this.wordProbTree = AdaptiveList.newWordProbTree(this.base.words, typos);
+    }
 
     static getTypeId(): string {
         return typeid;
     }
 
-    constructor(base: BaseWordList) {
-        this.pos = 0;
-        this.base = base;
-
-        const s = localStorage.getItem(lessonTypoPrefix + base.id);
-        const typoFreq: [string, number][] = s !== null ? JSON.parse(s) : blank(base.words);
-        this.typos = new Map(typoFreq);
-        this.wordProbTree = AdaptiveList.newWordProbTree(this.base.words, typoFreq);
-        this.wordProbTree.print();
+    static async loadTypos(base: BaseWordList | UserWordList, db: IDBDatabase): Promise<TypoList> {
+        const def = () => { return { lesson_id: '', typos: emptyTypoList((base as BaseWordList).words) } };
+        const a = await get(db, adaptive_store, base.id, (r: TypoData) => r, def, def);
+        return a.typos;
     }
 
-    save() {
-        const s = JSON.stringify(Array.from(this.typos.entries()));
-        localStorage.setItem(lessonTypoPrefix + this.base.id, s);
+    static saveTypos(db: IDBDatabase, lesson_id: string, typos: TypoList) {
+        const data: TypoData = { lesson_id, typos };
+        save(db, adaptive_store, data);
     }
 
     /**
@@ -58,11 +64,10 @@ export class AdaptiveList implements Lesson {
      * @param typoFreq - Array of (char, typo count) tuples
      * @returns - Binary tree that represents the probability of each word.
      */
-    private static newWordProbTree(wordlist: string[], typoFreq: [string, number][]): BinaryTree<string, number> {
+    private static newWordProbTree(wordlist: string[], typoFreq: TypoList): BinaryTree<string, number> {
         const cp = AdaptiveList.charProb(typoFreq);
-        console.log('char prob:', cp);
         const charProb: Map<string, number> = new Map(cp);
-        const arr: [string, number][] = [];
+        const arr: TypoList = [];
         let sum = 0;
 
         wordlist.forEach((w) => {
@@ -73,7 +78,6 @@ export class AdaptiveList implements Lesson {
             arr.push([w, p]);
             sum += p;
         });
-        console.log(`wordProb:`, arr)
 
         return BinaryTree.normalized(arr);
     }
@@ -88,19 +92,19 @@ export class AdaptiveList implements Lesson {
      *       sum = total number of typos,
      *       factor = number to apply to ensure characters without typos do not get a probability of 0 (or NaN value)
      *   
-     *   @param {[string, number][]} typos - Array of (char, typo count) tuples
+     *   @param {TypoList} typos - Array of (char, typo count) tuples
      *   @param {number} factor - Lower factor means probabilities are more affected by typo count.  Must be above 1 to prevent NaN values.
      *   @returns {[string, number]} An array of (char, probability) tuples
      */
-    private static charProb(typos: [string, number][], factor: number = 2): [string, number][] {
-        const arr: [string, number][] = [];
+    private static charProb(typos: TypoList, factor: number = 2): TypoList {
+        const arr: TypoList = [];
         const typoSum = typos.reduce((acc, [, e]) => acc + e, 0);
 
         const tf = 1 / (typoSum * factor);
         const a = 1 - 1 / factor;
         const d = 1 / (typos.length * a + 1 / factor);
+        // console.log(`typoSum=${typoSum} tf=${tf} a=${a} d=${d}`);
 
-        console.log(`typoSum=${typoSum} tf=${tf} a=${a} d=${d}`);
         //    note: reciprocals are used in tf and d to eliminate division in the character loop for performance
         typos.forEach(([s, n]) => arr.push([s, (n * tf + a) * d]));
         return arr;
@@ -129,9 +133,10 @@ export class AdaptiveList implements Lesson {
         };
     }
 
-    static async fromStorable(s: StorableAdaptive, fetchFn: typeof fetch = fetch): Promise<AdaptiveList> {
-        const base = await Lesson.deserialize(s.base, fetchFn);
-        return new AdaptiveList(base as BaseWordList);
+    static async fromStorable(s: StorableAdaptive, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<AdaptiveList> {
+        const base = await Lesson.deserialize(s.base, db, fetchFn);
+        const typos = await AdaptiveList.loadTypos(base.baseLesson() as BaseWordList, db);
+        return new AdaptiveList(base as BaseWordList, typos);
     }
 
     getChild(): Lesson | undefined {
@@ -158,7 +163,7 @@ export class AdaptiveList implements Lesson {
         return { ...mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail), random: 'disabled', checkMode: CheckMode.Char };
     }
 
-    static fromForm(lesson: Lesson, config: Config, form: LessonFormState): Lesson {
+    static async fromForm(lesson: Lesson, config: Config, db: IDBDatabase, form: LessonFormState): Promise<Lesson> {
         const ovr = lesson.overrides().adaptive;
 
         if (lesson.getType() !== 'wordlist' && lesson.getType() !== 'userwordlist') {
@@ -166,13 +171,15 @@ export class AdaptiveList implements Lesson {
         }
 
         if (ovr === true || (ovr === 'enabled' && (form.adaptive === true || (form.adaptive === 'user' && config.adaptive === true)))) {
-            return new AdaptiveList(lesson.baseLesson() as BaseWordList);
+            const typos = await AdaptiveList.loadTypos(lesson as BaseWordList, db);
+            return new AdaptiveList(lesson.baseLesson() as BaseWordList, typos);
         }
 
         return lesson;
     }
 
     lessonEnd(): void {
-        this.save();
+        // this.save();
+        // AdaptiveList.saveTypos(this.typos);
     }
 }

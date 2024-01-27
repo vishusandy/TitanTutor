@@ -42,8 +42,8 @@ export class RandomList implements Lesson {
         };
     }
 
-    static async fromStorable(s: StorableRandom, fetchFn: typeof fetch = fetch): Promise<RandomList> {
-        const base = await Lesson.deserialize(s.base, fetchFn);
+    static async fromStorable(s: StorableRandom, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<RandomList> {
+        const base = await Lesson.deserialize(s.base, db, fetchFn);
         return new RandomList(base as BaseWordList);
     }
 
@@ -75,7 +75,7 @@ export class RandomList implements Lesson {
         return { ...mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail), adaptive: 'disabled' };
     }
 
-    static fromForm(lesson: Lesson, config: Config, form: LessonFormState): Lesson {
+    static async fromForm(lesson: Lesson, config: Config, db: IDBDatabase, form: LessonFormState): Promise<Lesson> {
         const ovr = lesson.overrides().random;
         if (ovr === 'disabled' || ovr === false || (lesson.getType() !== 'wordlist' && lesson.getType() !== 'userwordlist')) return lesson;
         if (ovr === true || form.random === true || (form.random === 'user' && config.random === true)) {
@@ -83,6 +83,4 @@ export class RandomList implements Lesson {
         }
         return lesson;
     }
-
-    lessonEnd(): void { }
-};
+}

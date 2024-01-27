@@ -35,11 +35,11 @@ export abstract class BaseStats {
     abstract reset(): void;
 }
 
-export class SessionStats extends BaseStats {
+export class LessonStats extends BaseStats {
     started: DOMHighResTimeStamp | undefined = undefined;
     mode: CheckMode;
 
-    constructor(mode: CheckMode) {
+    constructor(id: string, mode: CheckMode) {
         super();
         this.mode = mode;
     }
@@ -111,7 +111,7 @@ export class UserStats extends BaseStats {
         this.correctedErrors = 0;
     }
 
-    add(session: SessionStats) {
+    add(session: LessonStats) {
         this.duration += session.duration;
         this.words += session.words;
         this.keystrokes += session.keystrokes;

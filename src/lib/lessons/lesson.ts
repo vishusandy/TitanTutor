@@ -24,16 +24,16 @@ export const wrapperClasses = [
     UntilN,
 ];
 
-const wrapperBuilders: ((lesson: Lesson, config: Config, form: LessonFormState) => Lesson)[] = [
+const wrapperBuilders: ((lesson: Lesson, config: Config, db: IDBDatabase, form: LessonFormState) => Promise<Lesson>)[] = [
     AdaptiveList.fromForm,
     RandomList.fromForm,
     UntilN.fromForm,
 ];
 
-export function buildFromForm(base: Lesson, config: Config, state: LessonFormState): Lesson {
+export async function addWrappers(base: Lesson, config: Config, db: IDBDatabase, state: LessonFormState): Promise<Lesson> {
     let lesson = base;
     for (let i = 0; i < wrapperBuilders.length; i++) {
-        lesson = wrapperBuilders[i](lesson, config, state);
+        lesson = await wrapperBuilders[i](lesson, config, db, state);
         // console.log(`after wrapper ${wrapperClasses[i].getTypeId()}:`, lesson.getType(), 'storable:', lesson.storable());
     }
     return lesson;
@@ -78,7 +78,6 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract getChild(): Lesson | undefined;
     abstract getType(): string;
     abstract baseLesson(): BaseLesson;
-    abstract lessonEnd(): void;
     abstract overrides(): LessonOptsAvailable;
 
     static async default(config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
@@ -86,7 +85,7 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         return Lesson.load(lesson, config, db, fetchFn);
     }
 
-    static async deserialize(s: StorableLesson, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+    static async deserialize(s: StorableLesson, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
         for (const c of baseClasses) {
             if (s.type === c.getTypeId()) {
                 return c.fromStorable(s as any, fetchFn);
@@ -94,10 +93,17 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         }
         for (const c of wrapperClasses) {
             if (s.type === c.getTypeId()) {
-                return c.fromStorable(s as any, fetchFn);
+                return c.fromStorable(s as any, db, fetchFn);
             }
         }
         throw new Error(`Attempted to load lesson with invalid type`);
+    }
+
+    static async deserializeAndBuild(id: string, s: StorableBaseLesson, config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
+        const o = await Lesson.getLessonOptions(id, db);
+        const opts = config.lessonOptions(o);
+        const base = await Lesson.deserialize(s, db, fetchFn);
+        return addWrappers(base, config, db, opts);
     }
 
     static async load(id: string, config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
@@ -108,7 +114,7 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         const storable = stockLessons.get(id);
         if (storable === undefined)
             throw new Error(`Could not find lesson '${id}'`);
-        return Lesson.deserializeFromConfig(id, storable, config, db, fetchFn);
+        return Lesson.deserializeAndBuild(id, storable, config, db, fetchFn);
     }
 
     static async loadLast(config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
@@ -134,13 +140,6 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         s.put({ lesson_id: id, ...opts });
     }
 
-    static async deserializeFromConfig(id: string, s: StorableBaseLesson, config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-        const o = await Lesson.getLessonOptions(id, db);
-        const opts = config.lessonOptions(o);
-        const base = await Lesson.deserialize(s, fetchFn);
-        return buildFromForm(base, config, opts);
-    }
-
     static saveLast(lesson: Lesson, config: Config, db: IDBDatabase) {
         config.lastLesson = lesson.baseLesson().id;
         config.saveUserConfig(db);
@@ -153,6 +152,16 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
             console.log(`wrapper: ${l.getType()}`);
             c = l.getChild();
         } while (c !== undefined);
+    }
+
+    static hasWrapper(lesson: Lesson, wrapperId: string): boolean {
+        let l: Lesson, c: Lesson | undefined = lesson;
+        do {
+            l = c;
+            if (l.getType() === wrapperId) return true;
+            c = l.getChild();
+        } while (c !== undefined);
+        return false;
     }
 }
 

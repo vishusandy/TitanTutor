@@ -7,7 +7,7 @@
 
 	import { addMissedSpace, addSpace } from '$lib/util/dom';
 	import { CheckMode, type Config } from '$lib/types/config';
-	import { SessionStats } from '$lib/stats';
+	import { LessonStats } from '$lib/stats';
 	import { WordState } from '$lib/word_state';
 	import { Tutor } from '$lib/tutor';
 	import { Action } from '$lib/types/types';
@@ -26,16 +26,10 @@
 	export let db: IDBDatabase;
 	export let config: Config;
 	export let lesson: Lesson;
-    export let lessonOpts: Partial<LessonTypingConfig>;
-	export let sessionStats: SessionStats;
+	export let lessonOpts: Partial<LessonTypingConfig>;
+	export let lessonStats: LessonStats;
 
-    
-	let tutor = new Tutor(
-		config,
-		lesson,
-		lessonOpts,
-		sessionStats
-	);
+	let tutor = new Tutor(config, lesson, lessonOpts, lessonStats);
 	let lessonPlan: string | undefined = lessonInSeries.get(lesson.baseLesson().id);
 	let lessonSeries = lessonPlan !== undefined ? lessonPlans.get(lessonPlan) : undefined;
 	let planIdx =
@@ -87,7 +81,7 @@
 	async function unpause(e: KeyboardEvent | undefined = undefined) {
 		if (textbox === undefined) return;
 		paused = false;
-		sessionStats.resume();
+		lessonStats.resume();
 		await tick();
 		textbox.focus();
 
@@ -102,7 +96,7 @@
 		if (tutor.word.atEnd() && tutor.word.word === tutor.word.input) {
 			handleAction(Action.NextWord);
 		}
-		sessionStats.pause();
+		lessonStats.pause();
 	}
 
 	async function lessonCompleted() {
@@ -118,30 +112,31 @@
 	async function reset(lessonOpts?: Partial<LessonTypingConfig>) {
 		const id = lesson.baseLesson().id;
 		// if (lessonOpts === undefined) lessonOpts = await Lesson.getLessonOptions(id, db);
-        if (lessonOpts === undefined) lessonOpts = {};
+		if (lessonOpts === undefined) lessonOpts = {};
 
 		lesson = await Lesson.load(id, config, db);
-		tutor = new Tutor(config, lesson, lessonOpts, sessionStats);
+		tutor = new Tutor(config, lesson, lessonOpts, lessonStats);
 		started = false;
 		paused = true;
 		finished = false;
-		sessionStats = new SessionStats(tutor.config.checkMode);
+		lessonStats = new LessonStats(id, tutor.config.checkMode);
 
 		let child;
 		while ((child = historyNode.firstChild)) historyNode.removeChild(child);
 	}
 
 	async function endLesson() {
-		if (sessionStats.chars !== 0) {
+		if (lessonStats.chars !== 0) {
 			paused = true;
-			sessionStats.pause();
-			sessionStats = sessionStats;
-			lesson.lessonEnd();
+			lessonStats.pause();
+			lessonStats = lessonStats;
+			
+            // lesson.lessonEnd();
 
 			if (config.logStats) {
-				await showStatsConfirmDialog(config, db, sessionStats).then((v: boolean | undefined) => {
+				await showStatsConfirmDialog(config, db, lessonStats).then((v: boolean | undefined) => {
 					if (v === true) {
-						config.userStats.add(sessionStats);
+						config.userStats.add(lessonStats);
 						config.saveUserConfig(db);
 					}
 				});
@@ -230,7 +225,7 @@
 	}
 
 	async function showSessionStatsDialog() {
-		showStatsDialog(config.lang.statsDialogSessionTitle, config, db, sessionStats);
+		showStatsDialog(config.lang.statsDialogSessionTitle, config, db, lessonStats);
 	}
 
 	async function showUserStatsDialog() {
@@ -247,16 +242,23 @@
 	}
 
 	async function showLessonOptions(): Promise<void> {
-		return showLessonConfigDialog(config, db, lesson, tutor.lessonOptions).then(
-			(data?: [Lesson, Partial<LessonTypingConfig>]) => {
-				if (data !== undefined) {
-					let lessonOptions: Partial<LessonTypingConfig>;
-					[lesson, lessonOptions] = data;
-					Lesson.saveLessonOptions(lesson.baseLesson().id, lessonOptions, db);
-					reset(lessonOptions);
-				}
-			}
-		);
+		const data = await showLessonConfigDialog(config, db, lesson, tutor.lessonOptions);
+		if (data !== undefined) {
+			let lessonOptions: Partial<LessonTypingConfig>;
+			[lesson, lessonOptions] = data;
+			Lesson.saveLessonOptions(lesson.baseLesson().id, lessonOptions, db);
+			reset(lessonOptions);
+		}
+		// return showLessonConfigDialog(config, db, lesson, tutor.lessonOptions).then(
+		// 	(data?: [Lesson, Partial<LessonTypingConfig>]) => {
+		// 		if (data !== undefined) {
+		// 			let lessonOptions: Partial<LessonTypingConfig>;
+		// 			[lesson, lessonOptions] = data;
+		// 			Lesson.saveLessonOptions(lesson.baseLesson().id, lessonOptions, db);
+		// 			reset(lessonOptions);
+		// 		}
+		// 	}
+		// );
 	}
 
 	async function showUserConfig(_: Event) {
@@ -304,7 +306,7 @@
 					{#if !started}
 						{config.lang.notStarted}
 					{:else}
-						<Timer stats={sessionStats} lang={config.lang} />
+						<Timer stats={lessonStats} lang={config.lang} />
 					{/if}
 				</div>
 				<div class="tutor-menu">

@@ -60,7 +60,12 @@ export function get<Result, Success, Err>(db: IDBDatabase, store_name: string, k
                 result = getDefault();
             }
         }
-        req.onerror = async e => result = onError(e);
+        req.onerror = e => result = onError(e);
     });
 }
 
+export function save<T>(db: IDBDatabase, store_name: string, data: T) {
+    const t = db.transaction([store_name], "readwrite");
+    const store = t.objectStore(store_name);
+    store.put(data);
+}

@@ -45,8 +45,8 @@ export class UntilN implements Lesson {
         return JSON.stringify(this.storable());
     }
 
-    static async fromStorable(s: StorableUntil, fetchFn: typeof fetch = fetch): Promise<UntilN> {
-        const lesson = await Lesson.deserialize(s.lesson, fetchFn);
+    static async fromStorable(s: StorableUntil, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<UntilN> {
+        const lesson = await Lesson.deserialize(s.lesson, db, fetchFn);
         return new UntilN(lesson, s.max);
     }
 
@@ -74,7 +74,7 @@ export class UntilN implements Lesson {
         return mergeOptsAvail(this.lesson.overrides(), defaultLessonOptsAvail);
     }
 
-    static fromForm(lesson: Lesson, config: Config, form: LessonFormState): Lesson {
+    static async fromForm(lesson: Lesson, config: Config, db: IDBDatabase, form: LessonFormState): Promise<Lesson> {
         const ovr = lesson.overrides().until;
         if (ovr === 'disabled' || ovr === null) return lesson;
 
@@ -90,7 +90,4 @@ export class UntilN implements Lesson {
 
         return lesson;
     }
-
-    lessonEnd(): void { }
-
 }

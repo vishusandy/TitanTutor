@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Language } from '$lib/data/language';
-	import type { SessionStats } from '$lib/stats';
+	import type { LessonStats } from '$lib/stats';
 	import { formatDuration } from '$lib/util/util';
 
-	export let stats: SessionStats;
+	export let stats: LessonStats;
 	export let lang: Language;
 	let time: number = 0;
 

@@ -1,7 +1,7 @@
 export const ssr = false;
 export const prerender = false;
 
-import { Config, configKey } from "$lib/types/config";
+import { Config } from "$lib/types/config";
 import { showVoiceDialog } from '$lib/util/dialog';
 import type { Audio } from '$lib/audio';
 import { connect } from "$lib/db.js";

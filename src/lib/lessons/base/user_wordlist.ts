@@ -39,5 +39,5 @@ export class UserWordList extends BaseWordList {
 
 export async function loadUserLesson(config: Config, db: IDBDatabase, id: string, fetchFn: typeof fetch = fetch): Promise<Lesson> {
     const err = () => { throw new Error(`Could not find lesson ${id}`) };
-    return await get<StorableBaseLesson, Promise<Lesson>, Promise<Lesson>>(db, user_lessons_store, id, (res) => Lesson.deserializeFromConfig(id, res, config, db,  fetchFn), err, err);
+    return await get<StorableBaseLesson, Promise<Lesson>, Promise<Lesson>>(db, user_lessons_store, id, (res) => Lesson.deserializeAndBuild(id, res, config, db, fetchFn), err, err);
 }

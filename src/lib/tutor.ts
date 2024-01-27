@@ -1,6 +1,6 @@
 import { type Config, CheckMode } from './types/config';
 import type { Lesson, LessonTypingConfig } from './lessons/lesson';
-import type { SessionStats } from './stats';
+import type { LessonStats } from './stats';
 import { Action, LetterState } from './types/types';
 import { WordState, CompletedWord } from './word_state';
 import { controlKeys, type Remap } from './data/remap';
@@ -8,14 +8,14 @@ import { controlKeys, type Remap } from './data/remap';
 export class Tutor {
     config: Config;
     lesson: Lesson;
-    stats: SessionStats;
+    stats: LessonStats;
     lessonOptions: Partial<LessonTypingConfig>;
     word: WordState;
     history: CompletedWord[];
     queue: string[];
     audioQueue: number;
 
-    constructor(config: Config, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>, stats: SessionStats) {
+    constructor(config: Config, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>, stats: LessonStats) {
         this.stats = stats;
         this.lesson = lesson;
         this.lessonOptions = lessonOptions;

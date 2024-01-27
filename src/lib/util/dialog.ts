@@ -32,10 +32,10 @@ export function showConfigDialog(config: Config, db: IDBDatabase) {
     return createDialog<Config>(dialogProps);
 }
 
-export function showLessonConfigDialog(config: Config, db: IDBDatabase, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>) {
+export async function showLessonConfigDialog(config: Config, db: IDBDatabase, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>): Promise<Promise<[Lesson, Partial<LessonTypingConfig>] | undefined >> {
     const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, db, confirmPrompt: config.lang.lessonConfigConfirmSubmit };
     const passProps = { lesson, lessonOptions };
-    return createDialog<[Lesson, Partial<LessonTypingConfig>]>(dialogProps, passProps);
+    return createDialog<Promise<[Lesson, Partial<LessonTypingConfig>]>>(dialogProps, passProps);
 }
 
 interface DialogProps {

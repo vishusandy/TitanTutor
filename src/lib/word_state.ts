@@ -1,7 +1,5 @@
 import { LetterState } from './types/types';
 import type { Config } from './types/config';
-import { Action } from './types/types';
-import type { Remap } from './data/remap';
 
 export class CompletedWord {
     word: string[];
@@ -16,14 +14,14 @@ export class CompletedWord {
 export class WordState {
     word: string;
     input: string;
+    wordChars: string[];
+    inputChars: string[] = [];
     state: LetterState[];
     correctedErrors: number = 0;
     uncorrectedErrors: number = 0;
     keystrokes: number = 0;
     backspaces: number = 0;
     wordAttempts: number = 0;
-    wordChars: string[];
-    inputChars: string[] = [];
     wordInputAttempts: string[] = [];
 
     constructor(word: string) {
@@ -31,6 +29,7 @@ export class WordState {
         this.state = word.split('').map((_) => { return LetterState.Incomplete });
         this.input = '';
         this.wordChars = [...word];
+
     }
 
     getWord(): string {
@@ -42,7 +41,7 @@ export class WordState {
     }
 
     atEnd(): boolean {
-        return this.input.length === this.word.length;
+        return this.inputChars.length === this.wordChars.length;
     }
 
     reset(word: string) {

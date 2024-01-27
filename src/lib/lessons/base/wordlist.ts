@@ -66,6 +66,4 @@ export abstract class BaseWordList implements BaseLesson {
     overrides(): LessonOptsAvailable {
         return defaultLessonOptsAvail;
     }
-    
-    lessonEnd(): void {  }
 }

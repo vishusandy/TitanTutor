@@ -133,6 +133,4 @@ export class RandomChars implements BaseLesson {
         //     adaptive: true,
         // };
     }
-
-    lessonEnd(): void { }
 }

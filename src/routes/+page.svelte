@@ -5,7 +5,7 @@
 	import type { PageData } from './$types';
 
 	import Typing from '$lib/components/typing.svelte';
-	import { SessionStats } from '$lib/stats';
+	import { LessonStats } from '$lib/stats';
 
 	export let data: PageData;
 
@@ -13,11 +13,11 @@
 	let config = data.config;
 	let lesson = data.lesson;
 	let lessonOpts = data.lessonOpts;
-	let sessionStats = new SessionStats(config.checkMode);
+	let sessionStats = new LessonStats(lesson.baseLesson().id, config.checkMode);
 </script>
 
 <svelte:head>
 	<title>Keyboard Tutor</title>
 </svelte:head>
 
-<Typing {config} {lesson} {sessionStats} {db} {lessonOpts} />
+<Typing {config} {lesson} lessonStats={sessionStats} {db} {lessonOpts} />

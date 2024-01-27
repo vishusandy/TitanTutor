@@ -5,12 +5,11 @@
 	import Select from './lesson_overridable/select.svelte';
 
 	import { CheckMode, type Config } from '$lib/types/config';
-	import { Lesson, buildFromForm, type LessonTypingConfig } from '$lib/lessons/lesson';
+	import { Lesson, addWrappers, type LessonTypingConfig } from '$lib/lessons/lesson';
 	import {
 		defaultLessonFormState,
 		type FormUserValueReturn,
-		type LessonFormState,
-		type LessonOptsAvailable
+		type LessonFormState
 	} from '$lib/types/forms';
 
 	export let config: Config;
@@ -23,6 +22,9 @@
 	let overrides = curLesson.overrides();
 	$: overrides = curLesson.overrides();
 	let state: LessonFormState = initializeState(config, lessonOptions);
+
+	let waiting = false;
+	let dirty = false;
 
 	const wordModeChoices = [
 		{
@@ -57,19 +59,32 @@
 		return s;
 	}
 
-	function updateState() {
+	async function updateState() {
+		if (waiting === true) {
+			dirty = true;
+			return;
+		}
+
+		waiting = true;
+
 		let k: keyof LessonFormState;
 		for (k in defaultLessonFormState) {
 			// @ts-ignore
 			state[k] = dataFns[k]();
 		}
-		curLesson = buildFromForm(lesson.baseLesson(), config, state);
-		// console.log(`[update] storable:`, curLesson.storable());
+
+		curLesson = await addWrappers(lesson.baseLesson(), config, db, state);
 		overrides = curLesson.overrides();
 		state = state;
+
+		waiting = false;
+		if (dirty === true) {
+			dirty = false;
+			updateState();
+		}
 	}
 
-	export function getData(): [Lesson, Partial<LessonTypingConfig>] {
+	export async function getData(): Promise<[Lesson, Partial<LessonTypingConfig>]> {
 		// @ts-ignore
 		const newOpts: { [P in keyof LessonTypingConfig]: FormUserValueReturn<LessonTypingConfig[P]> } =
 			{};
@@ -84,7 +99,7 @@
 			}
 		}
 
-		const newLesson = buildFromForm(lesson.baseLesson(), config, state);
+		const newLesson = await addWrappers(lesson.baseLesson(), config, db, state);
 		return [newLesson, newOpts];
 	}
 </script>

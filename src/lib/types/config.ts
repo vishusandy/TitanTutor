@@ -9,8 +9,6 @@ import { config_store, get } from "$lib/db";
 import { defaultLessonOptsAvail, type LessonOptsAvailable } from "./forms";
 
 export const storagePrefix = 'vkTutor_'
-export const configKey = storagePrefix + 'config';
-export const configUserKey = storagePrefix + 'user';
 export const defaultUserId = 'default';
 
 export const enum CheckMode {
@@ -114,8 +112,7 @@ export class Config implements ConfigProps {
     }
 
     static async loadUserConfig(db: IDBDatabase): Promise<Config> {
-        const user = localStorage.getItem(configUserKey) ?? defaultUserId;
-        return await get<ConfigStorable, Promise<Config>, Promise<Config>>(db, config_store, user, (res) => Config.deserialize(res), () => Config.default(), () => Config.default());
+        return await get<ConfigStorable, Promise<Config>, Promise<Config>>(db, config_store, defaultUserId, (res) => Config.deserialize(res), () => Config.default(), () => Config.default());
     }
 
     saveUserConfig(db: IDBDatabase) {
@@ -125,7 +122,7 @@ export class Config implements ConfigProps {
         const c = t.objectStore(config_store);
         c.put(data);
 
-        localStorage.setItem(configUserKey, this.user);
+        localStorage.setItem(defaultUserId, this.user);
     }
 
     lessonOptions(opts: Partial<LessonTypingConfig>): LessonTypingConfig {
