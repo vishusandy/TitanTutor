@@ -1,10 +1,10 @@
-import { type Config, CheckMode } from './types/config';
+import type { Config } from './types/config';
 import type { Lesson } from './lessons/lesson';
 import type { LessonTypingConfig } from './types/lessons';
 import type { LessonStats } from './stats';
-import { Action, LetterState } from './types/types';
+import { Action, CheckMode, LetterState } from './types/types';
 import { WordState, CompletedWord } from './word_state';
-import { controlKeys, type Remap } from './data/remap';
+import { controlKeys } from './data/remap';
 
 export class Tutor {
     config: Config;
@@ -31,22 +31,22 @@ export class Tutor {
     isBackspace(config: Config, e: KeyboardEvent): boolean {
         if (e.key !== 'Backspace') return false;
 
-        this.word.addBackspace(config);
+        this.word.addBackspace(config.backspace);
         e.preventDefault();
         return true;
     }
 
-    isChar(config: Config, kbmap: Remap, e: InputEvent): Action {
+    isChar(config: Config, e: InputEvent): Action {
         if (!e.data) return Action.None;
 
         let act = Action.None;
 
         // allow multiple chars (eg mobile input)
         for (const c of e.data) {
-            const mapped = kbmap.get(c);
+            const mapped = config.remap.get(c);
             if (mapped !== undefined) {
                 this.word.addChar(mapped);
-                act = Action.CharAdded;
+                act = Action.CharAdded | Action.Refresh;
             }
         }
 
@@ -89,7 +89,7 @@ export class Tutor {
 
         let next = this.queue.shift();
         if (next === undefined) {
-            return Action.LessonCompleted;
+            return Action.LessonCompleted | Action.Refresh;
         }
 
         let w = new WordState(next);
@@ -105,14 +105,14 @@ export class Tutor {
         if (e.key === ' ' || e.key === 'Enter') {
             if (this.word.completed()) {
                 e.preventDefault();
-                return Action.NextWord;
+                return Action.NextWord | Action.Refresh;
             }
 
             this.stats.resetWord(this.word);
             this.word.reset(this.word.getWord());
             e.preventDefault();
 
-            return Action.WordReset;
+            return Action.WordReset | Action.Refresh;
         }
 
         if (controlKeys.has(e.key)) {
@@ -126,7 +126,7 @@ export class Tutor {
         if (this.word.atEnd()) {
             if (e.key === ' ') {
                 e.preventDefault();
-                return Action.NextWord;
+                return Action.NextWord | Action.Refresh;
             }
 
             if (!this.config.spaceOptional) {
@@ -134,43 +134,17 @@ export class Tutor {
                 e.preventDefault();
                 return Action.MissedSpace;
             }
-            return Action.NextWord;
+            return Action.NextWord | Action.Refresh;
         }
 
         return Action.None;
     }
 
-    // https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/inputType
-    // https://rawgit.com/w3c/input-events/v1/index.html#interface-InputEvent-Attributes
     handleKeydown(e: KeyboardEvent): Action {
-        if (this.isBackspace(this.config, e)) {
-            return Action.Refresh;
-        }
-
-        switch (this.config.checkMode) {
-            case CheckMode.Char:
-                return this.handleKeydownCharMode(e);
-            case CheckMode.WordRepeat:
-                return this.handleKeydownWordMode(e);
-        }
+        return this.lesson.handleKeydown(e, this.config, this.word, this.stats);
     }
-
+    
     handleBeforeInput(e: InputEvent): Action {
-        if (e.inputType === 'deleteContentBackward' && this.config.backspace === true) {
-            e.preventDefault();
-
-            if (this.word.addBackspace(this.config)) {
-                return Action.Refresh;
-            }
-
-            return Action.None;
-        }
-
-        if (e.inputType !== 'insertText') {
-            e.preventDefault();
-            return Action.None;
-        }
-
-        return this.isChar(this.config, this.config.remap, e);
+        return this.lesson.handleInput(e, this.config, this.word, this.stats);
     }
 }

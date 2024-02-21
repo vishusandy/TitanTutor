@@ -4,7 +4,7 @@
 	import Bool from './lesson_overridable/bool.svelte';
 	import Select from './lesson_overridable/select.svelte';
 
-	import { CheckMode, type Config } from '$lib/types/config';
+	import type { Config } from '$lib/types/config';
 	import type { Lesson } from '$lib/lessons/lesson';
     import { addWrappers } from '$lib/data/lesson_classes';
     import type { LessonTypingConfig } from '$lib/types/lessons';
@@ -13,6 +13,7 @@
 		type FormUserValueReturn,
 		type LessonFormState
 	} from '$lib/types/forms';
+	import { CheckMode } from '$lib/types/types';
 
 	export let config: Config;
 	export let lesson: Lesson;

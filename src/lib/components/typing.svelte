@@ -6,14 +6,14 @@
 	import QueuedWord from './typing/queued_word.svelte';
 
 	import { addMissedSpace, addSpace } from '$lib/util/dom';
-	import { CheckMode, type Config } from '$lib/types/config';
+	import type { Config } from '$lib/types/config';
 	import { LessonStats } from '$lib/stats';
 	import { WordState } from '$lib/word_state';
 	import { Tutor } from '$lib/tutor';
-	import { Action } from '$lib/types/types';
+	import { Action, CheckMode } from '$lib/types/types';
 	import type { Audio } from '$lib/audio';
 	import { Lesson } from '$lib/lessons/lesson';
-    import type { LessonTypingConfig } from '$lib/types/lessons';
+	import type { LessonTypingConfig } from '$lib/types/lessons';
 	import {
 		showConfigDialog,
 		showLessonConfigDialog,
@@ -23,6 +23,8 @@
 	} from '$lib/util/dialog';
 	import Timer from './timer.svelte';
 	import { lessonInSeries, lessonPlans } from '$lib/conf/lesson_plans';
+	// import { adaptive_typeid } from '$lib/conf/lesson_types';
+	// import { AdaptiveList } from '$lib/lessons/base/adaptive_list';
 
 	export let db: IDBDatabase;
 	export let config: Config;
@@ -95,7 +97,7 @@
 		if (textbox === undefined) return;
 		paused = true;
 		if (tutor.word.atEnd() && tutor.word.word === tutor.word.input) {
-			handleAction(Action.NextWord);
+			handleAction(Action.NextWord & Action.Refresh);
 		}
 		lessonStats.pause();
 	}
@@ -131,9 +133,6 @@
 			paused = true;
 			lessonStats.pause();
 			lessonStats = lessonStats;
-			
-            // lesson.lessonEnd();
-
 			if (config.logStats) {
 				await showStatsConfirmDialog(config, db, lessonStats).then((v: boolean | undefined) => {
 					if (v === true) {
@@ -177,35 +176,65 @@
 	}
 
 	function handleAction<T = undefined>(action: Action, ctx: T | undefined = undefined) {
-		switch (action) {
-			case Action.WordReset:
-			case Action.CharAdded:
-			case Action.Refresh:
-				tutor = tutor;
-				break;
-			case Action.LessonCompleted:
-				if (!tutor.word.empty()) addToHistory(tutor.word);
-				tutor.word = new WordState('');
-				tutor = tutor;
-				lessonCompleted();
-				break;
-			case Action.MissedSpace:
-				handleAction(Action.NextWord, true);
-				addMissedSpace(config.lang, historyNode);
-				break;
-			case Action.NextWord:
-				const n = tutor.nextWord();
-				if (!Array.isArray(n)) {
-					if (n !== Action.NextWord) handleAction(n);
-					return;
-				}
-				if (n[0] !== undefined) {
-					addToHistory(n[0]);
-					if (ctx === undefined) addSpace(config.lang, historyNode);
-				}
-				tutor = tutor;
-				break;
+		if (action === 0) return;
+
+		if (action & Action.MissedSpace) {
+			handleAction(Action.NextWord & Action.Refresh, true);
+			addMissedSpace(config.lang, historyNode);
 		}
+
+		if (action & Action.LessonCompleted) {
+			if (!tutor.word.empty()) addToHistory(tutor.word);
+			tutor.word = new WordState('');
+			lessonCompleted();
+		}
+
+		if (action & Action.NextWord) {
+			const n = tutor.nextWord();
+			if (!Array.isArray(n)) {
+				if ((n & Action.NextWord) === 0) handleAction(n);
+				return;
+			}
+			if (n[0] !== undefined) {
+				addToHistory(n[0]);
+				if (ctx === undefined) addSpace(config.lang, historyNode);
+			}
+		}
+
+		if (action & Action.Refresh) {
+			tutor = tutor;
+			return;
+		}
+
+		// switch (action) {
+		// 	case Action.WordReset:
+		// 	case Action.CharAdded:
+		// 	case Action.Refresh:
+		// 		tutor = tutor;
+		// 		break;
+		// 	case Action.LessonCompleted:
+		// 		if (!tutor.word.empty()) addToHistory(tutor.word);
+		// 		tutor.word = new WordState('');
+		// 		tutor = tutor;
+		// 		lessonCompleted();
+		// 		break;
+		// 	case Action.MissedSpace:
+		// 		handleAction(Action.NextWord, true);
+		// 		addMissedSpace(config.lang, historyNode);
+		// 		break;
+		// 	case Action.NextWord:
+		// 		const n = tutor.nextWord();
+		// 		if (!Array.isArray(n)) {
+		// 			if (n !== Action.NextWord) handleAction(n);
+		// 			return;
+		// 		}
+		// 		if (n[0] !== undefined) {
+		// 			addToHistory(n[0]);
+		// 			if (ctx === undefined) addSpace(config.lang, historyNode);
+		// 		}
+		// 		tutor = tutor;
+		// 		break;
+		// }
 	}
 
 	async function scroll() {
@@ -250,16 +279,6 @@
 			Lesson.saveLessonOptions(lesson.baseLesson().id, lessonOptions, db);
 			reset(lessonOptions);
 		}
-		// return showLessonConfigDialog(config, db, lesson, tutor.lessonOptions).then(
-		// 	(data?: [Lesson, Partial<LessonTypingConfig>]) => {
-		// 		if (data !== undefined) {
-		// 			let lessonOptions: Partial<LessonTypingConfig>;
-		// 			[lesson, lessonOptions] = data;
-		// 			Lesson.saveLessonOptions(lesson.baseLesson().id, lessonOptions, db);
-		// 			reset(lessonOptions);
-		// 		}
-		// 	}
-		// );
 	}
 
 	async function showUserConfig(_: Event) {

@@ -23,6 +23,9 @@ export function connect(): Promise<IDBDatabase> {
         req.onupgradeneeded = (e: IDBVersionChangeEvent) => {
             // @ts-ignore
             const db = e.target.result;
+
+            // reset(db);
+
             const conf = db.createObjectStore('user_config', { keyPath: 'user' });
             conf.createIndex('user', 'user', { unique: true });
 
@@ -37,6 +40,19 @@ export function connect(): Promise<IDBDatabase> {
             resolve(db);
         }
     });
+}
+
+function reset(db: IDBDatabase) {
+    const stores = [
+        'user_config',
+        'lesson_options',
+        'user_lessons',
+        'adaptive',
+    ];
+
+    for (const s of stores) {
+        db.deleteObjectStore(s);
+    }
 }
 
 

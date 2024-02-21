@@ -4,6 +4,9 @@ import type { Config } from "$lib/types/config";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { defaultBatch } from "$lib/util/util";
 import { until_typeid } from "$lib/conf/lesson_types";
+import type { WordState } from "$lib/word_state";
+import type { LessonStats } from "$lib/stats";
+import type { Action } from "$lib/types/types";
 
 export type StorableUntil = { type: typeof until_typeid, max: number, lesson: StorableLesson };
 
@@ -90,5 +93,16 @@ export class UntilN implements Lesson {
         }
 
         return lesson;
+    }
+
+    // Process character input
+    handleInput(e: InputEvent, config: Config, word: WordState, stats: LessonStats): Action {
+        return this.lesson.handleInput(e, config, word, stats);
+    }
+
+
+    // Check for backspace/space/end of word
+    handleKeydown(e: KeyboardEvent, config: Config, word: WordState, stats: LessonStats): Action {
+        return this.lesson.handleKeydown(e, config, word, stats);
     }
 }

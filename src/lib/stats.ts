@@ -1,4 +1,4 @@
-import type { CheckMode } from "./types/config";
+import type { CheckMode } from "./types/types";
 import type { WordState } from "./word_state";
 
 // https://www.speedtypingonline.com/typing-equations

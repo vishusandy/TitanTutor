@@ -3,6 +3,12 @@ import type { StorableBaseLesson } from "../../types/lessons";
 import type { Language } from "$lib/data/language";
 import { defaultLessonOptsAvail, type LessonOptsAvailable } from "$lib/types/forms";
 
+import type { WordState } from "$lib/word_state";
+import type { LessonStats } from "$lib/stats";
+import type { Action } from "$lib/types/types";
+import { checkWordEnd, processInput } from "$lib/util/typing";
+import type { Config } from "$lib/types/config";
+
 export type StorableBaseWordList = { name: string, lang: string } & StorableBaseLesson;
 
 export abstract class BaseWordList implements BaseLesson {
@@ -72,5 +78,17 @@ export abstract class BaseWordList implements BaseLesson {
 
     overrides(): LessonOptsAvailable {
         return defaultLessonOptsAvail;
+    }
+
+
+    // Process character input
+    handleInput(e: InputEvent, config: Config, word: WordState, stats: LessonStats): Action {
+        return processInput(e, config, word);
+    }
+
+
+    // Check for backspace/space/end of word
+    handleKeydown(e: KeyboardEvent, config: Config, word: WordState, stats: LessonStats): Action {
+        return checkWordEnd(e, config, word, stats);
     }
 }

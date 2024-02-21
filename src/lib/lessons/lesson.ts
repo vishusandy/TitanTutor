@@ -7,6 +7,9 @@ import type { LessonOptsAvailable } from '$lib/types/forms';
 import { get, lesson_opts_store } from '$lib/db';
 import type { StorableLesson, StorableBaseLesson, LessonTypingConfig } from '../types/lessons';
 import { addWrappers, baseClasses, wrapperClasses } from '$lib/data/lesson_classes';
+import type { WordState } from '$lib/word_state';
+import type { LessonStats } from '$lib/stats';
+import type { Action } from '$lib/types/types';
 
 
 export interface BaseLesson extends Lesson {
@@ -26,6 +29,8 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
     abstract getType(): string;
     abstract baseLesson(): BaseLesson;
     abstract overrides(): LessonOptsAvailable;
+    abstract handleInput(e: InputEvent, config: Config, word: WordState, stats: LessonStats): Action;
+    abstract handleKeydown(e: KeyboardEvent, config: Config, word: WordState, stats: LessonStats): Action;
 
     static async default(config: Config, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
         const lesson = defaultLessonName(config.lang.lang);

@@ -8,7 +8,9 @@ export type FormUserValueReturn<T> = T | undefined;
 
 export type LessonFormState = { [P in keyof LessonTypingConfig]: UserValue<LessonTypingConfig[P]> };
 
-/// enabled | disabled | forced(T)
+/**
+ * Enable/disable a specific option with "enabled" / "disabled"  or force a set value by using the a value of type T
+ */
 export type OptAvailable<T> = 'enabled' | 'disabled' | T;
 
 export type LessonOptsAvailable = { [K in keyof LessonTypingConfig]: OptAvailable<LessonTypingConfig[K]> };

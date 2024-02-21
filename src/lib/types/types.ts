@@ -1,14 +1,24 @@
 import type { ComponentType, SvelteComponent } from 'svelte';
 
+export const enum CheckMode {
+    Char = 0,
+    WordRepeat = 1, // redo current word if wrong
+}
+
+// // ignores or accepts backspace
+// export const enum BackspaceMode {
+//     Accept = 0,
+//     Ignore = 1,
+// }
+
 export const enum Action {
     None = 0,
     Refresh = 1,
-    NextWord = 2,
-    LessonCompleted = 3,
-    MissedSpace = 4, // for char mode when optionalSpace==false
-    WordReset = 5, // for word mode
-    CharAdded = 6,
-
+    WordReset = 2, // for word mode
+    CharAdded = 4,
+    NextWord = 8,
+    LessonCompleted = 16,
+    MissedSpace = 32, // for char mode when optionalSpace==false
 }
 
 export const enum LetterState {

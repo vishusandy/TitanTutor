@@ -3,12 +3,17 @@ import type { StorableBaseLesson } from "../../types/lessons";
 import { defaultBatch, uniqueChars } from "$lib/util/util";
 import type { Language } from "$lib/data/language";
 import type { BaseWordList } from "./wordlist";
-import { CheckMode, Config } from "$lib/types/config";
+import type { Config } from "$lib/types/config";
 import { BinaryTree } from "$lib/util/bst";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonOptsAvailable, type LessonFormState } from "$lib/types/forms";
 import type { UserWordList } from "./user_wordlist";
 import { adaptive_store, get, save } from "$lib/db";
 import { adaptive_typeid, userwordlist_typeid, wordlist_typeid } from "$lib/conf/lesson_types";
+import { CheckMode } from "$lib/types/types";
+import type { WordState } from "$lib/word_state";
+import type { LessonStats } from "$lib/stats";
+import type { Action } from "$lib/types/types";
+import { checkWordEnd, processInput } from "$lib/util/typing";
 
 export type StorableAdaptive = { type: typeof adaptive_typeid, base: StorableBaseLesson };
 
@@ -51,10 +56,32 @@ export class AdaptiveList implements Lesson {
         return a.typos;
     }
 
-    static saveTypos(db: IDBDatabase, lesson_id: string, typos: TypoList) {
-        const data: TypoData = { lesson_id, typos };
+    saveTypos(db: IDBDatabase, lesson_id: string) {
+        const data: TypoData = { lesson_id, typos: this.typos };
         save(db, adaptive_store, data);
     }
+
+    // addTypos(word: WordState) {
+    //     const m = Math.min(word.wordChars.length, word.inputChars.length);
+    //     const mx = Math.max(word.wordChars.length, word.inputChars.length);
+    //     let ic: string, wc: string, r: number | undefined;
+    //     for (let i = 0; i < m; i++) {
+    //         wc = word.wordChars[i];
+    //         ic = word.inputChars[i];
+    //         if (wc !== ic) {
+    //             r = this.typoMap.get(wc);
+    //             if (r === undefined) {
+    //                 this.typoMap.set(wc, 1);
+    //             } else {
+    //                 this.typoMap.set(wc, r + 1);
+    //             }
+    //         }
+    //     }
+    //     for (const c of word.inputChars) {
+
+    //     }
+    // }
+
 
     /**
      * Creates a new binary tree representing the probability of encountering each word.
@@ -178,8 +205,14 @@ export class AdaptiveList implements Lesson {
         return lesson;
     }
 
-    lessonEnd(): void {
-        // this.save();
-        // AdaptiveList.saveTypos(this.typos);
+    // Process character input
+    handleInput(e: InputEvent, config: Config, word: WordState, stats: LessonStats): Action {
+        return processInput(e, config, word);
+    }
+
+
+    // Check for backspace/space/end of word
+    handleKeydown(e: KeyboardEvent, config: Config, word: WordState, stats: LessonStats): Action {
+        return checkWordEnd(e, config, word, stats);
     }
 }

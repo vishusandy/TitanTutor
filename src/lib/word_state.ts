@@ -1,5 +1,4 @@
 import { LetterState } from './types/types';
-import type { Config } from './types/config';
 
 export class CompletedWord {
     word: string[];
@@ -29,7 +28,6 @@ export class WordState {
         this.state = word.split('').map((_) => { return LetterState.Incomplete });
         this.input = '';
         this.wordChars = [...word];
-
     }
 
     getWord(): string {
@@ -62,10 +60,10 @@ export class WordState {
         this.keystrokes += 1;
     }
 
-    addBackspace(config: Config): boolean {
+    addBackspace(acceptBackspace: boolean): boolean {
         this.keystrokes += 1;
 
-        if (config.backspace === true) {
+        if (acceptBackspace === true) {
             if (this.inputChars.length !== 0) {
                 this.backspaces += 1;
                 if (this.state[this.inputChars.length - 1] === LetterState.Error) {
@@ -88,7 +86,6 @@ export class WordState {
         this.inputChars = [...this.input];
         this.state = this.mapState();
 
-        // https://dev.to/coolgoose/quick-and-easy-way-of-counting-utf-8-characters-in-javascript-23ce
         if (this.inputChars.length <= this.wordChars.length) {
             const i = this.inputChars.length - 1;
             if (this.inputChars[i] !== this.wordChars[i]) {

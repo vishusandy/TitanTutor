@@ -7,20 +7,8 @@ import { UserStats, type UserStatsObject } from "../stats";
 import type { LessonTypingConfig } from '$lib/types/lessons'
 import { config_store, get } from "$lib/db";
 import { defaultLessonOptsAvail, type LessonOptsAvailable } from "./forms";
-
-export const storagePrefix = 'vkTutor_'
-export const defaultUserId = 'default';
-
-export const enum CheckMode {
-    Char = 0,
-    WordRepeat = 1, // redo current word if wrong
-}
-
-// ignores or accepts backspace
-export const enum BackspaceMode {
-    Accept = 0,
-    Ignore = 1,
-}
+import { configDefaultValues } from "$lib/conf/config";
+import { defaultUserId } from "$lib/conf/config";
 
 
 type ConfigProps = {
@@ -37,7 +25,9 @@ type ConfigProps = {
     userStats: UserStats;
 } & LessonTypingConfig;
 
+export type BasicConfigProps = Omit<ConfigProps, "tts" | "audioDefaults" | "remap" | "lang" | "remap" | "userStats">;
 type ConfigStorable = Omit<ConfigProps, "tts" | "lang" | "remap" | "audio" | "userStats"> & { tts: string, lang: string, remap: string, audio: string, userStats: UserStatsObject };
+
 
 export interface Config extends ConfigProps { }
 
@@ -58,25 +48,12 @@ export class Config implements ConfigProps {
         const tts = undefined;
 
         return new Config({
-            user: defaultUserId,
-            lastLesson: null,
-            version: 1,
-            checkMode: CheckMode.WordRepeat,
-            backspace: true,
-            wordBatchSize: 50,
-            minQueue: 20,
-            stop: 'F7',
-            pause: 'F4',
-            logStats: true,
+            ...configDefaultValues,
             tts,
             audioDefaults,
             remap,
             lang,
-            userStats,
-            spaceOptional: false,
-            random: true,
-            until: 100,
-            adaptive: false
+            userStats
         });
     }
 

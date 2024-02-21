@@ -5,6 +5,9 @@ import { defaultLessonOptsAvail, mergeOptsAvail, type LessonFormState, type Less
 import { shuffle, defaultBatch } from "$lib/util/util";
 import type { BaseWordList } from "../base/wordlist";
 import { random_typeid, userwordlist_typeid, wordlist_typeid } from "$lib/conf/lesson_types";
+import type { WordState } from "$lib/word_state";
+import type { LessonStats } from "$lib/stats";
+import type { Action } from "$lib/types/types";
 
 export type StorableRandom = { type: typeof random_typeid, base: StorableLesson };
 
@@ -83,5 +86,16 @@ export class RandomList implements Lesson {
             return new RandomList(lesson.baseLesson() as BaseWordList);
         }
         return lesson;
+    }
+    
+    // Process character input
+    handleInput(e: InputEvent, config: Config, word: WordState, stats: LessonStats): Action {
+        return this.base.handleInput(e, config, word, stats);
+    }
+
+
+    // Check for backspace/space/end of word
+    handleKeydown(e: KeyboardEvent, config: Config, word: WordState, stats: LessonStats): Action {
+        return this.base.handleKeydown(e, config, word, stats);
     }
 }
