@@ -13,3 +13,4 @@ scripts/output
 scripts/sources
 __pycache__
 docs/concat_wordlists.txt
+/api

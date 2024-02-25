@@ -2,10 +2,12 @@ import type { Config } from './types/config';
 import type { Lesson } from './lessons/lesson';
 import type { LessonTypingConfig } from './types/lessons';
 import type { LessonStats } from './stats';
-import { Action, CheckMode, LetterState } from './types/types';
+import { Action, LetterState } from './types/types';
 import { WordState, CompletedWord } from './word_state';
-import { controlKeys } from './data/remap';
 
+/**
+ * The `Tutor` class handles the word and audio queue as well as delegaiting keyboard event processing to the lesson.
+ */
 export class Tutor {
     config: Config;
     lesson: Lesson;
@@ -26,36 +28,6 @@ export class Tutor {
         this.audioQueue = 0;
         this.config = config.mergeLessonOptions(lessonOptions).mergeAvailable(lesson.overrides());
         this.nextWord();
-    }
-
-    isBackspace(config: Config, e: KeyboardEvent): boolean {
-        if (e.key !== 'Backspace') return false;
-
-        this.word.addBackspace(config.backspace);
-        e.preventDefault();
-        return true;
-    }
-
-    isChar(config: Config, e: InputEvent): Action {
-        if (!e.data) return Action.None;
-
-        let act = Action.None;
-
-        // allow multiple chars (eg mobile input)
-        for (const c of e.data) {
-            const mapped = config.remap.get(c);
-            if (mapped !== undefined) {
-                this.word.addChar(mapped);
-                act = Action.CharAdded | Action.Refresh;
-            }
-        }
-
-        if (act != Action.None) {
-            this.word.addKeystroke();
-            e.preventDefault();
-        }
-
-        return act;
     }
 
     private checkAudioQueue() {
@@ -101,49 +73,10 @@ export class Tutor {
         return [prev, this.word];
     }
 
-    private handleKeydownWordMode(e: KeyboardEvent) {
-        if (e.key === ' ' || e.key === 'Enter') {
-            if (this.word.completed()) {
-                e.preventDefault();
-                return Action.NextWord | Action.Refresh;
-            }
-
-            this.stats.resetWord(this.word);
-            this.word.reset(this.word.getWord());
-            e.preventDefault();
-
-            return Action.WordReset | Action.Refresh;
-        }
-
-        if (controlKeys.has(e.key)) {
-            e.preventDefault();
-        }
-
-        return Action.None;
-    }
-
-    private handleKeydownCharMode(e: KeyboardEvent): Action {
-        if (this.word.atEnd()) {
-            if (e.key === ' ') {
-                e.preventDefault();
-                return Action.NextWord | Action.Refresh;
-            }
-
-            if (!this.config.spaceOptional) {
-                this.word.uncorrectedErrors += 1;
-                e.preventDefault();
-                return Action.MissedSpace;
-            }
-            return Action.NextWord | Action.Refresh;
-        }
-
-        return Action.None;
-    }
-
     handleKeydown(e: KeyboardEvent): Action {
         return this.lesson.handleKeydown(e, this.config, this.word, this.stats);
     }
-    
+
     handleBeforeInput(e: InputEvent): Action {
         return this.lesson.handleInput(e, this.config, this.word, this.stats);
     }

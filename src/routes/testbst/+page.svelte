@@ -168,9 +168,9 @@
 		['attune', 0.9917355371900827]
 	];
 
-	const bst = new BinaryTree(arr);
+	const bst = BinaryTree.fromRawLeafNodes(arr);
 	console.log('tree created.');
 	console.log(bst);
 	bst.print();
-    console.log(bst.search(0.29));
+	console.log(bst.search(0.29));
 </script>

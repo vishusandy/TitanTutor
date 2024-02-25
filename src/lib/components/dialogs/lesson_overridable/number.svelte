@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Config } from '$lib/types/config';
 	import type { OptAvailable, UserValue } from '$lib/types/forms';
-	import { updateProperties } from '$lib/util/dom';
+	import { updateCheckboxProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 
@@ -50,16 +50,16 @@
 
 	function updateCheckbox() {
 		if (isDisabled) {
-			updateProperties(checkboxInput, false, false, true);
+			updateCheckboxProperties(checkboxInput, false, false, true);
 			return;
 		}
 
 		switch (state) {
 			case 'user':
-				updateProperties(checkboxInput, false, true);
+				updateCheckboxProperties(checkboxInput, false, true);
 				break;
 			default:
-				updateProperties(checkboxInput, true, false);
+				updateCheckboxProperties(checkboxInput, true, false);
 		}
 	}
 

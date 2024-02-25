@@ -55,7 +55,7 @@
 	}
 
 	function langChanged(_: Event) {
-		Language.load(selectedKbMapping).then((l) => (lang = l));
+		Language.load(selectedLang).then((l) => (lang = l));
 	}
 
 	function remapChanged(_: Event) {

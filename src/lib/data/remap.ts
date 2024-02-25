@@ -1,7 +1,10 @@
 import { base } from '$app/paths';
 import type { Config } from '../types/config';
 
-type RemapJSON = { name: string, arr: [string, string][] };
+/**
+ * `keys` is an array passed to `Map()` to map one key to another key.
+ */
+type RemapJSON = { name: string, keys: [string, string][] };
 
 
 export abstract class Remap {
@@ -20,11 +23,11 @@ export abstract class Remap {
                     return NoRemap;
                 return resp.json();
             })
-            .then((json: RemapJSON) => new KbRemap(file, json.name, new Map(json.arr)));
+            .then((json: RemapJSON) => new KbRemap(file, json.name, new Map(json.keys)));
     }
 }
 
-
+/** The keys in this list will be ignored */
 export const controlKeys = new Set([
     'Delete',
     'Enter',

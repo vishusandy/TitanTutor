@@ -1,7 +1,7 @@
 import { base } from '$app/paths';
 import { interfaceLang } from './locales';
 
-type LanguageObject = { [P in keyof Language]: string };
+export type LanguageObject = { [P in keyof Language]: string };
 
 export class Language {
     lang: string = '';

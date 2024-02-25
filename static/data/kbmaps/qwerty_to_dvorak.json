@@ -1,6 +1,6 @@
 {
     "name": "Qwerty to Dvorak",
-    "arr": [
+    "keys": [
         ["_", "{"],
         ["-", "["],
         [",", "w"],

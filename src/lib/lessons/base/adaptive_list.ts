@@ -17,7 +17,7 @@ import { checkWordEnd, processInput } from "$lib/util/typing";
 
 export type StorableAdaptive = { type: typeof adaptive_typeid, base: StorableBaseLesson };
 
-type TypoList = [string, number][];
+export type TypoList = [string, number][];
 
 type TypoData = {
     'lesson_id': string,
@@ -35,7 +35,7 @@ export class AdaptiveList implements Lesson {
     base: BaseWordList;
     pos: number;
     typoMap: Map<string, number>;
-    typos: TypoList;
+    private typos: TypoList;
     wordProbTree: BinaryTree<string, number>;
 
     constructor(base: BaseWordList, typos: TypoList) {
@@ -106,7 +106,7 @@ export class AdaptiveList implements Lesson {
             sum += p;
         });
 
-        return BinaryTree.normalized(arr);
+        return BinaryTree.newProportionedNormalized(arr);
     }
 
     /**

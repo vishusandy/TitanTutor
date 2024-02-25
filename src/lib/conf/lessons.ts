@@ -1,3 +1,9 @@
+/** 
+ * Provides the defaut lessons that are available.
+ * 
+ * @module
+ */
+
 import { StockWordList } from '$lib/lessons/base/stock_wordlist';
 import { RandomChars } from '$lib/lessons/base/chars';
 import type { StorableBaseLesson } from '$lib/types/lessons';

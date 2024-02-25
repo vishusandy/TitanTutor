@@ -57,8 +57,6 @@ export function checkWordEnd(e: KeyboardEvent, config: Config, word: WordState, 
         case CheckMode.WordRepeat:
             return wordEndWordMode(e, word, stats);
     }
-
-    return Action.None;
 }
 
 function wordEndWordMode(e: KeyboardEvent, word: WordState, stats: LessonStats): Action {

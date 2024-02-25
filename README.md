@@ -1,38 +1,43 @@
-# create-svelte
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+# Titan Tutor
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Text-to-speech support to say the words aloud
+- Tracks typing statistics
+- Supports adaptive lessons to increase the frequency of problem characters
+- Multilingual support (currently only in English, help wanted in this area)
+- Supports keyboard mappings to allow typing in a different keyboard layout than the computer is currently set to
+- Currently supports QWERTY, Dvorak, and Colemak lessons and typing layouts for English.
+- Stores everything locally in the browser without need for a backend server
+- Allows setting options for each lesson than override user settings
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
 
-# create a new project in my-app
-npm create svelte@latest my-app
+## Installing
+
+```sh
+git pull https://github.com/vishusandy/TitanTutor.git
+npm install
 ```
 
-## Developing
+## Development
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
+```sh
 npm run dev
-
-# or start the server and open the app in a new browser tab
+# or
 npm run dev -- --open
 ```
 
-## Building
+## Documentation
 
-To create a production version of your app:
+To generate the api docs run:
 
-```bash
-npm run build
+```sh
+npm run docs
 ```
 
-You can preview the production build with `npm run preview`.
+The documentation will be in the `api` folder.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## Technical Overview
+
+See [Overview](README_TECHNICAL.md) for details about the code.

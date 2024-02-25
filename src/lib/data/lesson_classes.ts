@@ -1,3 +1,9 @@
+/**
+ * All available base classes and wrapper classes need to be listed here.
+ * 
+ * @module
+ */
+
 import { StockWordList } from '../lessons/base/stock_wordlist';
 import { RandomList } from '../lessons/wrappers/random';
 import { UntilN } from '../lessons/wrappers/until_n';

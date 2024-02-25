@@ -1,3 +1,10 @@
+/**
+ * WordState tracks the typing progress of the current word along with statistics.
+ * 
+ * @module
+ */
+
+
 import { LetterState } from './types/types';
 
 export class CompletedWord {

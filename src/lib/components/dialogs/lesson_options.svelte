@@ -6,11 +6,11 @@
 
 	import type { Config } from '$lib/types/config';
 	import type { Lesson } from '$lib/lessons/lesson';
-    import { addWrappers } from '$lib/data/lesson_classes';
-    import type { LessonTypingConfig } from '$lib/types/lessons';
+	import { addWrappers } from '$lib/data/lesson_classes';
+	import type { LessonTypingConfig } from '$lib/types/lessons';
 	import {
 		defaultLessonFormState,
-		type FormUserValueReturn,
+		type FormValueReturn,
 		type LessonFormState
 	} from '$lib/types/forms';
 	import { CheckMode } from '$lib/types/types';
@@ -89,8 +89,7 @@
 
 	export async function getData(): Promise<[Lesson, Partial<LessonTypingConfig>]> {
 		// @ts-ignore
-		const newOpts: { [P in keyof LessonTypingConfig]: FormUserValueReturn<LessonTypingConfig[P]> } =
-			{};
+		const newOpts: { [P in keyof LessonTypingConfig]: FormValueReturn<LessonTypingConfig[P]> } = {};
 
 		let k: keyof LessonFormState;
 		for (k in defaultLessonFormState) {

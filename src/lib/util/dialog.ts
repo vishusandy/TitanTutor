@@ -14,29 +14,29 @@ import User from "../components/dialogs/user_config.svelte";
 
 export function showVoiceDialog(config: Config, db: IDBDatabase) {
     const dialogProps = { title: config.lang.ttsDialogTitle, content: Voice, hasSubmit: true, config, db }
-    return createDialog<Audio>(dialogProps);
+    return createDialog(dialogProps);
 }
 
-export function showStatsDialog<T extends BaseStats>(title: string, config: Config, db: IDBDatabase, stats: T) {
+export function showStatsDialog<T extends BaseStats>(title: string, config: Config, db: IDBDatabase, stats: T): Promise<boolean | undefined> {
     const dialogProps: DialogProps = { title, content: Stats, hasSubmit: false, config, db };
     const passProps = { stats };
-    return createDialog<boolean>(dialogProps, passProps);
+    return createDialog(dialogProps, passProps);
 }
-export function showStatsConfirmDialog<T extends BaseStats>(config: Config, db: IDBDatabase, stats: T) {
+export function showStatsConfirmDialog<T extends BaseStats>(config: Config, db: IDBDatabase, stats: T): Promise<boolean | undefined> {
     const dialogProps: DialogProps = { title: config.lang.statsDialogSaveTitle, content: Stats, hasSubmit: true, config, db, cancelLabel: config.lang.no, submitLabel: config.lang.yes };
     const passProps = { stats };
-    return createDialog<boolean>(dialogProps, passProps);
+    return createDialog(dialogProps, passProps);
 }
 
-export function showConfigDialog(config: Config, db: IDBDatabase) {
+export function showConfigDialog(config: Config, db: IDBDatabase): Promise<Config | undefined> {
     const dialogProps: DialogProps = { title: config.lang.configDialogTitile, content: User, hasSubmit: true, config, db };
-    return createDialog<Config>(dialogProps);
+    return createDialog(dialogProps);
 }
 
-export async function showLessonConfigDialog(config: Config, db: IDBDatabase, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>): Promise<Promise<[Lesson, Partial<LessonTypingConfig>] | undefined >> {
+export async function showLessonConfigDialog(config: Config, db: IDBDatabase, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>): Promise<Promise<[Lesson, Partial<LessonTypingConfig>] | undefined>> {
     const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, db, confirmPrompt: config.lang.lessonConfigConfirmSubmit };
     const passProps = { lesson, lessonOptions };
-    return createDialog<Promise<[Lesson, Partial<LessonTypingConfig>]>>(dialogProps, passProps);
+    return createDialog(dialogProps, passProps);
 }
 
 interface DialogProps {
@@ -51,15 +51,14 @@ interface DialogProps {
     confirmPrompt?: string;
 }
 
-// function createDialog<T>(title: string, content: InnerDialogComponent, hasSubmit: boolean, config: Config, passProps?: Object): Promise<T | undefined> {
-function createDialog<T>(dialogProps: DialogProps, passProps?: Object): Promise<T | undefined> {
-    let closeCallback: CloseFn<T> = () => { };
+function createDialog(dialogProps: DialogProps, passProps?: Object): Promise<any | undefined> {
+    let closeCallback: CloseFn<any> = () => { };
 
-    const promise = new Promise((resolve: CloseFn<T>) => {
+    const promise = new Promise((resolve: CloseFn<any>) => {
         closeCallback = resolve;
     });
 
-    const dialogComponent: Dialog<T> = new Dialog({
+    const dialogComponent: Dialog<any> = new Dialog({
         target: document.body,
         props: {
             closeCallback,

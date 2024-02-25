@@ -12,9 +12,9 @@ import type { WordState } from "$lib/word_state";
 import type { LessonStats } from "$lib/stats";
 import type { Action } from "$lib/types/types";
 import { checkWordEnd, processInput } from "$lib/util/typing";
+import { chars_typeid } from "$lib/conf/lesson_types";
 
-const typeid = "chars";
-export type StorableChars = { type: typeof typeid, name: string, lang: string, chars: string[], min: number, max: number, weights: number[] } & StorableBaseLesson;
+export type StorableChars = { type: typeof chars_typeid, name: string, lang: string, chars: string[], min: number, max: number, weights: number[] } & StorableBaseLesson;
 
 export class RandomChars implements BaseLesson {
     chars: string[];
@@ -29,7 +29,7 @@ export class RandomChars implements BaseLesson {
     len: () => number;
 
     static getTypeId(): string {
-        return typeid;
+        return chars_typeid;
     }
 
     constructor(chars: [string, number][], id: string, name: string, lang: string, minChars: number = 5, maxChars: number = 5) {
@@ -51,7 +51,7 @@ export class RandomChars implements BaseLesson {
         this.chars = chars.map((c) => c[0]);
         this.rng = randGen();
         this.weights = chars.map((c) => c[1]);
-        this.bst = BinaryTree.normalized(chars);
+        this.bst = BinaryTree.newProportionedNormalized(chars);
         // @ts-ignore
         this.len = (minChars !== maxChars) ? () => prand.unsafeUniformIntDistribution(this.min, this.max, this.rng) : () => this.min;
     }
@@ -77,7 +77,7 @@ export class RandomChars implements BaseLesson {
 
     storable(): StorableChars {
         return {
-            type: typeid,
+            type: chars_typeid,
             id: this.id,
             name: this.name,
             lang: this.lang,
@@ -96,7 +96,7 @@ export class RandomChars implements BaseLesson {
     static newStorable(id: string, name: string, lang: string, char_weights: [string, number][], min: number = 5, max: number = 5): StorableChars {
         const chars = char_weights.map((cw) => cw[0]);
         const weights = char_weights.map((cw) => cw[1]);
-        return { type: typeid, id, chars, name, lang, min, max, weights }
+        return { type: chars_typeid, id, chars, name, lang, min, max, weights }
     }
 
     getChild(): Lesson | undefined {
@@ -104,7 +104,7 @@ export class RandomChars implements BaseLesson {
     }
 
     getType(): string {
-        return typeid;
+        return chars_typeid;
     }
 
     getName(_: Language): string {

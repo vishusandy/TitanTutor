@@ -1,4 +1,10 @@
+/**
+ * Lesson class IDs
+ * 
+ * @module
+ */
 
+export const chars_typeid = "chars";
 export const wordlist_typeid = 'wordlist';
 export const userwordlist_typeid = "userwordlist";
 export const adaptive_typeid = "adaptive";
