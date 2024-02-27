@@ -18,9 +18,12 @@ jobs:
         with:
             node-version: '18'
       # Generate your TypeDoc documentation
-      - run: npx typedoc
+      - run: npm install
+      - run: npm run docs
       # https://github.com/actions/upload-pages-artifact
-      - uses: actions/upload-pages-artifact@v2
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./api
   deploy:
     runs-on: ubuntu-latest
     environment:
@@ -31,4 +34,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         # https://github.com/actions/deploy-pages
-        uses: actions/deploy-pages@v3
+        uses: actions/deploy-pages@v4
