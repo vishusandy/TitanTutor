@@ -20,6 +20,7 @@ jobs:
             node-version: '20'
       - run: npm install
       - run: npm run docs
+      - run: touch docs/.nojekyll
       - uses: crazy-max/ghaction-github-pages@v4
         if: success() && github.ref == 'refs/heads/main'
         with:
