@@ -16,6 +16,9 @@ jobs:
       - run: npm install
       - run: npx typedoc
       - run: touch docs/.nojekyll && touch .nojekyll
+      - run: pwd
+      - run: ls -lA
+      - run: ls -lA docs
       - uses: crazy-max/ghaction-github-pages@v4
         if: success()
         with:
