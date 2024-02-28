@@ -19,12 +19,12 @@ jobs:
         with:
             node-version: '20'
       - run: npm install
-      - run: npm run docs
+      - run: npx typedoc
       - run: touch docs/.nojekyll && touch .nojekyll
       - uses: crazy-max/ghaction-github-pages@v4
         if: success()
         with:
           target_branch: gh-pages
-          build_dir: api
+          build_dir: docs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
