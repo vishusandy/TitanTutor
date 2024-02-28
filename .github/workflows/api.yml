@@ -5,10 +5,10 @@ on:
   push:
     branches: [main]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+# permissions:
+#   contents: read
+#   pages: write
+#   id-token: write
 
 jobs:
   build:
@@ -17,11 +17,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-            node-version: '18'
-      - run: npm install && npm run docs
+            node-version: '20'
+      - run: npm install
+      - run: npm run docs
       - uses: crazy-max/ghaction-github-pages@v4
+        if: success() && github.ref == 'refs/heads/main'
         with:
           target_branch: gh-pages
-          build_dir: api
+          build_dir: docs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
