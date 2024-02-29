@@ -19,3 +19,5 @@
     - See [Development](markdown/development.md) for details on building and deploying.
 - Code overview
     - See [Code Overview](markdown/code_overview.md) for details about the code.
+- API Documentation
+    - See [https://vishusandy.github.io/TitanTutor/docs/](https://vishusandy.github.io/TitanTutor/docs/) for code documentation.

@@ -1,10 +1,12 @@
 
 
 fix:
-    shift unpauses
+    - shift unpauses
+    - WPM is incorrectly calculated
 
 finish:
-    store typo data for adaptive lessons
+    - call a lesson's `handleKeydown()` and `handleBeforeInput()` methods from typing.svelte instead of tutor.ts
+    - store typo data for adaptive lessons
 
 features:
     - series
