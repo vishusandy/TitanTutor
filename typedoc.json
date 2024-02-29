@@ -2,7 +2,7 @@
     "$schema": "https://typedoc.org/schema.json",
     "name": "TitanTutor",
     "out": "./public/docs",
-    "readme": "README_TECHNICAL.md",
+    "readme": "markdown/code_overview.md",
     "tsconfig": "./tsconfig.json",
     "entryPointStrategy": "expand",
     "entryPoints": [
