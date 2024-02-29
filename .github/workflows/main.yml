@@ -18,7 +18,7 @@ jobs:
         env:
           BASE_PATH: '/${{ github.event.repository.name }}'
       - run: npm run docs
-    #   - run: touch docs/.nojekyll
+      - run: touch public/.nojekyll
       - uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: gh-pages
