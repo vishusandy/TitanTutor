@@ -2,11 +2,12 @@
 import adapter from '@sveltejs/adapter-static'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
-const get_base_path = () => {
-    const dev = process.argv.includes('dev');
-    return dev ? '' : '/TitanTutor';
-    // return '';
+
+function getBasePath() {
+    if (process.argv.includes('dev')) return '';
+    return /** @type { '' | `/${string}` | undefined }`*/ (process.env.BASE_PATH);
 };
+
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -23,13 +24,11 @@ const config = {
             pages: 'public',
             assets: 'public',
             fallback: 'app.html',
-            // fallback: undefined,
             precompress: false,
             strict: true
         }),
-
         paths: {
-            base: get_base_path(),
+            base: getBasePath(),
         }
     }
 };
