@@ -1,7 +1,7 @@
 {
     "$schema": "https://typedoc.org/schema.json",
     "name": "TitanTutor",
-    "out": "./docs",
+    "out": "./public/docs",
     "readme": "README_TECHNICAL.md",
     "tsconfig": "./tsconfig.json",
     "entryPointStrategy": "expand",
