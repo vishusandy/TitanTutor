@@ -89,7 +89,7 @@
 		textbox.focus();
 
 		if (e !== undefined) {
-			handleAction(tutor.handleKeydown(e));
+			handleAction(lesson.handleKeydown(e, tutor.config, tutor.word, lessonStats));
 		}
 	}
 
@@ -185,11 +185,11 @@
 	}
 
 	function handleBeforeInput(e: InputEvent) {
-		handleAction(tutor.handleBeforeInput(e));
+		handleAction(lesson.handleInput(e, tutor.config, tutor.word, lessonStats));
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
-		handleAction(tutor.handleKeydown(e));
+		handleAction(lesson.handleKeydown(e, tutor.config, tutor.word, lessonStats));
 	}
 
 	function handleAction<T = undefined>(action: Action, ctx: T | undefined = undefined) {

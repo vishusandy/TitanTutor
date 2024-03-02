@@ -72,12 +72,4 @@ export class Tutor {
         this.word = w;
         return [prev, this.word];
     }
-
-    handleKeydown(e: KeyboardEvent): Action {
-        return this.lesson.handleKeydown(e, this.config, this.word, this.stats);
-    }
-
-    handleBeforeInput(e: InputEvent): Action {
-        return this.lesson.handleInput(e, this.config, this.word, this.stats);
-    }
 }
