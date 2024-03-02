@@ -31,6 +31,7 @@ export type LessonTypingConfig = LessonWrapperConfig & LessonBasicConfig;
  */
 export interface StorableBaseLesson extends StorableLesson {
     id: string;
+    name: string;
 }
 
 /**

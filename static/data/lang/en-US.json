@@ -1,7 +1,7 @@
 {
     "lang": "en-US",
     "langName": "English",
-    "stopMsg": "Are you sure you want to stop?",
+    "stopMsg": "Are you sure you want to stop the current lesson?",
     "inputNotStarted": "Type any key to start",
     "inputPaused": "Type any key to continue",
     "notStarted": "Not started",
@@ -84,5 +84,7 @@
     "configAcceptBackspace": "Accept backspace",
     "configLogLessonStats": "Log stats",
     "configRemap": "Remapping",
-    "configLanguage": "Language"
+    "configLanguage": "Language",
+    "seriesNextLesson": "Next lesson",
+    "seriesPrevLesson": "Previous Lesson"
 }

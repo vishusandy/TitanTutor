@@ -92,6 +92,8 @@ export class Language {
     configPauseHotkey: string = '';
     configRemap: string = '';
     configLanguage: string = '';
+    seriesNextLesson: string = '';
+    seriesPrevLesson: string = '';
 
     constructor(
         lang: LanguageObject,

@@ -23,8 +23,8 @@
 	} from '$lib/util/dialog';
 	import Timer from './timer.svelte';
 	import { lessonInSeries, lessonPlans } from '$lib/conf/lesson_plans';
-	// import { adaptive_typeid } from '$lib/conf/lesson_types';
-	// import { AdaptiveList } from '$lib/lessons/base/adaptive_list';
+	import Series from './series.svelte';
+	import type { LessonChange } from '$lib/types/events';
 
 	export let db: IDBDatabase;
 	export let config: Config;
@@ -33,10 +33,10 @@
 	export let lessonStats: LessonStats;
 
 	let tutor = new Tutor(config, lesson, lessonOpts, lessonStats);
-	let lessonPlan: string | undefined = lessonInSeries.get(lesson.baseLesson().id);
-	let lessonSeries = lessonPlan !== undefined ? lessonPlans.get(lessonPlan) : undefined;
-	let planIdx =
-		lessonSeries !== undefined ? lessonSeries.lessons.findIndex((v) => v == lessonPlan) : undefined;
+	let seriesId: string | undefined = lessonInSeries.get(lesson.baseLesson().id);
+	let series = seriesId !== undefined ? lessonPlans.get(seriesId) : undefined;
+	let seriesIdx =
+		series !== undefined ? series.lessons.findIndex((v) => v == lesson.baseLesson().id) : 0;
 
 	let started: boolean = false;
 	let paused: boolean = true;
@@ -64,7 +64,7 @@
 		Lesson.saveLast(lesson, config, db);
 	});
 
-	function handleBodyClick(_: Event) {
+	function handleBodyClick(e: Event) {
 		textbox?.focus();
 	}
 
@@ -146,6 +146,23 @@
 		return;
 	}
 
+	async function changeLesson(e: LessonChange) {
+		const id = e.to;
+		console.log(`setting lesson id to ${id}`);
+		lesson = await Lesson.load(id, config, db);
+		Lesson.saveLast(lesson, config, db);
+		tutor = new Tutor(config, lesson, lessonOpts, lessonStats);
+		seriesId = lessonInSeries.get(lesson.baseLesson().id);
+		series = seriesId !== undefined ? lessonPlans.get(seriesId) : undefined;
+		seriesIdx =
+			series !== undefined ? series.lessons.findIndex((v) => v == lesson.baseLesson().id) : 0;
+
+		started = false;
+		paused = true;
+		finished = false;
+		lessonStats = new LessonStats(id, tutor.config.checkMode);
+	}
+
 	async function shortcuts(e: KeyboardEvent) {
 		if (e.key === tutor.config.pause || e.key === 'Escape') {
 			if (paused) {
@@ -205,36 +222,6 @@
 			tutor = tutor;
 			return;
 		}
-
-		// switch (action) {
-		// 	case Action.WordReset:
-		// 	case Action.CharAdded:
-		// 	case Action.Refresh:
-		// 		tutor = tutor;
-		// 		break;
-		// 	case Action.LessonCompleted:
-		// 		if (!tutor.word.empty()) addToHistory(tutor.word);
-		// 		tutor.word = new WordState('');
-		// 		tutor = tutor;
-		// 		lessonCompleted();
-		// 		break;
-		// 	case Action.MissedSpace:
-		// 		handleAction(Action.NextWord, true);
-		// 		addMissedSpace(config.lang, historyNode);
-		// 		break;
-		// 	case Action.NextWord:
-		// 		const n = tutor.nextWord();
-		// 		if (!Array.isArray(n)) {
-		// 			if (n !== Action.NextWord) handleAction(n);
-		// 			return;
-		// 		}
-		// 		if (n[0] !== undefined) {
-		// 			addToHistory(n[0]);
-		// 			if (ctx === undefined) addSpace(config.lang, historyNode);
-		// 		}
-		// 		tutor = tutor;
-		// 		break;
-		// }
 	}
 
 	async function scroll() {
@@ -330,30 +317,43 @@
 					{/if}
 				</div>
 				<div class="tutor-menu">
-					{#if tutor.config.until !== null}
-						<div class="word-progress">{tutor.history.length}/{tutor.config.until}</div>
-					{/if}
-					<button
-						type="button"
-						class="link icon"
-						on:click={showSessionStatsDialog}
-						title={config.lang.openSessionStatsDialog}
-						><img src="{base}/imgs/stats.svg" alt={config.lang.openSessionStatsDialog} /></button
-					>
-					<button
-						class="link icon"
-						on:click={showLessonOptions}
-						title={config.lang.openLessonConfigDialog}
-						><img src="{base}/imgs/gear.svg" alt={config.lang.openLessonConfigDialog} /></button
-					>
+					<div class="tutor-menu-left">
+						{#if series !== undefined}
+							<Series
+								on:lessonChanged={(e) => changeLesson(e.detail)}
+								{series}
+								seriesIndex={seriesIdx}
+								stopMsg={config.lang.stopMsg}
+								done={finished || !started}
+							/>
+						{/if}
+					</div>
+					<div class="tutor-menu-right">
+						{#if tutor.config.until !== null}
+							<div class="word-progress">{tutor.history.length}/{tutor.config.until}</div>
+						{/if}
+						<button
+							type="button"
+							class="link icon"
+							on:click={showSessionStatsDialog}
+							title={config.lang.openSessionStatsDialog}
+							><img src="{base}/imgs/stats.svg" alt={config.lang.openSessionStatsDialog} /></button
+						>
+						<button
+							class="link icon"
+							on:click={showLessonOptions}
+							title={config.lang.openLessonConfigDialog}
+							><img src="{base}/imgs/gear.svg" alt={config.lang.openLessonConfigDialog} /></button
+						>
 
-					<button
-						class="link icon stop-button"
-						disabled={!started}
-						on:click={confirmEndLesson}
-						title={config.lang.stop}
-						><img src="{base}/imgs/stop.svg" alt={config.lang.stop} /></button
-					>
+						<button
+							class="link icon stop-button"
+							disabled={!started}
+							on:click={confirmEndLesson}
+							title={config.lang.stop}
+							><img src="{base}/imgs/stop.svg" alt={config.lang.stop} /></button
+						>
+					</div>
 				</div>
 			</div>
 		</nav>
@@ -513,6 +513,11 @@
 	}
 
 	.tutor-menu {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.tutor-menu-right {
 		font-size: 1.2rem;
 		display: flex;
 		text-align: center;
