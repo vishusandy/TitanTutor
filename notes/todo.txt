@@ -1,16 +1,17 @@
 
 
 fix:
-    - shift unpauses
+    - add a loading icon for Audio dialog until 'voiceschanged' event is fired
+        - add a timeout as well as browser detect for chromium for instruction message
+    - shift and other keys (e.g. arrow keys) unpauses
     - WPM is incorrectly calculated
 
 finish:
-    - call a lesson's `handleKeydown()` and `handleBeforeInput()` methods from typing.svelte instead of tutor.ts
     - store typo data for adaptive lessons
+    - show custom word lists in lesson selection
+        - show under "User Lessons" group (with transation for "User Lessons")
 
 features:
-    - series
-    - lesson/series selection
     - add length property to measure word progress
     - custom word lists
     - multilingual example text
