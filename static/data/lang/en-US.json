@@ -86,5 +86,6 @@
     "configRemap": "Remapping",
     "configLanguage": "Language",
     "seriesNextLesson": "Next lesson",
-    "seriesPrevLesson": "Previous Lesson"
+    "seriesPrevLesson": "Previous lesson",
+    "seriesSelectLesson": "Select lesson"
 }

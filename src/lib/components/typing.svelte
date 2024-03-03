@@ -4,6 +4,11 @@
 
 	import Word from './typing/word.svelte';
 	import QueuedWord from './typing/queued_word.svelte';
+	import Timer from './timer.svelte';
+	import Series from './series.svelte';
+	import Stop from './imgs/stop.svelte';
+	import Stats from './imgs/stats.svelte';
+	import Cog from './imgs/cog.svelte';
 
 	import { addMissedSpace, addSpace } from '$lib/util/dom';
 	import type { Config } from '$lib/types/config';
@@ -21,9 +26,7 @@
 		showStatsDialog,
 		showVoiceDialog
 	} from '$lib/util/dialog';
-	import Timer from './timer.svelte';
 	import { lessonInSeries, lessonPlans } from '$lib/conf/lesson_plans';
-	import Series from './series.svelte';
 	import type { LessonChange } from '$lib/types/events';
 
 	export let db: IDBDatabase;
@@ -325,34 +328,40 @@
 								seriesIndex={seriesIdx}
 								stopMsg={config.lang.stopMsg}
 								done={finished || !started}
+								prevText={config.lang.seriesPrevLesson}
+								nextText={config.lang.seriesNextLesson}
+								lessonSelectText={config.lang.seriesSelectLesson}
 							/>
 						{/if}
 					</div>
 					<div class="tutor-menu-right">
 						{#if tutor.config.until !== null}
 							<div class="word-progress">{tutor.history.length}/{tutor.config.until}</div>
+						{:else}
+							<div class="word-progress">{tutor.history.length}/∞</div>
 						{/if}
 						<button
 							type="button"
-							class="link icon"
+							class="fade-icon stats-button"
 							on:click={showSessionStatsDialog}
-							title={config.lang.openSessionStatsDialog}
-							><img src="{base}/imgs/stats.svg" alt={config.lang.openSessionStatsDialog} /></button
+							title={config.lang.openSessionStatsDialog}><Stats /></button
 						>
 						<button
-							class="link icon"
+							type="button"
+							class="fade-icon cog-button"
 							on:click={showLessonOptions}
-							title={config.lang.openLessonConfigDialog}
-							><img src="{base}/imgs/gear.svg" alt={config.lang.openLessonConfigDialog} /></button
+							title={config.lang.openLessonConfigDialog}><Cog /></button
 						>
 
 						<button
-							class="link icon stop-button"
+							type="button"
+							class="fade-icon stop-button"
 							disabled={!started}
 							on:click={confirmEndLesson}
 							title={config.lang.stop}
-							><img src="{base}/imgs/stop.svg" alt={config.lang.stop} /></button
 						>
+							<Stop />
+						</button>
 					</div>
 				</div>
 			</div>
@@ -474,6 +483,7 @@
 	.tutor-words.paused {
 		--drop-shadow-color: rgba(36, 58, 92, 0.1);
 		--border-color: rgba(36, 58, 92, 0.4);
+		background-color: #f4f4f4;
 	}
 
 	.tutor-bottom {
@@ -520,8 +530,8 @@
 	.tutor-menu-right {
 		font-size: 1.2rem;
 		display: flex;
-		text-align: center;
-		justify-content: right;
+		/* text-align: center; */
+		/* justify-content: right; */
 	}
 
 	.stop-button:not(.hidden) {
@@ -532,5 +542,25 @@
 		0% {
 			opacity: 0;
 		}
+	}
+
+	button.fade-icon {
+		width: 2.5rem;
+		height: 2.5rem;
+	}
+
+	:global(.stop-button svg) {
+		fill: #f34747;
+	}
+
+	:global(.cog-button svg) {
+		fill: #9c9191;
+	}
+
+	:global(.stats-button svg) {
+		--bar-color0: rgb(255, 166, 0);
+		--bar-color1: rgb(52, 153, 61);
+		--bar-color2: rgb(12, 207, 214);
+		--bar-color3: rgb(230, 49, 124);
 	}
 </style>

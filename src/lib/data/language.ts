@@ -94,6 +94,7 @@ export class Language {
     configLanguage: string = '';
     seriesNextLesson: string = '';
     seriesPrevLesson: string = '';
+    seriesSelectLesson: string = '';
 
     constructor(
         lang: LanguageObject,

@@ -80,45 +80,44 @@ button.link:disabled {
 }
 
 
-.icon {
-    display: flex;
-    padding: 0px !important;
-    margin: 0.1em !important;
-}
-
-.icon img {
-    filter: grayscale(100%);
-    width: 1.7em;
-    height: 1.7em;
+button.fade-icon {
+    margin: 0px;
+    padding: 0.2rem;
+    background: transparent;
+    box-shadow: 0 0 !important;
     box-sizing: border-box;
-    margin: auto;
-    // object-fit: contain;
 }
 
-.icon:focus-within:not(:disabled) {
-    // border: 1px solid #63719e;
-    background-color: #8b949c;
-    // box-shadow: 0px 0px 4px #425594 !important;
-    // transition: background-color 0.2s ease-in;
-}
-
-.icon:hover:not(:disabled) {
-    box-shadow: 0px 0px 4px #425594 !important;
-}
-
-.icon:disabled img {
+button.fade-icon svg {
     filter: grayscale(100%);
+    stroke-linecap: round;
+    stroke-linejoin: miter;
+    stroke-miterlimit: 0;
 }
 
-.icon:not(:disabled) img:hover {
+button.fade-icon:disabled svg {
+    stroke-width: 0px;
+    fill: #afb2c2;
+}
+
+button.fade-icon:not(:disabled) svg {
+    stroke-width: 10px;
+    stroke: #000;
+}
+
+button.fade-icon:not(:disabled):hover svg {
+    stroke-width: 20px;
+    stroke: #000;
     filter: grayscale(0%);
-    animation: greyscale 0.2s ease-in;
-    filter: drop-shadow(0px 0px 2px #7c7c7c);
+    // animation: greyscale 0.2s ease-in;
 }
 
-.icon:not(:disabled):focus img {
-    filter: drop-shadow(0px 0px 2px #7c7c7c);
+button.fade-icon:not(:disabled):focus-within svg {
+    stroke-width: 15px;
+    stroke: #000000;
+    filter: drop-shadow(0px 0px 1.5px #000000ff);
 }
+
 
 @keyframes greyscale {
     0% {

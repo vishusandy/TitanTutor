@@ -9,6 +9,10 @@
 	export let seriesIndex: number;
 	export let done: boolean;
 	export let stopMsg: string;
+	export let prevText: string;
+	export let nextText: string;
+	export let lessonSelectText: string;
+
 	let id = series.lessons[seriesIndex];
 	let prev = series.prev(id);
 	let next = series.next(id);
@@ -54,10 +58,17 @@
 </script>
 
 <div>
-	<button on:click={onPrev} class="prev" class:done type="button" disabled={prev === null}>
+	<button
+		on:click={onPrev}
+		class="prev fade-icon"
+		class:done
+		type="button"
+		disabled={prev === null}
+		title={prevText}
+	>
 		<Triangle />
 	</button>
-	<select on:change={onLessonSelect} on:click={(e) => e.stopPropagation()}>
+	<select on:change={onLessonSelect} on:click={(e) => e.stopPropagation()} title={lessonSelectText}>
 		{#each lessonPlans.values() as s}
 			<optgroup label={s.name}>
 				{#each s.lessons as l}
@@ -66,7 +77,14 @@
 			</optgroup>
 		{/each}
 	</select>
-	<button on:click={onNext} class="next" class:done type="button" disabled={next === null}>
+	<button
+		on:click={onNext}
+		class="next fade-icon"
+		class:done
+		type="button"
+		disabled={next === null}
+		title={nextText}
+	>
 		<Triangle />
 	</button>
 </div>
@@ -81,12 +99,6 @@
 	button {
 		width: 2.4rem;
 		height: 2.4rem;
-		justify-content: center;
-		margin: 0px;
-		padding: 0.2rem;
-		background: transparent;
-		box-shadow: 0 0 !important;
-		box-sizing: border-box;
 	}
 
 	div :global(.prev svg) {
@@ -98,34 +110,5 @@
 
 	div :global(button svg) {
 		fill: rgb(136, 216, 47);
-		filter: grayscale(100%);
-	}
-
-	div :global(button:disabled svg) {
-		stroke-width: 0px;
-		fill: #afb2c2;
-	}
-
-	div :global(button:not(:disabled) svg) {
-		stroke-width: 10px;
-		stroke: #000;
-	}
-
-	div :global(button.done:not(:disabled) svg) {
-		filter: grayscale(0%);
-	}
-	div :global(button:not(:disabled) svg:hover) {
-		stroke-width: 20px;
-		stroke: #000;
-		/* box-shadow: 0 0 !important; */
-		filter: grayscale(0%);
-		/* filter: drop-shadow(0px 0px 2px #000); */
-	}
-	div :global(button:not(:disabled):focus-within svg) {
-		stroke-width: 25px;
-		stroke: #000;
-		filter: drop-shadow(2px -2px 2px #0000008f);
-		/* filter: grayscale(0%); */
-		/* fill: rgb(87, 136, 30); */
 	}
 </style>

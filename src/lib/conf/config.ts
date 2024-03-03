@@ -7,7 +7,7 @@ export const configDefaultValues: BasicConfigProps = {
     user: defaultUserId,
     lastLesson: null,
     version: 1,
-    checkMode: CheckMode.WordRepeat,
+    checkMode: CheckMode.Char,
     backspace: true,
     wordBatchSize: 50,
     minQueue: 20,
