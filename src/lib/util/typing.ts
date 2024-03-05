@@ -51,6 +51,7 @@ export function checkWordEnd(e: KeyboardEvent, config: Config, word: WordState, 
         return Action.Refresh;
     }
 
+
     switch (config.checkMode) {
         case CheckMode.Char:
             return wordEndCharMode(e, config, word);
@@ -60,6 +61,8 @@ export function checkWordEnd(e: KeyboardEvent, config: Config, word: WordState, 
 }
 
 function wordEndWordMode(e: KeyboardEvent, word: WordState, stats: LessonStats): Action {
+    console.log(`word mode end`);
+
     if (e.key === ' ' || e.key === 'Enter') {
         if (word.completed()) {
             e.preventDefault();
@@ -90,8 +93,9 @@ function wordEndCharMode(e: KeyboardEvent, config: Config, word: WordState): Act
         if (!config.spaceOptional) {
             word.uncorrectedErrors += 1;
             e.preventDefault();
-            return Action.MissedSpace;
+            return Action.MissedSpace | Action.NextWord | Action.Refresh;
         }
+        
         return Action.NextWord | Action.Refresh;
     }
 

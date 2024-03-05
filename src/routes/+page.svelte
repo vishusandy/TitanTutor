@@ -20,4 +20,4 @@
 	<title>Keyboard Tutor</title>
 </svelte:head>
 
-<Typing {config} {lesson} lessonStats={sessionStats} {db} {lessonOpts} />
+<Typing originalConfig={config} {lesson} lessonStats={sessionStats} {db} {lessonOpts} />

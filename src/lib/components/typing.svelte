@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import { base } from '$app/paths';
 
 	import Word from './typing/word.svelte';
 	import QueuedWord from './typing/queued_word.svelte';
@@ -14,7 +13,7 @@
 	import type { Config } from '$lib/types/config';
 	import { LessonStats } from '$lib/stats';
 	import { WordState } from '$lib/word_state';
-	import { Tutor } from '$lib/tutor';
+	import { Queue } from '$lib/queue';
 	import { Action, CheckMode } from '$lib/types/types';
 	import type { Audio } from '$lib/audio';
 	import { Lesson } from '$lib/lessons/lesson';
@@ -30,12 +29,13 @@
 	import type { LessonChange } from '$lib/types/events';
 
 	export let db: IDBDatabase;
-	export let config: Config;
+	export let originalConfig: Config;
 	export let lesson: Lesson;
 	export let lessonOpts: Partial<LessonTypingConfig>;
 	export let lessonStats: LessonStats;
 
-	let tutor = new Tutor(config, lesson, lessonOpts, lessonStats);
+	let config = originalConfig.mergeLessonOptions(lessonOpts).mergeAvailable(lesson.overrides());
+	let tutor = new Queue(config, lesson, lessonOpts, lessonStats);
 	let seriesId: string | undefined = lessonInSeries.get(lesson.baseLesson().id);
 	let series = seriesId !== undefined ? lessonPlans.get(seriesId) : undefined;
 	let seriesIdx =
@@ -64,7 +64,8 @@
 			textbox.focus();
 		}
 
-		Lesson.saveLast(lesson, config, db);
+		console.log(`Check mode:`, config.checkMode);
+		Lesson.saveLast(lesson, originalConfig, db);
 	});
 
 	function handleBodyClick(e: Event) {
@@ -74,7 +75,7 @@
 	async function startInput(e: Event) {
 		if ('key' in e) {
 			if (e.key === 'Tab') return;
-			if (e.key === tutor.config.pause) {
+			if (e.key === config.pause) {
 				e.preventDefault();
 				return;
 			}
@@ -92,7 +93,7 @@
 		textbox.focus();
 
 		if (e !== undefined) {
-			handleAction(lesson.handleKeydown(e, tutor.config, tutor.word, lessonStats));
+			handleAction(lesson.handleKeydown(e, config, tutor.word, lessonStats));
 		}
 	}
 
@@ -110,7 +111,7 @@
 	}
 
 	function confirmEndLesson() {
-		if (window.confirm(tutor.config.lang.stopMsg)) {
+		if (window.confirm(config.lang.stopMsg)) {
 			endLesson();
 		}
 	}
@@ -120,12 +121,12 @@
 		// if (lessonOpts === undefined) lessonOpts = await Lesson.getLessonOptions(id, db);
 		if (lessonOpts === undefined) lessonOpts = {};
 
-		lesson = await Lesson.load(id, config, db);
-		tutor = new Tutor(config, lesson, lessonOpts, lessonStats);
+		lesson = await Lesson.load(id, originalConfig, db);
+		tutor = new Queue(originalConfig, lesson, lessonOpts, lessonStats);
 		started = false;
 		paused = true;
 		finished = false;
-		lessonStats = new LessonStats(id, tutor.config.checkMode);
+		lessonStats = new LessonStats(id, config.checkMode);
 
 		let child;
 		while ((child = historyNode.firstChild)) historyNode.removeChild(child);
@@ -136,13 +137,15 @@
 			paused = true;
 			lessonStats.pause();
 			lessonStats = lessonStats;
-			if (config.logStats) {
-				await showStatsConfirmDialog(config, db, lessonStats).then((v: boolean | undefined) => {
-					if (v === true) {
-						config.userStats.add(lessonStats);
-						config.saveUserConfig(db);
+			if (originalConfig.logStats) {
+				await showStatsConfirmDialog(originalConfig, db, lessonStats).then(
+					(v: boolean | undefined) => {
+						if (v === true) {
+							originalConfig.userStats.add(lessonStats);
+							originalConfig.saveUserConfig(db);
+						}
 					}
-				});
+				);
 			}
 		}
 		finished = true;
@@ -152,9 +155,9 @@
 	async function changeLesson(e: LessonChange) {
 		const id = e.to;
 		console.log(`setting lesson id to ${id}`);
-		lesson = await Lesson.load(id, config, db);
-		Lesson.saveLast(lesson, config, db);
-		tutor = new Tutor(config, lesson, lessonOpts, lessonStats);
+		lesson = await Lesson.load(id, originalConfig, db);
+		Lesson.saveLast(lesson, originalConfig, db);
+		tutor = new Queue(originalConfig, lesson, lessonOpts, lessonStats);
 		seriesId = lessonInSeries.get(lesson.baseLesson().id);
 		series = seriesId !== undefined ? lessonPlans.get(seriesId) : undefined;
 		seriesIdx =
@@ -163,11 +166,11 @@
 		started = false;
 		paused = true;
 		finished = false;
-		lessonStats = new LessonStats(id, tutor.config.checkMode);
+		lessonStats = new LessonStats(id, config.checkMode);
 	}
 
 	async function shortcuts(e: KeyboardEvent) {
-		if (e.key === tutor.config.pause || e.key === 'Escape') {
+		if (e.key === config.pause || e.key === 'Escape') {
 			if (paused) {
 				unpause();
 				textbox?.focus();
@@ -176,7 +179,7 @@
 			}
 			if (!started) started = true;
 			e.preventDefault();
-		} else if (e.key === tutor.config.stop && started) {
+		} else if (e.key === config.stop && started) {
 			e.preventDefault();
 			pause(e);
 			confirmEndLesson();
@@ -188,11 +191,11 @@
 	}
 
 	function handleBeforeInput(e: InputEvent) {
-		handleAction(lesson.handleInput(e, tutor.config, tutor.word, lessonStats));
+		handleAction(lesson.handleInput(e, config, tutor.word, lessonStats));
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
-		handleAction(lesson.handleKeydown(e, tutor.config, tutor.word, lessonStats));
+		handleAction(lesson.handleKeydown(e, config, tutor.word, lessonStats));
 	}
 
 	function handleAction<T = undefined>(action: Action, ctx: T | undefined = undefined) {
@@ -200,7 +203,7 @@
 
 		if (action & Action.MissedSpace) {
 			handleAction(Action.NextWord & Action.Refresh, true);
-			addMissedSpace(config.lang, historyNode);
+			addMissedSpace(originalConfig.lang, historyNode);
 		}
 
 		if (action & Action.LessonCompleted) {
@@ -217,7 +220,7 @@
 			}
 			if (n[0] !== undefined) {
 				addToHistory(n[0]);
-				if (ctx === undefined) addSpace(config.lang, historyNode);
+				if (ctx === undefined) addSpace(originalConfig.lang, historyNode);
 			}
 		}
 
@@ -245,24 +248,29 @@
 	}
 
 	async function showSessionStatsDialog() {
-		showStatsDialog(config.lang.statsDialogSessionTitle, config, db, lessonStats);
+		showStatsDialog(originalConfig.lang.statsDialogSessionTitle, originalConfig, db, lessonStats);
 	}
 
 	async function showUserStatsDialog() {
-		showStatsDialog(config.lang.statsDialogUserTitle, config, db, config.userStats);
+		showStatsDialog(
+			originalConfig.lang.statsDialogUserTitle,
+			originalConfig,
+			db,
+			originalConfig.userStats
+		);
 	}
 
 	async function showAudioDialog(_: Event) {
-		showVoiceDialog(config, db).then((audio?: Audio) => {
+		showVoiceDialog(originalConfig, db).then((audio?: Audio) => {
 			if (audio !== undefined) {
-				config.tts = audio;
-				config.saveUserConfig(db);
+				originalConfig.tts = audio;
+				originalConfig.saveUserConfig(db);
 			}
 		});
 	}
 
 	async function showLessonOptions(): Promise<void> {
-		const data = await showLessonConfigDialog(config, db, lesson, tutor.lessonOptions);
+		const data = await showLessonConfigDialog(originalConfig, db, lesson, lessonOpts);
 		if (data !== undefined) {
 			let lessonOptions: Partial<LessonTypingConfig>;
 			[lesson, lessonOptions] = data;
@@ -272,11 +280,11 @@
 	}
 
 	async function showUserConfig(_: Event) {
-		showConfigDialog(config, db).then((conf?: Config) => {
+		showConfigDialog(originalConfig, db).then((conf?: Config) => {
 			if (conf !== undefined) {
-				config = conf;
+				originalConfig = conf;
 				reset();
-				config.saveUserConfig(db);
+				originalConfig.saveUserConfig(db);
 				reset();
 			}
 		});
@@ -289,17 +297,17 @@
 		<ul>
 			<li>
 				<button class="link" type="button" on:click={showUserConfig}
-					>{config.lang.openConfigDialog}</button
+					>{originalConfig.lang.openConfigDialog}</button
 				>
 			</li>
 			<li>
 				<button class="link" type="button" on:click={showAudioDialog}
-					>{config.lang.openTtsDialog}</button
+					>{originalConfig.lang.openTtsDialog}</button
 				>
 			</li>
 			<li>
 				<button class="link" type="button" on:click={showUserStatsDialog}
-					>{config.lang.openUserStatsDialog}</button
+					>{originalConfig.lang.openUserStatsDialog}</button
 				>
 			</li>
 		</ul>
@@ -307,29 +315,33 @@
 
 	<section class:paused>
 		<h1 class="tutor-title">
-			{lesson.baseLesson().getName(config.lang)}
+			{lesson.baseLesson().getName(originalConfig.lang)}
 		</h1>
 
 		<div class="counter" class:active={!paused}>
 			{#if !started}
-				{config.lang.notStarted}
+				{originalConfig.lang.notStarted}
 			{:else}
-				<Timer stats={lessonStats} lang={config.lang} />
+				<Timer stats={lessonStats} lang={originalConfig.lang} />
 			{/if}
 		</div>
 
 		<div class="tutor-buttons">
 			<div class="tutor-buttons-left" />
 			<div class="tutor-buttons-right">
-				{#if tutor.config.until !== null}
-					<div class="word-progress">{tutor.history.length} / {tutor.config.until}</div>
+				{#if config.until !== null}
+					<div class="word-progress">{tutor.history.length} / {config.until}</div>
 				{:else}
 					<div class="word-progress">{tutor.history.length} / ∞</div>
 				{/if}
 			</div>
 		</div>
 
-		<div class="tutor-words" class:paused class:char-mode={config.checkMode === CheckMode.Char}>
+		<div
+			class="tutor-words"
+			class:paused
+			class:char-mode={originalConfig.checkMode === CheckMode.Char}
+		>
 			<span bind:this={historyNode} class="history" /><Word
 				bind:span={activeWord}
 				word={tutor.word.wordChars}
@@ -350,11 +362,11 @@
 							on:lessonChanged={(e) => changeLesson(e.detail)}
 							{series}
 							seriesIndex={seriesIdx}
-							stopMsg={config.lang.stopMsg}
+							stopMsg={originalConfig.lang.stopMsg}
 							done={finished || !started}
-							prevText={config.lang.seriesPrevLesson}
-							nextText={config.lang.seriesNextLesson}
-							lessonSelectText={config.lang.seriesSelectLesson}
+							prevText={originalConfig.lang.seriesPrevLesson}
+							nextText={originalConfig.lang.seriesNextLesson}
+							lessonSelectText={originalConfig.lang.seriesSelectLesson}
 						/>
 					{/if}
 				</div>
@@ -363,13 +375,13 @@
 						type="button"
 						class="fade-icon stats-button"
 						on:click={showSessionStatsDialog}
-						title={config.lang.openSessionStatsDialog}><Stats /></button
+						title={originalConfig.lang.openSessionStatsDialog}><Stats /></button
 					>
 					<button
 						type="button"
 						class="fade-icon cog-button"
 						on:click={showLessonOptions}
-						title={config.lang.openLessonConfigDialog}><Cog /></button
+						title={originalConfig.lang.openLessonConfigDialog}><Cog /></button
 					>
 
 					<button
@@ -377,7 +389,7 @@
 						class="fade-icon stop-button"
 						disabled={!started}
 						on:click={confirmEndLesson}
-						title={config.lang.stop}
+						title={originalConfig.lang.stop}
 					>
 						<Stop />
 					</button>
@@ -391,14 +403,14 @@
 					<input
 						class="tutor-input"
 						bind:this={textbox}
-						placeholder={config.lang.inputNotStarted}
+						placeholder={originalConfig.lang.inputNotStarted}
 						on:keydown={startInput}
 					/>
 				{:else if paused && started}
 					<input
 						class="tutor-input"
 						bind:this={textbox}
-						placeholder={config.lang.inputPaused}
+						placeholder={originalConfig.lang.inputPaused}
 						on:keydown={unpause}
 					/>
 				{:else}
@@ -417,7 +429,7 @@
 			</div>
 		{:else}
 			<div class="finished">
-				<button type="button" on:click={() => reset()}>{config.lang.restartLesson}</button>
+				<button type="button" on:click={() => reset()}>{originalConfig.lang.restartLesson}</button>
 			</div>
 		{/if}
 	</section>

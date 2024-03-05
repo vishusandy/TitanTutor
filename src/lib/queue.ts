@@ -6,9 +6,9 @@ import { Action, LetterState } from './types/types';
 import { WordState, CompletedWord } from './word_state';
 
 /**
- * The `Tutor` class handles the word and audio queue as well as delegaiting keyboard event processing to the lesson.
+ * The `Queue` class handles the word and audio queue as well as delegaiting keyboard event processing to the lesson.
  */
-export class Tutor {
+export class Queue {
     config: Config;
     lesson: Lesson;
     stats: LessonStats;
@@ -26,7 +26,7 @@ export class Tutor {
         this.queue = [];
         this.history = [];
         this.audioQueue = 0;
-        this.config = config.mergeLessonOptions(lessonOptions).mergeAvailable(lesson.overrides());
+        this.config = config;
         this.nextWord();
     }
 
