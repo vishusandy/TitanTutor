@@ -310,62 +310,24 @@
 			{lesson.baseLesson().getName(config.lang)}
 		</h1>
 
-		<nav class="lesson-buttons">
-			<div class="tutor-above">
-				<div class="counter" class:active={!paused}>
-					{#if !started}
-						{config.lang.notStarted}
-					{:else}
-						<Timer stats={lessonStats} lang={config.lang} />
-					{/if}
-				</div>
-				<div class="tutor-menu">
-					<div class="tutor-menu-left">
-						{#if series !== undefined}
-							<Series
-								on:lessonChanged={(e) => changeLesson(e.detail)}
-								{series}
-								seriesIndex={seriesIdx}
-								stopMsg={config.lang.stopMsg}
-								done={finished || !started}
-								prevText={config.lang.seriesPrevLesson}
-								nextText={config.lang.seriesNextLesson}
-								lessonSelectText={config.lang.seriesSelectLesson}
-							/>
-						{/if}
-					</div>
-					<div class="tutor-menu-right">
-						{#if tutor.config.until !== null}
-							<div class="word-progress">{tutor.history.length}/{tutor.config.until}</div>
-						{:else}
-							<div class="word-progress">{tutor.history.length}/∞</div>
-						{/if}
-						<button
-							type="button"
-							class="fade-icon stats-button"
-							on:click={showSessionStatsDialog}
-							title={config.lang.openSessionStatsDialog}><Stats /></button
-						>
-						<button
-							type="button"
-							class="fade-icon cog-button"
-							on:click={showLessonOptions}
-							title={config.lang.openLessonConfigDialog}><Cog /></button
-						>
+		<div class="counter" class:active={!paused}>
+			{#if !started}
+				{config.lang.notStarted}
+			{:else}
+				<Timer stats={lessonStats} lang={config.lang} />
+			{/if}
+		</div>
 
-						<button
-							type="button"
-							class="fade-icon stop-button"
-							disabled={!started}
-							on:click={confirmEndLesson}
-							title={config.lang.stop}
-						>
-							<Stop />
-						</button>
-					</div>
-				</div>
+		<div class="tutor-buttons">
+			<div class="tutor-buttons-left" />
+			<div class="tutor-buttons-right">
+				{#if tutor.config.until !== null}
+					<div class="word-progress">{tutor.history.length} / {tutor.config.until}</div>
+				{:else}
+					<div class="word-progress">{tutor.history.length} / ∞</div>
+				{/if}
 			</div>
-		</nav>
+		</div>
 
 		<div class="tutor-words" class:paused class:char-mode={config.checkMode === CheckMode.Char}>
 			<span bind:this={historyNode} class="history" /><Word
@@ -379,6 +341,49 @@
 				{/each}
 			</span>
 		</div>
+
+		<nav class="tutor-above">
+			<div class="tutor-menu">
+				<div class="tutor-menu-left">
+					{#if series !== undefined}
+						<Series
+							on:lessonChanged={(e) => changeLesson(e.detail)}
+							{series}
+							seriesIndex={seriesIdx}
+							stopMsg={config.lang.stopMsg}
+							done={finished || !started}
+							prevText={config.lang.seriesPrevLesson}
+							nextText={config.lang.seriesNextLesson}
+							lessonSelectText={config.lang.seriesSelectLesson}
+						/>
+					{/if}
+				</div>
+				<div class="tutor-menu-right">
+					<button
+						type="button"
+						class="fade-icon stats-button"
+						on:click={showSessionStatsDialog}
+						title={config.lang.openSessionStatsDialog}><Stats /></button
+					>
+					<button
+						type="button"
+						class="fade-icon cog-button"
+						on:click={showLessonOptions}
+						title={config.lang.openLessonConfigDialog}><Cog /></button
+					>
+
+					<button
+						type="button"
+						class="fade-icon stop-button"
+						disabled={!started}
+						on:click={confirmEndLesson}
+						title={config.lang.stop}
+					>
+						<Stop />
+					</button>
+				</div>
+			</div>
+		</nav>
 
 		{#if !finished}
 			<div class="tutor-bottom">
@@ -418,20 +423,13 @@
 	</section>
 </div>
 
-<style>
+<style lang="scss">
 	.tutor-above {
 		width: var(--width);
 		max-width: var(--max-width);
 		text-align: center;
 		margin: 0px auto 2rem;
 	}
-
-	.word-progress {
-		align-self: center;
-		margin: 0px 1rem;
-		font-family: var(--font-humanist);
-	}
-
 	.counter {
 		font-family: var(--font-sans-serif);
 		display: flex;
@@ -454,6 +452,8 @@
 		text-align: center;
 		font-family: var(--font-title);
 		font-weight: bold;
+		color: #34353a;
+		filter: drop-shadow(0px 0px 2px #6a6c7559);
 		margin: auto;
 	}
 
@@ -463,27 +463,33 @@
 		box-sizing: border-box;
 		border: 1px solid var(--border-color);
 		border-radius: 0.4rem;
+		border-bottom-left-radius: 0px;
+		border-bottom-right-radius: 0px;
+		border-bottom: 0px;
 		background: rgba(255, 255, 255, 1);
 		font-family: var(--font-monospace);
 		font-size: 1.7rem;
 		margin: 0px auto;
 		padding: 0px 1em;
-		width: var(--width);
-		max-width: var(--max-width);
+		width: calc(var(--width) - 1.5rem);
+		max-width: calc(var(--max-width) - 1.5rem);
 		height: 12em;
 		overflow: auto;
 		text-align: center;
 		scroll-behavior: smooth;
 		scroll-snap-type: y mandatory;
-		filter: drop-shadow(1px 1px 2px var(--drop-shadow-color))
-			drop-shadow(2px 2px 4px var(--drop-shadow-color))
-			drop-shadow(4px 4px 8px var(--drop-shadow-color));
+		box-shadow: 0px 0px 7px #cfcfcf;
+		// filter: drop-shadow(1px 1px 2px var(--drop-shadow-color))
+		// 	drop-shadow(2px 2px 4px var(--drop-shadow-color))
+		// 	drop-shadow(4px 4px 8px var(--drop-shadow-color));
 	}
 
 	.tutor-words.paused {
+		// --drop-shadow-color: rgba(36, 58, 92, 0.1);
+		// --border-color: rgba(36, 58, 92, 0.4);
 		--drop-shadow-color: rgba(36, 58, 92, 0.1);
-		--border-color: rgba(36, 58, 92, 0.4);
-		background-color: #f4f4f4;
+		--border-color: #83878b;
+		background-color: #f9f9f9;
 	}
 
 	.tutor-bottom {
@@ -501,6 +507,12 @@
 		text-align: center;
 		padding: 0.8rem 2rem;
 		caret-color: transparent;
+		border: 1px solid #243a5c66;
+		filter: drop-shadow(0px 0px 3px #51709e70) drop-shadow(0px 0px 5px #e2b08c3d);
+		// border: 1px solid #008ff5;
+	}
+	.tutor-input:focus {
+		filter: drop-shadow(0px 0px 1px #51709e70) drop-shadow(0px 0px 5px #f5660096);
 	}
 
 	.finished {
@@ -523,8 +535,14 @@
 	}
 
 	.tutor-menu {
+		color: rgb(211, 209, 218);
 		display: flex;
 		justify-content: space-between;
+		background-color: #f0f0f5;
+		border: 1px solid #aeb4b9;
+		border-radius: 0.7rem;
+		padding: 0.5rem 0.3rem;
+		box-shadow: 0px 1px 7px #3a3a3a3b;
 	}
 
 	.tutor-menu-right {
@@ -533,6 +551,31 @@
 		/* text-align: center; */
 		/* justify-content: right; */
 	}
+
+	.tutor-buttons {
+		text-align: right;
+		padding: 0px 2em;
+		width: var(--width);
+		max-width: var(--max-width);
+		display: flex;
+		justify-content: space-between;
+	}
+	.word-progress {
+		// display: none;
+		align-self: center;
+		margin: 0px 1rem;
+		font-family: var(--font-monospace);
+		color: #686868;
+		font-size: 1rem;
+		// background-color: #7430f9;
+		padding: 0.5rem 0.375rem;
+		border-radius: 0.375rem;
+		// filter: drop-shadow(0px 0px 2px #f37a29a9);
+		cursor: default;
+	}
+	// .word-progress:hover {
+	// 	background-color: #fca211;
+	// }
 
 	.stop-button:not(.hidden) {
 		animation: opacity-fadein 0.5s ease-out 0s 1;

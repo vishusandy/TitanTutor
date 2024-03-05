@@ -28,6 +28,10 @@ input,
 button,
 select {
     outline: 0px;
+    border: 1px solid #83878b;
+    border-radius: 0.375rem;
+    padding: .375rem .75rem;
+    box-shadow: 0 0 3px #8f8f8f88;
 }
 
 input[type="text"],

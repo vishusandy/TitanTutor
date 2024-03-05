@@ -96,6 +96,12 @@
 		align-items: center;
 	}
 
+	select {
+		background-color: #f7f9fa;
+		/* filter: none; */
+		box-shadow: none;
+	}
+
 	button {
 		width: 2.4rem;
 		height: 2.4rem;
@@ -109,6 +115,9 @@
 	}
 
 	div :global(button svg) {
-		fill: rgb(136, 216, 47);
+		fill: #f5af00;
+	}
+	div :global(button:focus-within svg) {
+		fill: #f56800;
 	}
 </style>

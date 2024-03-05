@@ -1,6 +1,5 @@
 @use 'forms';
 
-
 .hidden {
     opacity: 0;
     display: none;
@@ -102,20 +101,21 @@ button.fade-icon:disabled svg {
 
 button.fade-icon:not(:disabled) svg {
     stroke-width: 10px;
-    stroke: #000;
+    stroke: #505050BB;
 }
 
 button.fade-icon:not(:disabled):hover svg {
     stroke-width: 20px;
-    stroke: #000;
+    stroke: #505050BB;
+    // stroke: #b6b6b6bb;
     filter: grayscale(0%);
     // animation: greyscale 0.2s ease-in;
 }
 
 button.fade-icon:not(:disabled):focus-within svg {
-    stroke-width: 15px;
-    stroke: #000000;
-    filter: drop-shadow(0px 0px 1.5px #000000ff);
+    stroke-width: 20px;
+    // stroke: #505050BB;
+    filter: drop-shadow(0px 0px 2px #F56800);
 }
 
 
