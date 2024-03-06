@@ -552,7 +552,7 @@
 	.tutor-menu {
 		color: rgb(211, 209, 218);
 		display: flex;
-		// flex-wrap: wrap;
+		flex-wrap: wrap;
 		justify-content: space-between;
 		background-color: #f0f0f5;
 		border: 1px solid #aeb4b9;
@@ -569,6 +569,7 @@
 	}
 
 	.tutor-bar {
+		box-sizing: border-box;
 		text-align: right;
 		padding: 0px 2em;
 		margin: 0px auto;
