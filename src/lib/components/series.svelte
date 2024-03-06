@@ -93,6 +93,7 @@
 	div {
 		font-size: 1.2rem;
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 	}
 
@@ -100,6 +101,8 @@
 		background-color: #f7f9fa;
 		/* filter: none; */
 		box-shadow: none;
+		width: 70%;
+		/* max-width: 20ch; */
 	}
 
 	button {

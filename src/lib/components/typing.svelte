@@ -326,9 +326,9 @@
 			{/if}
 		</div>
 
-		<div class="tutor-buttons">
-			<div class="tutor-buttons-left" />
-			<div class="tutor-buttons-right">
+		<div class="tutor-bar">
+			<div class="tutor-bar-left" />
+			<div class="tutor-bar-right">
 				{#if config.until !== null}
 					<div class="word-progress">{tutor.history.length} / {config.until}</div>
 				{:else}
@@ -354,7 +354,7 @@
 			</span>
 		</div>
 
-		<nav class="tutor-above">
+		<nav class="tutor-below">
 			<div class="tutor-menu">
 				<div class="tutor-menu-left">
 					{#if series !== undefined}
@@ -436,7 +436,7 @@
 </div>
 
 <style lang="scss">
-	.tutor-above {
+	.tutor-below {
 		width: var(--width);
 		max-width: var(--max-width);
 		text-align: center;
@@ -465,7 +465,7 @@
 		font-family: var(--font-title);
 		font-weight: bold;
 		color: #34353a;
-		filter: drop-shadow(0px 0px 2px #6a6c7559);
+		filter: drop-shadow(0px 0px 2px #6a6c7517);
 		margin: auto;
 	}
 
@@ -491,6 +491,7 @@
 		scroll-behavior: smooth;
 		scroll-snap-type: y mandatory;
 		box-shadow: 0px 0px 7px #cfcfcf;
+		box-sizing: border-box;
 		// filter: drop-shadow(1px 1px 2px var(--drop-shadow-color))
 		// 	drop-shadow(2px 2px 4px var(--drop-shadow-color))
 		// 	drop-shadow(4px 4px 8px var(--drop-shadow-color));
@@ -514,13 +515,15 @@
 	.tutor-input {
 		box-shadow: none !important;
 		font-size: 1.2rem;
-		width: 100%;
+		width: 90%;
 		max-width: 30ch;
 		text-align: center;
 		padding: 0.8rem 2rem;
 		caret-color: transparent;
 		border: 1px solid #243a5c66;
+		box-sizing: border-box;
 		filter: drop-shadow(0px 0px 3px #51709e70) drop-shadow(0px 0px 5px #e2b08c3d);
+		box-sizing: border-box;
 		// border: 1px solid #008ff5;
 	}
 	.tutor-input:focus {
@@ -549,6 +552,7 @@
 	.tutor-menu {
 		color: rgb(211, 209, 218);
 		display: flex;
+		// flex-wrap: wrap;
 		justify-content: space-between;
 		background-color: #f0f0f5;
 		border: 1px solid #aeb4b9;
@@ -564,30 +568,27 @@
 		/* justify-content: right; */
 	}
 
-	.tutor-buttons {
+	.tutor-bar {
 		text-align: right;
 		padding: 0px 2em;
+		margin: 0px auto;
 		width: var(--width);
 		max-width: var(--max-width);
 		display: flex;
 		justify-content: space-between;
 	}
+
 	.word-progress {
-		// display: none;
 		align-self: center;
 		margin: 0px 1rem;
 		font-family: var(--font-monospace);
 		color: #686868;
 		font-size: 1rem;
-		// background-color: #7430f9;
 		padding: 0.5rem 0.375rem;
 		border-radius: 0.375rem;
 		// filter: drop-shadow(0px 0px 2px #f37a29a9);
 		cursor: default;
 	}
-	// .word-progress:hover {
-	// 	background-color: #fca211;
-	// }
 
 	.stop-button:not(.hidden) {
 		animation: opacity-fadein 0.5s ease-out 0s 1;
