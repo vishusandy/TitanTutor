@@ -1,6 +1,10 @@
 
 # Titan Tutor
 
+## Demo
+
+[https://vishusandy.github.io/TitanTutor/]
+
 ## Features
 
 - All data is stored locally in the user's browser
@@ -21,3 +25,7 @@
     - See [Code Overview](markdown/code_overview.md) for details about the code.
 - API Documentation
     - See [https://vishusandy.github.io/TitanTutor/docs/](https://vishusandy.github.io/TitanTutor/docs/) for code documentation.
+
+## Wordlists
+
+See [https://github.com/vishusandy/WordFilter] for generating wordlists.
