@@ -148,7 +148,7 @@ export class RandomChars implements BaseLesson {
 
     // Process character input
     handleInput(e: InputEvent, config: Config, word: WordState, stats: LessonStats): Action {
-        return processInput(e, config, word);
+        return processInput(e, config, word, stats);
     }
 
 

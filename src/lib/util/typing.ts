@@ -8,7 +8,7 @@ import type { WordState } from "$lib/word_state";
 // https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/inputType
 // https://rawgit.com/w3c/input-events/v1/index.html#interface-InputEvent-Attributes
 
-export function processInput(e: InputEvent, config: Config, word: WordState) {
+export function processInput(e: InputEvent, config: Config, word: WordState, stats: LessonStats) {
     if (e.inputType === 'deleteContentBackward' && config.backspace === true) {
         e.preventDefault();
         return (word.addBackspace(config.backspace)) ? Action.Refresh : Action.None;
@@ -19,19 +19,19 @@ export function processInput(e: InputEvent, config: Config, word: WordState) {
         return Action.None;
     }
 
-    return processChars(e, config, word);
+    return processChars(e, config, word, stats);
 }
 
-export function processChars(e: InputEvent, config: Config, word: WordState): Action {
+export function processChars(e: InputEvent, config: Config, word: WordState, stats: LessonStats): Action {
     if (!e.data) return Action.None;
 
     let act = Action.None;
 
     // allow multiple chars (eg mobile input)
-    for (const c of e.data) {
+    for (const c of [...e.data]) {
         const mapped = config.remap.get(c);
         if (mapped === ' ') {
-            act |= Action.NextWord;
+            act |= checkWordEnd({key: ' ', preventDefault: ()=>{}}, config, word, stats);
         } else if (mapped !== undefined) {
             word.addChar(mapped);
             act |= Action.CharAdded | Action.Refresh;
@@ -46,7 +46,11 @@ export function processChars(e: InputEvent, config: Config, word: WordState): Ac
     return act;
 }
 
-export function checkWordEnd(e: KeyboardEvent, config: Config, word: WordState, stats: LessonStats): Action {
+type kbEvent = {
+    key: string;
+    preventDefault: ()=> void;
+};
+export function checkWordEnd(e: kbEvent, config: Config, word: WordState, stats: LessonStats): Action {
     if (e.key === 'Backspace') {
         word.addBackspace(config.backspace);
         e.preventDefault();
@@ -62,7 +66,7 @@ export function checkWordEnd(e: KeyboardEvent, config: Config, word: WordState, 
     }
 }
 
-function wordEndWordMode(e: KeyboardEvent, word: WordState, stats: LessonStats): Action {
+function wordEndWordMode(e: kbEvent, word: WordState, stats: LessonStats): Action {
     console.log(`word mode end`);
 
     if (e.key === ' ' || e.key === 'Enter') {
@@ -85,7 +89,7 @@ function wordEndWordMode(e: KeyboardEvent, word: WordState, stats: LessonStats):
     return Action.None;
 }
 
-function wordEndCharMode(e: KeyboardEvent, config: Config, word: WordState): Action {
+function wordEndCharMode(e: kbEvent, config: Config, word: WordState): Action {
     if (word.atEnd()) {
         if (e.key === ' ') {
             e.preventDefault();
