@@ -564,8 +564,8 @@
 	.tutor-menu-right {
 		font-size: 1.2rem;
 		display: flex;
-		/* text-align: center; */
-		/* justify-content: right; */
+		flex-grow: 1;
+		justify-content: right;
 	}
 
 	.tutor-bar {
@@ -619,5 +619,25 @@
 		--bar-color1: rgb(52, 153, 61);
 		--bar-color2: rgb(12, 207, 214);
 		--bar-color3: rgb(230, 49, 124);
+	}
+
+	// mobile devices
+	@media (pointer: coarse) {
+		:root {
+			--width: 99%;
+		}
+
+		.tutor-words {
+			padding: 0px 0.2em;
+		}
+
+		.tutor-input {
+			padding: 0.4rem 0.75rem;
+			caret-color: auto;
+		}
+
+		.tutor-menu-right {
+			justify-content: right;
+		}
 	}
 </style>

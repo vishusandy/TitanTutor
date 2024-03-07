@@ -1,8 +1,8 @@
 <script lang="ts">
-	import OptionalNumber from './lesson_overridable/optional_number.svelte';
-	import Number from './lesson_overridable/number.svelte';
-	import Bool from './lesson_overridable/bool.svelte';
-	import Select from './lesson_overridable/select.svelte';
+	import OptionalNumber from './overridable_inputs/optional_number.svelte';
+	import Number from './overridable_inputs/number.svelte';
+	import Bool from './overridable_inputs/bool.svelte';
+	import Select from './overridable_inputs/select.svelte';
 
 	import type { Config } from '$lib/types/config';
 	import type { Lesson } from '$lib/lessons/lesson';

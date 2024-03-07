@@ -19,10 +19,10 @@ export function processInput(e: InputEvent, config: Config, word: WordState) {
         return Action.None;
     }
 
-    return processChar(e, config, word);
+    return processChars(e, config, word);
 }
 
-export function processChar(e: InputEvent, config: Config, word: WordState): Action {
+export function processChars(e: InputEvent, config: Config, word: WordState): Action {
     if (!e.data) return Action.None;
 
     let act = Action.None;
@@ -30,9 +30,11 @@ export function processChar(e: InputEvent, config: Config, word: WordState): Act
     // allow multiple chars (eg mobile input)
     for (const c of e.data) {
         const mapped = config.remap.get(c);
-        if (mapped !== undefined) {
+        if (mapped === ' ') {
+            act |= Action.NextWord;
+        } else if (mapped !== undefined) {
             word.addChar(mapped);
-            act = Action.CharAdded | Action.Refresh;
+            act |= Action.CharAdded | Action.Refresh;
         }
     }
 
@@ -95,7 +97,7 @@ function wordEndCharMode(e: KeyboardEvent, config: Config, word: WordState): Act
             e.preventDefault();
             return Action.MissedSpace | Action.NextWord | Action.Refresh;
         }
-        
+
         return Action.NextWord | Action.Refresh;
     }
 
