@@ -1,6 +1,7 @@
 
 
 fix:
+    - fix mobile by adding case sensitivity option
     - add a loading icon for Audio dialog until 'voiceschanged' event is fired
         - add a timeout as well as browser detect for chromium for instruction message
     - shift and other keys (e.g. arrow keys) unpauses
@@ -12,8 +13,10 @@ finish:
         - show under "User Lessons" group (with transation for "User Lessons")
 
 features:
+    - case sensitivity option
+    - show inherited values in lesson options dialog
     - add length property to measure word progress
-    - custom word lists
+    - manage/create custom word lists
     - multilingual example text
 
 questions:
