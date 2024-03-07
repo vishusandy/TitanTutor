@@ -624,7 +624,7 @@
 	// mobile devices
 	@media (pointer: coarse) {
 		:root {
-			--width: 99%;
+			--width: 94%;
 		}
 
 		.tutor-words {
