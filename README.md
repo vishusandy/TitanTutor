@@ -3,7 +3,7 @@
 
 ## Demo
 
-[https://vishusandy.github.io/TitanTutor/]
+[https://vishusandy.github.io/TitanTutor/](https://vishusandy.github.io/TitanTutor/)
 
 ## Features
 
@@ -28,4 +28,4 @@
 
 ## Wordlists
 
-See [https://github.com/vishusandy/WordFilter] for generating wordlists.
+See [https://github.com/vishusandy/WordFilter](https://github.com/vishusandy/WordFilter) for generating wordlists.
