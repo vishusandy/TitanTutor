@@ -30,12 +30,12 @@
 	let dirty = false;
 
 	const wordModeChoices = [
+		{ key: 'chars', label: config.lang.configCheckModeChars, value: CheckMode.Char },
 		{
 			key: 'words',
 			label: config.lang.configCheckModeWords,
 			value: CheckMode.WordRepeat
-		},
-		{ key: 'chars', label: config.lang.configCheckModeChars, value: CheckMode.Char }
+		}
 	];
 
 	// @ts-ignore
@@ -119,6 +119,7 @@
 		min={1}
 		step={1}
 		override={overrides.until}
+		inheritValue={config.until}
 	/>
 
 	<Bool
@@ -131,6 +132,7 @@
 		offLabel={config.lang.off}
 		initialState={state.random}
 		override={overrides.random}
+		inheritValue={config.random}
 	/>
 
 	<Number
@@ -144,6 +146,7 @@
 		min={1}
 		max={100}
 		override={overrides.minQueue}
+		inheritValue={config.minQueue}
 	/>
 
 	<Number
@@ -157,6 +160,7 @@
 		min={1}
 		max={100}
 		override={overrides.wordBatchSize}
+		inheritValue={config.wordBatchSize}
 	/>
 
 	<Bool
@@ -169,6 +173,7 @@
 		offLabel={config.lang.ignore}
 		initialState={state.backspace}
 		override={overrides.backspace}
+		inheritValue={config.backspace}
 	/>
 
 	<Select
@@ -180,6 +185,7 @@
 		choices={wordModeChoices}
 		initialValue={state.checkMode}
 		override={overrides.checkMode}
+		inheritValue={wordModeChoices[config.checkMode].key}
 	/>
 
 	<Bool
@@ -192,6 +198,7 @@
 		offLabel={config.lang.no}
 		initialState={state.spaceOptional}
 		override={overrides.spaceOptional}
+		inheritValue={config.spaceOptional}
 	/>
 
 	<Bool
@@ -204,6 +211,7 @@
 		offLabel={config.lang.off}
 		initialState={state.adaptive}
 		override={overrides.adaptive}
+		inheritValue={config.adaptive}
 	/>
 </div>
 

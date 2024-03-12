@@ -12,6 +12,7 @@
 	export let choices: { key: string; label: string; value: T }[];
 	export let initialValue: UserValue<T>;
 	export let override: OptAvailable<T>;
+	export let inheritValue: string;
 
 	const dispatch = createEventDispatcher();
 
@@ -34,6 +35,8 @@
 	if (initialValue !== 'user' && initialValue !== 'disabled') {
 		selected = rev.get(initialValue) ?? choices[0].key;
 	}
+
+	console.log(`inheritValue=${inheritValue}`);
 
 	onMount(() => {
 		updateCheckbox();
@@ -105,7 +108,11 @@
 	<label class:disabled={isDisabled} for={id}>{label}</label>
 </div>
 {#if state === 'user'}
-	<div class="label check-value">{userLabel}</div>
+	<select disabled title={userLabel}>
+		{#each choices as { key, label } (key)}
+			<option value={key} selected={inheritValue === key}>{label}</option>
+		{/each}
+	</select>
 {:else}
 	<select disabled={isDisabled} bind:this={selectInput} on:change={selectChanged}>
 		{#each choices as { key, label } (key)}
@@ -115,6 +122,9 @@
 {/if}
 
 <style>
+	select {
+		width: min-content;
+	}
 	.optional {
 		display: flex;
 	}

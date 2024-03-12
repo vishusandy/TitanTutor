@@ -16,6 +16,7 @@
 	export let max: number | undefined = undefined;
 	export let step: number | undefined = 1;
 	export let override: OptAvailable<number | null>;
+	export let inheritValue: number | null;
 
 	const dispatch = createEventDispatcher();
 
@@ -96,7 +97,13 @@
 	<label class:disabled={isDisabled} for={id}>{label}</label>
 </div>
 {#if state === 'user'}
-	<div class="label check-value">{userLabel}</div>
+	<div class="label check-value disabled">
+		{#if inheritValue !== null}
+			<input title={userLabel} disabled type="number" value={inheritValue} />
+		{:else}
+			{nullLabel}
+		{/if}
+	</div>
 {:else if state === null}
 	<div class="label check-value" class:disabled={override !== 'enabled'}>{nullLabel}</div>
 {:else if Number.isInteger(state)}

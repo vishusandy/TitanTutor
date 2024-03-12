@@ -13,6 +13,7 @@
 	export let offLabel: string = config.lang.off;
 	export let initialState: UserValue<boolean>;
 	export let override: OptAvailable<boolean>;
+	export let inheritValue: boolean;
 
 	const dispatch = createEventDispatcher();
 	let checkboxInput: HTMLInputElement;
@@ -87,7 +88,7 @@
 </div>
 <div class="label" class:disabled={isDisabled}>
 	{#if state === 'user'}
-		{userLabel}
+		<input disabled type="checkbox" title={userLabel} checked={inheritValue} />
 	{:else if state === true && override !== 'disabled'}
 		{onLabel}
 	{:else}
