@@ -6,6 +6,7 @@
 
 	import Typing from '$lib/components/typing.svelte';
 	import { LessonStats } from '$lib/stats';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
 
@@ -14,6 +15,11 @@
 	let lesson = data.lesson;
 	let lessonOpts = data.lessonOpts;
 	let sessionStats = new LessonStats(lesson.baseLesson().id, config.checkMode);
+
+	onMount(() => {
+		document.documentElement.lang = config.lang.lang;
+		document.documentElement.dir = config.lang.textDirection;
+	});
 </script>
 
 <svelte:head>

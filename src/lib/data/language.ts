@@ -6,6 +6,7 @@ export type LanguageObject = { [P in keyof Language]: string };
 export class Language {
     lang: string = '';
     langName: string = '';
+    textDirection: string = 'ltr';
     stopMsg: string = '';
     inputNotStarted: string = '';
     inputPaused: string = '';

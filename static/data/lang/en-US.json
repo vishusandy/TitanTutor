@@ -1,6 +1,7 @@
 {
     "lang": "en-US",
     "langName": "English",
+    "textDirection": "ltr",
     "stopMsg": "Are you sure you want to stop the current lesson?",
     "inputNotStarted": "Type any key to start",
     "inputPaused": "Type any key to continue",
@@ -36,7 +37,7 @@
     "charMode": "Character Mode",
     "space": "Space",
     "missedSpace": "Missed space",
-    "useUserValue": "not overridden",
+    "useUserValue": "Inherit from user settings",
     "openTtsDialog": "Audio",
     "ttsDialogTitle": "Text To Speech",
     "ttsLanguageLabel": "Language",
