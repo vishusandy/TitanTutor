@@ -64,7 +64,6 @@
 			textbox.focus();
 		}
 
-		console.log(`Check mode:`, config.checkMode);
 		Lesson.saveLast(lesson, originalConfig, db);
 	});
 

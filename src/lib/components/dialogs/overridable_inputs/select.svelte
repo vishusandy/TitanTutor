@@ -36,8 +36,6 @@
 		selected = rev.get(initialValue) ?? choices[0].key;
 	}
 
-	console.log(`inheritValue=${inheritValue}`);
-
 	onMount(() => {
 		updateCheckbox();
 	});
