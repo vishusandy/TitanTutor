@@ -99,7 +99,7 @@
 
 	select {
 		background-color: #f7f9fa;
-		box-shadow: none;
+		/* box-shadow: none; */
 		width: 70%;
 		flex-shrink: 2;
 	}

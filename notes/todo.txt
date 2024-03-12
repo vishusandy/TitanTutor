@@ -2,7 +2,7 @@
 
 fix:
     - fix mobile by adding case sensitivity option
-    - add a loading icon for Audio dialog until 'voiceschanged' event is fired
+    - add a "please wait" and loading icon for Audio dialog until 'voiceschanged' event is fired
         - add a timeout as well as browser detect for chromium for instruction message
     - shift and other keys (e.g. arrow keys) unpauses
     - WPM is incorrectly calculated
@@ -14,6 +14,7 @@ finish:
 
 features:
     - case sensitivity option
+    - automatically go to next word on mobile (in word mode)
     - show inherited values in lesson options dialog
     - add length property to measure word progress
     - manage/create custom word lists
