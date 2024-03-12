@@ -40,6 +40,12 @@ export class Queue {
         }
     }
 
+    playCurrentWord() {
+        if (this.config.tts === undefined || this.config.tts.mute) return;
+
+        this.config.tts.play(this.word.word);
+    }
+
     private fillQueue() {
         let batch;
         while (this.queue.length < this.config.minQueue && (batch = this.lesson.batch(this.config.wordBatchSize - this.queue.length)) && batch.length !== 0) {

@@ -35,7 +35,7 @@
 	export let lessonStats: LessonStats;
 
 	let config = originalConfig.mergeLessonOptions(lessonOpts).mergeAvailable(lesson.overrides());
-	let tutor = new Queue(config, lesson, lessonOpts, lessonStats);
+	let queue = new Queue(config, lesson, lessonOpts, lessonStats);
 	let seriesId: string | undefined = lessonInSeries.get(lesson.baseLesson().id);
 	let series = seriesId !== undefined ? lessonPlans.get(seriesId) : undefined;
 	let seriesIdx =
@@ -50,7 +50,7 @@
 	let historyNode: HTMLElement;
 
 	$: {
-		tutor.word.word; // trigger scroll() when word changes
+		queue.word.word; // trigger scroll() when word changes
 		scroll();
 	}
 
@@ -92,14 +92,14 @@
 		textbox.focus();
 
 		if (e !== undefined) {
-			handleAction(lesson.handleKeydown(e, config, tutor.word, lessonStats));
+			handleAction(lesson.handleKeydown(e, config, queue.word, lessonStats));
 		}
 	}
 
 	function pause(_: Event) {
 		if (textbox === undefined) return;
 		paused = true;
-		if (tutor.word.atEnd() && tutor.word.word === tutor.word.input) {
+		if (queue.word.atEnd() && queue.word.word === queue.word.input) {
 			handleAction(Action.NextWord & Action.Refresh);
 		}
 		lessonStats.pause();
@@ -121,7 +121,7 @@
 		if (lessonOpts === undefined) lessonOpts = {};
 
 		lesson = await Lesson.load(id, originalConfig, db);
-		tutor = new Queue(originalConfig, lesson, lessonOpts, lessonStats);
+		queue = new Queue(originalConfig, lesson, lessonOpts, lessonStats);
 		started = false;
 		paused = true;
 		finished = false;
@@ -156,7 +156,7 @@
 		console.log(`setting lesson id to ${id}`);
 		lesson = await Lesson.load(id, originalConfig, db);
 		Lesson.saveLast(lesson, originalConfig, db);
-		tutor = new Queue(originalConfig, lesson, lessonOpts, lessonStats);
+		queue = new Queue(originalConfig, lesson, lessonOpts, lessonStats);
 		seriesId = lessonInSeries.get(lesson.baseLesson().id);
 		series = seriesId !== undefined ? lessonPlans.get(seriesId) : undefined;
 		seriesIdx =
@@ -190,11 +190,11 @@
 	}
 
 	function handleBeforeInput(e: InputEvent) {
-		handleAction(lesson.handleInput(e, config, tutor.word, lessonStats));
+		handleAction(lesson.handleInput(e, config, queue.word, lessonStats));
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
-		handleAction(lesson.handleKeydown(e, config, tutor.word, lessonStats));
+		handleAction(lesson.handleKeydown(e, config, queue.word, lessonStats));
 	}
 
 	function handleAction<T = undefined>(action: Action, ctx: T | undefined = undefined) {
@@ -206,13 +206,13 @@
 		}
 
 		if (action & Action.LessonCompleted) {
-			if (!tutor.word.empty()) addToHistory(tutor.word);
-			tutor.word = new WordState('');
+			if (!queue.word.empty()) addToHistory(queue.word);
+			queue.word = new WordState('');
 			lessonCompleted();
 		}
 
 		if (action & Action.NextWord) {
-			const n = tutor.nextWord();
+			const n = queue.nextWord();
 			if (!Array.isArray(n)) {
 				if ((n & Action.NextWord) === 0) handleAction(n);
 				return;
@@ -224,7 +224,7 @@
 		}
 
 		if (action & Action.Refresh) {
-			tutor = tutor;
+			queue = queue;
 			return;
 		}
 	}
@@ -237,7 +237,7 @@
 	}
 
 	function addToHistory(w: WordState) {
-		const c = new Word({
+		new Word({
 			target: historyNode,
 			props: {
 				word: w.wordChars,
@@ -264,6 +264,7 @@
 			if (audio !== undefined) {
 				originalConfig.tts = audio;
 				originalConfig.saveUserConfig(db);
+				queue.playCurrentWord();
 			}
 		});
 	}
@@ -329,9 +330,9 @@
 			<div class="tutor-bar-left" />
 			<div class="tutor-bar-right">
 				{#if config.until !== null}
-					<div class="word-progress">{tutor.history.length} / {config.until}</div>
+					<div class="word-progress">{queue.history.length} / {config.until}</div>
 				{:else}
-					<div class="word-progress">{tutor.history.length} / ∞</div>
+					<div class="word-progress">{queue.history.length} / ∞</div>
 				{/if}
 			</div>
 		</div>
@@ -343,11 +344,11 @@
 		>
 			<span bind:this={historyNode} class="history" /><Word
 				bind:span={activeWord}
-				word={tutor.word.wordChars}
-				state={tutor.word.state}
+				word={queue.word.wordChars}
+				state={queue.word.state}
 				active={true}
 			/><span class="spacer" /><span class="queue">
-				{#each tutor.queue as q}
+				{#each queue.queue as q}
 					<QueuedWord word={q} />{' '}
 				{/each}
 			</span>
@@ -416,7 +417,7 @@
 					<input
 						class="tutor-input"
 						bind:this={textbox}
-						value={tutor.word.input}
+						value={queue.word.input}
 						on:blur={pause}
 						on:beforeinput={handleBeforeInput}
 						on:keydown={handleKeydown}
