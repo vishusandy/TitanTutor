@@ -59,12 +59,12 @@ export function connect(): Promise<IDBDatabase> {
                         store.put(c);
                     };
                     req.onerror = async (e) => {
-                        // const config = defaultStorable();
-                        // store.put(config);
+                        db.deleteObjectStore(config_store);
+                        db.createObjectStore(config_store, { keyPath: 'user' })
+                            .createIndex('user', 'user', { unique: true });
                     }
                 }
             }
-            // resolve(db);
         }
     });
 }
