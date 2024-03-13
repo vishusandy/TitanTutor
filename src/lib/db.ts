@@ -38,7 +38,6 @@ export function connect(): Promise<IDBDatabase> {
 
                 const defaultLesson = defaultLessonName(config.lang);
 
-                console.log('creating lesson opts store');
                 const lesson_opts = db.createObjectStore(lesson_opts_store, { keyPath: 'lesson_id' });
                 lesson_opts.createIndex('lesson_id', 'lesson_id', { unique: true });
                 t.objectStore(lesson_opts_store).put({ lesson_id: defaultLesson });
@@ -65,9 +64,7 @@ export function connect(): Promise<IDBDatabase> {
                     }
                 }
             }
-
-
-            resolve(db);
+            // resolve(db);
         }
     });
 }
