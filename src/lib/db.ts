@@ -1,6 +1,6 @@
 import { defaultUserId } from "./conf/config";
-import { defaultStorable } from "./data/config";
-import { defaultLessonName } from "./data/locales";
+// import { defaultStorable } from "./data/config";
+// import { defaultLessonName } from "./data/locales";
 
 const DB_NAME = 'vktutor';
 const DB_VERSION = 2;
@@ -33,14 +33,14 @@ export function connect(): Promise<IDBDatabase> {
             if (e.oldVersion < 1) {
                 const conf = db.createObjectStore(config_store, { keyPath: 'user' });
                 conf.createIndex('user', 'user', { unique: true });
-                const config = defaultStorable();
-                t.objectStore(config_store).put(config)
+                // const config = defaultStorable();
+                // t.objectStore(config_store).put(config)
 
-                const defaultLesson = defaultLessonName(config.lang);
+                // const defaultLesson = defaultLessonName(config.lang);
 
                 const lesson_opts = db.createObjectStore(lesson_opts_store, { keyPath: 'lesson_id' });
                 lesson_opts.createIndex('lesson_id', 'lesson_id', { unique: true });
-                t.objectStore(lesson_opts_store).put({ lesson_id: defaultLesson });
+                // t.objectStore(lesson_opts_store).put({ lesson_id: defaultLesson });
 
                 const user_lessons = db.createObjectStore(user_lessons_store, { keyPath: 'id' });
                 user_lessons.createIndex('id', 'id', { unique: true });
@@ -59,8 +59,8 @@ export function connect(): Promise<IDBDatabase> {
                         store.put(c);
                     };
                     req.onerror = async (e) => {
-                        const config = defaultStorable();
-                        store.put(config);
+                        // const config = defaultStorable();
+                        // store.put(config);
                     }
                 }
             }
