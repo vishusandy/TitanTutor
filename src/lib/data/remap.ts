@@ -1,5 +1,5 @@
 import { base } from '$app/paths';
-import type { Config } from '../types/config';
+import type { Config } from '../config';
 
 /**
  * `keys` is an array passed to `Map()` to map one key to another key.

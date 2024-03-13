@@ -4,7 +4,7 @@ import Stats from "../components/dialogs/stats.svelte";
 import LessonConfig from "../components/dialogs/lesson_options.svelte";
 
 import type { Audio } from "../audio";
-import type { Config } from "../types/config";
+import type { Config } from "../config";
 import type { BaseStats } from "../stats";
 import type { InnerDialogComponent, CloseFn } from "../types/types";
 import type { Lesson } from "$lib/lessons/lesson";

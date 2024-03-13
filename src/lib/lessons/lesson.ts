@@ -1,5 +1,5 @@
 import { defaultLessonName } from '$lib/data/locales';
-import type { Config } from '$lib/types/config';
+import type { Config } from '$lib/config';
 import type { Language } from '$lib/data/language';
 import { loadUserLesson } from './base/user_wordlist';
 import { stockLessons } from '$lib/conf/lessons';
@@ -190,12 +190,18 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
      * @returns {Promise} returns a promise that will yield a {@link LessonTypingConfig} object
      */
     static async getLessonOptions(id: string, db: IDBDatabase): Promise<Partial<LessonTypingConfig>> {
-        return get<Partial<LessonTypingConfig>, Partial<LessonTypingConfig>, Partial<LessonTypingConfig>>(
-            db, lesson_opts_store, id,
-            (res: Partial<LessonTypingConfig>) => res,
-            () => new Object() as Partial<LessonTypingConfig>,
-            () => new Object() as Partial<LessonTypingConfig>,
-        );
+        const data = await get<Partial<LessonTypingConfig>>(db, lesson_opts_store, id);
+        if (data === undefined) {
+            return new Object() as Partial<LessonTypingConfig>;
+        }
+        return (data);
+
+        // return getCallback<Partial<LessonTypingConfig>, Partial<LessonTypingConfig>, Partial<LessonTypingConfig>>(
+        //     db, lesson_opts_store, id,
+        //     (res: Partial<LessonTypingConfig>) => res,
+        //     () => new Object() as Partial<LessonTypingConfig>,
+        //     () => new Object() as Partial<LessonTypingConfig>,
+        // );
     }
 
     /**

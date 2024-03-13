@@ -3,7 +3,7 @@ import type { StorableBaseLesson } from "../../types/lessons";
 import { defaultBatch, uniqueChars } from "$lib/util/util";
 import type { Language } from "$lib/data/language";
 import type { BaseWordList } from "./wordlist";
-import type { Config } from "$lib/types/config";
+import type { Config } from "$lib/config";
 import { BinaryTree } from "$lib/util/bst";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonOptsAvailable, type LessonFormState } from "$lib/types/forms";
 import type { UserWordList } from "./user_wordlist";
@@ -51,9 +51,16 @@ export class AdaptiveList implements Lesson {
     }
 
     static async loadTypos(base: BaseWordList | UserWordList, db: IDBDatabase): Promise<TypoList> {
-        const def = () => { return { lesson_id: '', typos: emptyTypoList((base as BaseWordList).words) } };
-        const a = await get(db, adaptive_store, base.id, (r: TypoData) => r, def, def);
-        return a.typos;
+        // const def = () => { return { lesson_id: '', typos: emptyTypoList((base as BaseWordList).words) } };
+        // const a = await getCallback(db, adaptive_store, base.id, (r: TypoData) => r, def, def);
+        // return a.typos;
+
+        const data = await get<TypoData>(db, adaptive_store, base.id);
+        if (data === undefined) {
+            return emptyTypoList((base as BaseWordList).words);
+        }
+        return data.typos;
+
     }
 
     saveTypos(db: IDBDatabase, lesson_id: string) {

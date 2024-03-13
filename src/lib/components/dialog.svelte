@@ -1,7 +1,7 @@
 <script lang="ts" generics="T">
 	import { onDestroy, onMount } from 'svelte';
 
-	import type { Config } from '$lib/types/config';
+	import type { Config } from '$lib/config';
 	import type { CloseFn, InnerDialogComponent } from '$lib/types/types';
 
 	export let title: string;

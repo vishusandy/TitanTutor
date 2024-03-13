@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Config } from '$lib/types/config';
+	import { Config } from '$lib/config';
 	import { Language } from '$lib/data/language';
 	import { Remap } from '$lib/data/remap';
 	import { keyboardRemappings } from '$lib/conf/kbmaps';
@@ -14,8 +14,8 @@
 	let backspace: boolean = config.backspace;
 	let wordBatchSize: number = config.wordBatchSize;
 	let minQueue: number = config.minQueue;
-	let stop: string = config.stop;
-	let pause: string = config.pause;
+	let stop: string = config.shortcuts.stop;
+	let pause: string = config.shortcuts.pause;
 	let logStats: boolean = config.logStats;
 	let remap: Remap = config.remap;
 	let lang: Language = config.lang;
@@ -36,8 +36,7 @@
 			lastLesson: config.lastLesson,
 			version: 1,
 			tts: config.tts,
-			stop,
-			pause,
+			shortcuts: { stop, pause },
 			logStats,
 			audioDefaults: defaultTtsLangs(lang.lang),
 			remap,

@@ -1,4 +1,4 @@
-import type { Config } from './types/config';
+import type { Config } from './config';
 import type { Lesson } from './lessons/lesson';
 import type { LessonTypingConfig } from './types/lessons';
 import type { LessonStats } from './stats';

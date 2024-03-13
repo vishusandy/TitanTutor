@@ -7,7 +7,7 @@ import type { WordState } from "$lib/word_state";
 import type { LessonStats } from "$lib/stats";
 import type { Action } from "$lib/types/types";
 import { checkWordEnd, processInput } from "$lib/util/typing";
-import type { Config } from "$lib/types/config";
+import type { Config } from "$lib/config";
 
 export type StorableBaseWordList = { name: string, lang: string } & StorableBaseLesson;
 

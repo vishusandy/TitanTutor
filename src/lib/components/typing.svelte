@@ -10,7 +10,7 @@
 	import Cog from './imgs/cog.svelte';
 
 	import { addMissedSpace, addSpace } from '$lib/util/dom';
-	import type { Config } from '$lib/types/config';
+	import type { Config } from '$lib/config';
 	import { LessonStats } from '$lib/stats';
 	import { WordState } from '$lib/word_state';
 	import { Queue } from '$lib/queue';
@@ -27,6 +27,7 @@
 	} from '$lib/util/dialog';
 	import { lessonInSeries, lessonPlans } from '$lib/conf/lesson_plans';
 	import type { LessonChange } from '$lib/types/events';
+	import { get } from '$lib/db';
 
 	export let db: IDBDatabase;
 	export let originalConfig: Config;
@@ -74,7 +75,7 @@
 	async function startInput(e: Event) {
 		if ('key' in e) {
 			if (e.key === 'Tab') return;
-			if (e.key === config.pause) {
+			if (e.key === config.shortcuts.pause) {
 				e.preventDefault();
 				return;
 			}
@@ -169,7 +170,7 @@
 	}
 
 	async function shortcuts(e: KeyboardEvent) {
-		if (e.key === config.pause || e.key === 'Escape') {
+		if (e.key === config.shortcuts.pause || e.key === 'Escape') {
 			if (paused) {
 				unpause();
 				textbox?.focus();
@@ -178,7 +179,7 @@
 			}
 			if (!started) started = true;
 			e.preventDefault();
-		} else if (e.key === config.stop && started) {
+		} else if (e.key === config.shortcuts.stop && started) {
 			e.preventDefault();
 			pause(e);
 			confirmEndLesson();

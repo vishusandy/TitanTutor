@@ -4,7 +4,7 @@
 	import Bool from './overridable_inputs/bool.svelte';
 	import Select from './overridable_inputs/select.svelte';
 
-	import type { Config } from '$lib/types/config';
+	import type { Config } from '$lib/config';
 	import type { Lesson } from '$lib/lessons/lesson';
 	import { addWrappers } from '$lib/data/lesson_classes';
 	import type { LessonTypingConfig } from '$lib/types/lessons';

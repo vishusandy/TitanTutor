@@ -1,6 +1,6 @@
 import { Lesson, type BaseLesson } from "$lib/lessons/lesson";
 import type { StorableLesson } from "../../types/lessons";
-import type { Config } from "$lib/types/config";
+import type { Config } from "$lib/config";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { shuffle, defaultBatch } from "$lib/util/util";
 import type { BaseWordList } from "../base/wordlist";
@@ -87,7 +87,7 @@ export class RandomList implements Lesson {
         }
         return lesson;
     }
-    
+
     // Process character input
     handleInput(e: InputEvent, config: Config, word: WordState, stats: LessonStats): Action {
         return this.base.handleInput(e, config, word, stats);

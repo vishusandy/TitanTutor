@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Config } from '$lib/types/config';
+	import type { Config } from '$lib/config';
 	import { onMount } from 'svelte';
 
 	export let config: Config;

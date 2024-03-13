@@ -1,6 +1,6 @@
 import { controlKeys } from "$lib/data/remap";
 import type { LessonStats } from "$lib/stats";
-import type { Config } from "$lib/types/config";
+import type { Config } from "$lib/config";
 import { Action, CheckMode } from "$lib/types/types";
 import type { WordState } from "$lib/word_state";
 
@@ -31,7 +31,7 @@ export function processChars(e: InputEvent, config: Config, word: WordState, sta
     for (const c of [...e.data]) {
         const mapped = config.remap.get(c);
         if (mapped === ' ') {
-            act |= checkWordEnd({key: ' ', preventDefault: ()=>{}}, config, word, stats);
+            act |= checkWordEnd({ key: ' ', preventDefault: () => { } }, config, word, stats);
         } else if (mapped !== undefined) {
             word.addChar(mapped);
             act |= Action.CharAdded | Action.Refresh;
@@ -48,7 +48,7 @@ export function processChars(e: InputEvent, config: Config, word: WordState, sta
 
 type kbEvent = {
     key: string;
-    preventDefault: ()=> void;
+    preventDefault: () => void;
 };
 export function checkWordEnd(e: kbEvent, config: Config, word: WordState, stats: LessonStats): Action {
     if (e.key === 'Backspace') {

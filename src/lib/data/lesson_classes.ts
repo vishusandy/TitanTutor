@@ -7,7 +7,7 @@
 import { StockWordList } from '../lessons/base/stock_wordlist';
 import { RandomList } from '../lessons/wrappers/random';
 import { UntilN } from '../lessons/wrappers/until_n';
-import type { Config } from '$lib/types/config';
+import type { Config } from '$lib/config';
 import { UserWordList } from '../lessons/base/user_wordlist';
 import { AdaptiveList } from '../lessons/base/adaptive_list';
 import { RandomChars } from '../lessons/base/chars';

@@ -64,6 +64,6 @@ export const interfaceLanguagePaths: Map<string, string> = new Map([
  * The Map's keys are the locale and values are the lesson ID.
  */
 export const defaultStockLessonLocaleMap: Map<string, string> = new Map([
-    // ['en-US', 'qwerty_en-US_1'],
-    ['en', 'dvorak_en-US_1'],
+    ['en-US', 'qwerty_en-US_1'],
+    // ['en', 'dvorak_en-US_1'],
 ]);

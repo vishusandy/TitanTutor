@@ -7,7 +7,7 @@ import { randGen } from '$lib/util/random'
 import type { LessonOptsAvailable } from "$lib/types/forms";
 import type { Language } from "$lib/data/language";
 import { BinaryTree } from "$lib/util/bst";
-import type { Config } from "$lib/types/config";
+import type { Config } from "$lib/config";
 import type { WordState } from "$lib/word_state";
 import type { LessonStats } from "$lib/stats";
 import type { Action } from "$lib/types/types";

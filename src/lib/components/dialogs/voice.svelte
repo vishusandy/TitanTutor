@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 
 	import { defaultTtsLangs } from '$lib/data/locales';
-	import type { Config } from '$lib/types/config';
+	import type { Config } from '$lib/config';
 	import {
 		loadVoiceLangMap,
 		displayVoice,

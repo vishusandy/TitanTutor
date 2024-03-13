@@ -1,5 +1,9 @@
+import { defaultUserId } from "./conf/config";
+import { defaultStorable } from "./data/config";
+import { defaultLessonName } from "./data/locales";
+
 const DB_NAME = 'vktutor';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 export const config_store = 'user_config';
 export const lesson_opts_store = 'lesson_options';
@@ -20,23 +24,49 @@ export function connect(): Promise<IDBDatabase> {
             reject('could not connect to db');
         }
 
-        req.onupgradeneeded = (e: IDBVersionChangeEvent) => {
+        req.onupgradeneeded = async (e: IDBVersionChangeEvent) => {
             // @ts-ignore
-            const db = e.target.result;
+            const db: IDBDatabase = e.target.result;
+            // @ts-ignore
+            const t: IDBTransaction = e.target.transaction;
 
-            // reset(db);
+            if (e.oldVersion < 1) {
+                const conf = db.createObjectStore(config_store, { keyPath: 'user' });
+                conf.createIndex('user', 'user', { unique: true });
+                const config = defaultStorable();
+                t.objectStore(config_store).put(config)
 
-            const conf = db.createObjectStore('user_config', { keyPath: 'user' });
-            conf.createIndex('user', 'user', { unique: true });
+                const defaultLesson = defaultLessonName(config.lang);
 
-            const lesson_opts = db.createObjectStore('lesson_options', { keyPath: 'lesson_id' });
-            lesson_opts.createIndex('lesson_id', 'lesson_id', { unique: true });
+                console.log('creating lesson opts store');
+                const lesson_opts = db.createObjectStore(lesson_opts_store, { keyPath: 'lesson_id' });
+                lesson_opts.createIndex('lesson_id', 'lesson_id', { unique: true });
+                t.objectStore(lesson_opts_store).put({ lesson_id: defaultLesson });
 
-            const user_lessons = db.createObjectStore('user_lessons', { keyPath: 'id' });
-            user_lessons.createIndex('id', 'id', { unique: true });
+                const user_lessons = db.createObjectStore(user_lessons_store, { keyPath: 'id' });
+                user_lessons.createIndex('id', 'id', { unique: true });
 
-            const adaptive = db.createObjectStore('adaptive', { keyPath: 'lesson_id' });
-            adaptive.createIndex('lesson_id', 'lesson_id', { unique: true });
+                const adaptive = db.createObjectStore(adaptive_store, { keyPath: 'lesson_id' });
+                adaptive.createIndex('lesson_id', 'lesson_id', { unique: true });
+            } else {
+                if (e.oldVersion === 1) {
+                    const store = t.objectStore(config_store);
+                    const req = store.get(defaultUserId);
+                    req.onsuccess = (e: Event) => {
+                        const c = req.result;
+                        c.shortucts = { stop: c.stop, pause: c.pause };
+                        c.stop = undefined;
+                        c.pause = undefined;
+                        store.put(c);
+                    };
+                    req.onerror = async (e) => {
+                        const config = defaultStorable();
+                        store.put(config);
+                    }
+                }
+            }
+
+
             resolve(db);
         }
     });
@@ -56,27 +86,42 @@ function reset(db: IDBDatabase) {
 }
 
 
-export function get<Result, Success, Err>(db: IDBDatabase, store_name: string, key: any, getValue: (res: Result) => Success, getDefault: () => Success, onError: (e: Event) => Err): Promise<Success | Err> {
-    // https://stackoverflow.com/questions/52836721/await-for-indexdb-event-in-async-function
+// export function getCallback<Result, Success, Err>(db: IDBDatabase, store_name: string, key: any, getValue: (res: Result) => Success, getDefault: () => Success, onError: (e: Event) => Err): Promise<Success | Err> {
+//     // https://stackoverflow.com/questions/52836721/await-for-indexdb-event-in-async-function
+//     return new Promise((resolve, reject) => {
+//         let result: Success | Err;
+//         const t = db.transaction(store_name, 'readonly');
+
+//         t.oncomplete = _ => resolve(result);
+//         // @ts-ignore
+//         t.onerror = e => reject(e.target?.error);
+
+//         const store = t.objectStore(store_name);
+//         const req = store.get(key);
+//         req.onsuccess = _ => {
+//             const rst = req.result;
+//             if (rst !== undefined) {
+//                 result = getValue(req.result);
+//             } else {
+//                 result = getDefault();
+//             }
+//         }
+//         req.onerror = e => result = onError(e);
+//     });
+// }
+
+export function get<T>(db: IDBDatabase, store: string, key: string): Promise<T | undefined> {
+    let result: T;
+    let err: boolean = false;
+
     return new Promise((resolve, reject) => {
-        let result: Success | Err;
-        const t = db.transaction(store_name, 'readonly');
+        const trans = db.transaction(store, 'readonly');
+        trans.oncomplete = () => (!err) ? resolve(result) : resolve(undefined);
+        trans.onerror = () => resolve(undefined);
 
-        t.oncomplete = _ => resolve(result);
-        // @ts-ignore
-        t.onerror = e => reject(e.target?.error);
-
-        const store = t.objectStore(store_name);
-        const req = store.get(key);
-        req.onsuccess = _ => {
-            const rst = req.result;
-            if (rst !== undefined) {
-                result = getValue(req.result);
-            } else {
-                result = getDefault();
-            }
-        }
-        req.onerror = e => result = onError(e);
+        const req = trans.objectStore(store).get(key);
+        req.onsuccess = () => result = req.result;
+        req.onerror = () => err = true;
     });
 }
 

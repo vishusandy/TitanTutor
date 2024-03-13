@@ -1,5 +1,5 @@
 <script lang="ts" generics="T">
-	import type { Config } from '$lib/types/config';
+	import type { Config } from '$lib/config';
 	import type { OptAvailable, UserValue } from '$lib/types/forms';
 	import { updateCheckboxProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';

@@ -1,5 +1,5 @@
 import { get, user_lessons_store } from "$lib/db";
-import type { Config } from "$lib/types/config";
+import type { Config } from "$lib/config";
 import { BaseWordList, type StorableBaseWordList } from "./wordlist";
 import { Lesson } from "../lesson";
 import type { StorableBaseLesson } from "../../types/lessons";
@@ -40,6 +40,13 @@ export class UserWordList extends BaseWordList {
 }
 
 export async function loadUserLesson(config: Config, db: IDBDatabase, id: string, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-    const err = () => { throw new Error(`Could not find lesson ${id}`) };
-    return await get<StorableBaseLesson, Promise<Lesson>, Promise<Lesson>>(db, user_lessons_store, id, (res) => Lesson.deserializeAndBuild(id, res, config, db, fetchFn), err, err);
+    // const err = () => { throw new Error(`Could not find lesson ${id}`) };
+    // return await getCallback<StorableBaseLesson, Promise<Lesson>, Promise<Lesson>>(db, user_lessons_store, id, (res) => Lesson.deserializeAndBuild(id, res, config, db, fetchFn), err, err);
+
+    const data = await get<StorableBaseLesson>(db, user_lessons_store, id);
+    if (data === undefined) {
+        throw new Error(`Could not find lesson ${id}`);
+    }
+    return Lesson.deserializeAndBuild(id, data, config, db, fetchFn);
+
 }
