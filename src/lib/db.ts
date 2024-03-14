@@ -2,7 +2,7 @@ import { defaultUserId } from "./conf/config";
 // import { defaultStorable } from "./data/config";
 // import { defaultLessonName } from "./data/locales";
 
-const DB_NAME = 'vktutor';
+const DB_NAME = 'titantutor';
 const DB_VERSION = 2;
 
 export const config_store = 'user_config';
