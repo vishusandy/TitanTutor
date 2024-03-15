@@ -97,7 +97,7 @@
 	<label class:disabled={isDisabled} for={id}>{label}</label>
 </div>
 {#if state === 'user'}
-	<div class="label check-value disabled">
+	<div class="label check-value valign disabled">
 		{#if inheritValue !== null}
 			<input title={userLabel} disabled type="number" value={inheritValue} />
 		{:else}
@@ -105,9 +105,9 @@
 		{/if}
 	</div>
 {:else if state === null}
-	<div class="label check-value" class:disabled={override !== 'enabled'}>{nullLabel}</div>
+	<div class="check-value valign" class:disabled={override !== 'enabled'}>{nullLabel}</div>
 {:else if Number.isInteger(state)}
-	<div class="check-value input">
+	<div class="check-value valign input">
 		<input
 			bind:this={numberInput}
 			on:change={numberChanged}

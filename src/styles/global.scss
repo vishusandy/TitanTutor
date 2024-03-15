@@ -23,6 +23,10 @@ body>div {
     grid-template-rows: repeat(1, min-content) 1fr 8fr;
 }
 
+.valign {
+    align-self: center;
+}
+
 .hidden {
     opacity: 0;
     display: none;
