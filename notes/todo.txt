@@ -1,6 +1,7 @@
 
 
 fix:
+    - fix close dialog button - looks weird (maybe change focus)
     - fix mobile by adding case sensitivity option
     - add a "please wait" and loading icon for Audio dialog until 'voiceschanged' event is fired
         - add a timeout as well as browser detect for chromium for instruction message

@@ -1,19 +1,8 @@
-	<svg class="loading" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-		<circle class="circle" cx="200" cy="200" r="100" />
-		<circle class="circle-bg" cx="200" cy="200" r="103" />
-	</svg>
+<svg class="spinner" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+	<circle class="circle" cx="200" cy="200" r="100" />
+</svg>
 
 <style>
-	.loading {
-		height: 50px;
-		width: 50px;
-		/* animation: spin 10s linear infinite; */
-	}
-	.circle-bg {
-		fill: none;
-		/* fill: #5e5e5ea0; */
-		/* stroke: #5e5e5ea0; */
-	}
 	circle {
 		fill: none;
 		stroke-width: 30;

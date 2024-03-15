@@ -7,6 +7,7 @@ export class Language {
     lang: string = '';
     langName: string = '';
     textDirection: string = 'ltr';
+    loading: string = '';
     stopMsg: string = '';
     inputNotStarted: string = '';
     inputPaused: string = '';

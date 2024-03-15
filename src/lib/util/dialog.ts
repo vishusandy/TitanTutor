@@ -1,9 +1,8 @@
 import Dialog from "../components/dialog.svelte";
-import Voice from "../components/dialogs/voice.svelte";
+import Tts from "../components/dialogs/tts.svelte";
 import Stats from "../components/dialogs/stats.svelte";
 import LessonConfig from "../components/dialogs/lesson_options.svelte";
 
-import type { Audio } from "../audio";
 import type { Config } from "../config";
 import type { BaseStats } from "../stats";
 import type { InnerDialogComponent, CloseFn } from "../types/types";
@@ -13,7 +12,7 @@ import User from "../components/dialogs/user_config.svelte";
 
 
 export function showVoiceDialog(config: Config, db: IDBDatabase) {
-    const dialogProps = { title: config.lang.ttsDialogTitle, content: Voice, hasSubmit: true, config, db }
+    const dialogProps = { title: config.lang.ttsDialogTitle, content: Tts, hasSubmit: true, config, db }
     return createDialog(dialogProps);
 }
 

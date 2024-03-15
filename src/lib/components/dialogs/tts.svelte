@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import Spinner from '../imgs/spinner.svelte';
+
 	import { defaultTtsLangs } from '$lib/data/locales';
 	import type { Config } from '$lib/config';
 	import {
@@ -22,6 +24,8 @@
 
 	export let config: Config;
 	export let text: string = config.lang.ttsExampleText;
+	
+	export let db: IDBDatabase;
 
 	let pitch: number = config.tts !== undefined ? config.tts.pitch : 1;
 	let rate: number = config.tts !== undefined ? config.tts.rate : 1;
@@ -36,6 +40,8 @@
 	let langSelector: HTMLSelectElement;
 	let voiceSelector: HTMLSelectElement;
 	let enabled = !mute;
+	let voicesLoaded = false;
+	let voicesTimeout = false;
 	$: mute = !enabled;
 
 	voiceListLoaded(); // this initial load will not work for chrome (see onMount)
@@ -45,6 +51,11 @@
 
 		// Chrome browsers are weird.  You cannot convince me otherwise.
 		speechSynthesis.addEventListener('voiceschanged', voiceListLoaded);
+		
+		setTimeout(() => {
+			console.log('voices timeout');
+			if (!voicesLoaded) voicesTimeout = true;
+		}, 10000);
 	});
 
 	$: {
@@ -110,6 +121,7 @@
 		if (langs.size !== 0) return;
 		langs = loadVoiceLangMap();
 		if (langs.size === 0) return;
+		voicesLoaded = true;
 
 		if (config.tts !== undefined && config.tts.voice.name !== '') {
 			setChosenLang(config.tts.voice.name);
@@ -149,8 +161,15 @@
 	}
 </script>
 
-{#if langs.size === 0}
-	<div>{@html config.lang.ttsNotEnabled}</div>
+{#if !voicesLoaded || langs.size === 0}
+	{#if !voicesTimeout}
+		<div class="loading">
+			<p>{config.lang.loading}</p>
+			<Spinner />
+		</div>
+	{:else}
+		<div>{@html config.lang.ttsNotEnabled}</div>
+	{/if}
 {:else}
 	<fieldset class:mute-group={mute} disabled={mute}>
 		<legend>
@@ -270,5 +289,13 @@
 	.btn-cont {
 		grid-column: span 2;
 		text-align: center;
+	}
+
+	.loading {
+		text-align: center;
+	}
+	:global(.loading svg) {
+		height: 50px;
+		width: 50px;
 	}
 </style>
