@@ -103,7 +103,7 @@ export class WordState {
         }
     }
 
-    private mapState(): LetterState[] {
+    mapState(): LetterState[] {
         return this.state.map((_, i) => {
             if (this.inputChars.length === i) return LetterState.Active;
             if (this.inputChars.length > i) {

@@ -1,15 +1,14 @@
 
 
 fix:
-    - fix close dialog button - looks weird (maybe change focus)
+    - restart lesson doesn't refresh words
     - fix mobile by adding case sensitivity option
-    - add a "please wait" and loading icon for Audio dialog until 'voiceschanged' event is fired
-        - add a timeout as well as browser detect for chromium for instruction message
     - shift and other keys (e.g. arrow keys) unpauses
     - WPM is incorrectly calculated
 
 finish:
     - store typo data for adaptive lessons
+    - add button in lesson settings to clear typos for adaptive lessons
     - show custom word lists in lesson selection
         - show under "User Lessons" group (with transation for "User Lessons")
 

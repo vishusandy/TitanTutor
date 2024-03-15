@@ -12,8 +12,8 @@ import { adaptive_typeid, userwordlist_typeid, wordlist_typeid } from "$lib/conf
 import { CheckMode } from "$lib/types/types";
 import type { WordState } from "$lib/word_state";
 import type { LessonStats } from "$lib/stats";
-import type { Action } from "$lib/types/types";
-import { checkWordEnd, processInput } from "$lib/util/typing";
+import { Action } from "$lib/types/types";
+import { checkWordEnd } from "$lib/util/typing";
 
 export type StorableAdaptive = { type: typeof adaptive_typeid, base: StorableBaseLesson };
 
@@ -64,8 +64,11 @@ export class AdaptiveList implements Lesson {
     }
 
     saveTypos(db: IDBDatabase, lesson_id: string) {
-        const data: TypoData = { lesson_id, typos: this.typos };
-        save(db, adaptive_store, data);
+        const typos: TypoList = [];
+        for (let a of this.typoMap.entries()) {
+            typos.push(a);
+        }
+        save(db, adaptive_store, { lesson_id, typos });
     }
 
     // addTypos(word: WordState) {
@@ -212,9 +215,62 @@ export class AdaptiveList implements Lesson {
         return lesson;
     }
 
+
+    processInput(e: InputEvent, config: Config, word: WordState, stats: LessonStats) {
+        if (e.inputType === 'deleteContentBackward' && config.backspace === true) {
+            e.preventDefault();
+            return (word.addBackspace(config.backspace)) ? Action.Refresh : Action.None;
+        }
+
+        if (e.inputType !== 'insertText') {
+            e.preventDefault();
+            return Action.None;
+        }
+
+        return this.processChars(e, config, word, stats);
+    }
+
+    processChars(e: InputEvent, config: Config, word: WordState, stats: LessonStats): Action {
+        if (!e.data) return Action.None;
+
+        let act = Action.None;
+
+        // allow multiple chars (eg mobile input)
+        for (const c of [...e.data]) {
+            const mapped = config.remap.get(c);
+            if (mapped === ' ') {
+                act |= checkWordEnd({ key: ' ', preventDefault: () => { } }, config, word, stats);
+            } else if (mapped !== undefined) {
+                word.input += mapped;
+                word.inputChars = [...word.input];
+                word.state = word.mapState();
+                if (word.inputChars.length <= word.wordChars.length) {
+                    const i = word.inputChars.length - 1;
+                    const char = word.inputChars[i];
+                    if (char !== word.wordChars[i]) {
+                        const count = this.typoMap.get(char);
+                        this.typoMap.set(char, (count !== undefined) ? count + 1 : 1);
+                        word.uncorrectedErrors += 1;
+                    }
+                } else {
+                    word.uncorrectedErrors += 1;
+                }
+                act |= Action.CharAdded | Action.Refresh;
+            }
+        }
+
+        if (act != Action.None) {
+            word.addKeystroke();
+            e.preventDefault();
+        }
+
+        return act;
+    }
+
+
     // Process character input
     handleInput(e: InputEvent, config: Config, word: WordState, stats: LessonStats): Action {
-        return processInput(e, config, word, stats);
+        return this.processInput(e, config, word, stats);
     }
 
 
@@ -223,3 +279,4 @@ export class AdaptiveList implements Lesson {
         return checkWordEnd(e, config, word, stats);
     }
 }
+

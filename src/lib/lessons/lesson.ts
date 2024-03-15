@@ -255,4 +255,20 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         } while (c !== undefined);
         return false;
     }
+
+    /**
+     * Check if a lesson contains a specified wrapper or base class and returns it if found.
+     * @param {Lesson} lesson - the topmost class that may contain child lessons
+     * @param {string} id - the ID to check
+     * @returns {boolean} returns the lesson class if found, otherwise returns null
+     */
+    static getClass(lesson: Lesson, id: string): Lesson | null {
+        let l: Lesson, c: Lesson | undefined = lesson;
+        do {
+            l = c;
+            if (l.getType() === id) return l;
+            c = l.getChild();
+        } while (c !== undefined);
+        return null;
+    }
 }

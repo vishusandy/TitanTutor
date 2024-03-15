@@ -27,7 +27,8 @@
 	} from '$lib/util/dialog';
 	import { lessonInSeries, lessonPlans } from '$lib/conf/lesson_plans';
 	import type { LessonChange } from '$lib/types/events';
-	import { get } from '$lib/db';
+	import { adaptive_typeid } from '$lib/conf/lesson_types';
+	import type { AdaptiveList } from '$lib/lessons/base/adaptive_list';
 
 	export let db: IDBDatabase;
 	export let originalConfig: Config;
@@ -116,13 +117,15 @@
 		}
 	}
 
-	async function reset(lessonOpts?: Partial<LessonTypingConfig>) {
+	async function reset(opts?: Partial<LessonTypingConfig>) {
 		const id = lesson.baseLesson().id;
 		// if (lessonOpts === undefined) lessonOpts = await Lesson.getLessonOptions(id, db);
-		if (lessonOpts === undefined) lessonOpts = {};
+		if (opts === undefined) opts = {};
 
-		lesson = await Lesson.load(id, originalConfig, db);
-		queue = new Queue(originalConfig, lesson, lessonOpts, lessonStats);
+		config = originalConfig.mergeLessonOptions(opts);
+		lessonOpts = opts;
+		lesson = await Lesson.load(id, config, db);
+		queue = new Queue(originalConfig, lesson, opts, lessonStats);
 		started = false;
 		paused = true;
 		finished = false;
@@ -143,6 +146,10 @@
 						if (v === true) {
 							originalConfig.userStats.add(lessonStats);
 							originalConfig.saveUserConfig(db);
+							const adaptive = Lesson.getClass(lesson, adaptive_typeid);
+							if (adaptive !== null) {
+								(<AdaptiveList>adaptive).saveTypos(db, lesson.baseLesson().id);
+							}
 						}
 					}
 				);
