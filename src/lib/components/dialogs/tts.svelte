@@ -24,8 +24,9 @@
 
 	export let config: Config;
 	export let text: string = config.lang.ttsExampleText;
-	
+
 	export let db: IDBDatabase;
+	db; // silence svelte(unused-export-let) warning
 
 	let pitch: number = config.tts !== undefined ? config.tts.pitch : 1;
 	let rate: number = config.tts !== undefined ? config.tts.rate : 1;
@@ -51,9 +52,8 @@
 
 		// Chrome browsers are weird.  You cannot convince me otherwise.
 		speechSynthesis.addEventListener('voiceschanged', voiceListLoaded);
-		
+
 		setTimeout(() => {
-			console.log('voices timeout');
 			if (!voicesLoaded) voicesTimeout = true;
 		}, 10000);
 	});
