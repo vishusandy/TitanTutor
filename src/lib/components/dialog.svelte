@@ -1,6 +1,8 @@
 <script lang="ts" generics="T">
 	import { onDestroy, onMount } from 'svelte';
 
+	import Close from './imgs/close.svelte';
+
 	import type { Config } from '$lib/config';
 	import type { CloseFn, InnerDialogComponent } from '$lib/types/types';
 
@@ -19,7 +21,16 @@
 	const closeTime: number = 100.0;
 
 	let dialog: HTMLDialogElement;
+	let closeButton: HTMLButtonElement;
+	let submitButton: HTMLButtonElement | undefined = undefined;
 
+	onMount(() => {
+		if (closeButton !== undefined) {
+			setTimeout(() => {
+				closeButton.focus();
+			}, 1);
+		}
+	});
 	function animateClose() {
 		dialog.classList.add('closing');
 	}
@@ -52,7 +63,9 @@
 		<div>
 			<header>
 				<h1>{title}</h1>
-				<button type="button" class="close-btn" on:click={handleClose} title={config.lang.close} />
+				<button type="button" class="close-btn" on:click={handleClose} title={config.lang.close}>
+					<Close />
+				</button>
 			</header>
 			<div class="content">
 				{#if hasSubmit}
@@ -68,11 +81,16 @@
 				{/if}
 			</div>
 			<footer>
-				<button type="button" class="close" on:click={handleClose}
+				<button
+					type="button"
+					id="dialog-close"
+					class="close"
+					on:click={handleClose}
+					bind:this={closeButton}
 					>{#if hasSubmit}{cancelLabel}{:else}{closeLabel}{/if}</button
 				>
 				{#if hasSubmit}
-					<button type="submit">{submitLabel}</button>
+					<button type="submit" bind:this={submitButton}>{submitLabel}</button>
 				{/if}
 			</footer>
 		</div>
@@ -116,9 +134,23 @@
 		border: 0px;
 		line-height: 0px;
 		padding: 0.2rem;
-		width: 0.8rem;
-		height: 0.8rem;
-		background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
+		width: 1.5rem;
+		height: 1.5rem;
+		margin: 0px 0.3rem;
+	}
+
+	:global(.close-btn svg) {
+		stroke: #777;
+		fill: none;
+		stroke-width: 2;
+	}
+
+	:global(.close-btn svg line) {
+		vector-effect: non-scaling-stroke;
+	}
+
+	:global(.close-btn:hover svg, .close-btn:focus svg) {
+		stroke: #444;
 	}
 
 	.content {
