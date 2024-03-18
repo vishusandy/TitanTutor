@@ -7,17 +7,15 @@ fix:
     - WPM is incorrectly calculated
 
 finish:
-    - store typo data for adaptive lessons
     - add button in lesson settings to clear typos for adaptive lessons
     - show custom word lists in lesson selection
         - show under "User Lessons" group (with transation for "User Lessons")
 
 features:
     - case sensitivity option
-    - automatically go to next word on mobile (in word mode)
-    - show inherited values in lesson options dialog
-    - add length property to measure word progress
     - manage/create custom word lists
+    - automatically go to next word on mobile (in word mode)
+    - add length property to measure word progress
     - multilingual example text
 
 questions:
