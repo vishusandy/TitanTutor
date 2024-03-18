@@ -1,20 +1,17 @@
 
 
 fix:
-    - restart lesson doesn't refresh words
-    - fix mobile by adding case sensitivity option
     - shift and other keys (e.g. arrow keys) unpauses
     - WPM is incorrectly calculated
 
 finish:
+    - add button to clear ALL IndexedDB data
     - add button in lesson settings to clear typos for adaptive lessons
     - show custom word lists in lesson selection
         - show under "User Lessons" group (with transation for "User Lessons")
 
 features:
-    - case sensitivity option
     - manage/create custom word lists
-    - automatically go to next word on mobile (in word mode)
     - add length property to measure word progress
     - multilingual example text
 
