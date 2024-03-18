@@ -119,7 +119,6 @@
 
 	async function reset(opts?: Partial<LessonTypingConfig>) {
 		const id = lesson.baseLesson().id;
-		// if (lessonOpts === undefined) lessonOpts = await Lesson.getLessonOptions(id, db);
 		if (opts === undefined) opts = {};
 
 		config = originalConfig.mergeLessonOptions(opts);
@@ -130,31 +129,29 @@
 		paused = true;
 		finished = false;
 		lessonStats = new LessonStats(id, config.checkMode);
-
-		let child;
-		while ((child = historyNode.firstChild)) historyNode.removeChild(child);
+		clearHistory(historyNode);
 	}
 
 	async function endLesson() {
-		if (lessonStats.chars !== 0) {
-			paused = true;
-			lessonStats.pause();
-			lessonStats = lessonStats;
-			if (originalConfig.logStats) {
-				await showStatsConfirmDialog(originalConfig, db, lessonStats).then(
-					(v: boolean | undefined) => {
-						if (v === true) {
-							originalConfig.userStats.add(lessonStats);
-							originalConfig.saveUserConfig(db);
-							const adaptive = Lesson.getClass(lesson, adaptive_typeid);
-							if (adaptive !== null) {
-								(<AdaptiveList>adaptive).saveTypos(db, lesson.baseLesson().id);
-							}
-						}
-					}
-				);
-			}
+		paused = true;
+		lessonStats.pause();
+		lessonStats = lessonStats;
+
+		if (lessonStats.chars === 0 || !originalConfig.logStats) {
+			finished = true;
+			return;
 		}
+
+		await showStatsConfirmDialog(originalConfig, db, lessonStats).then((v: boolean | undefined) => {
+			if (v === true) {
+				originalConfig.userStats.add(lessonStats);
+				originalConfig.saveUserConfig(db);
+				const adaptive = Lesson.getClass(lesson, adaptive_typeid);
+				if (adaptive !== null) {
+					(<AdaptiveList>adaptive).saveTypos(db, lesson.baseLesson().id);
+				}
+			}
+		});
 		finished = true;
 		return;
 	}
@@ -214,7 +211,7 @@
 		}
 
 		if (action & Action.LessonCompleted) {
-			if (!queue.word.empty()) addToHistory(queue.word);
+			if (!queue.word.empty()) addToHistory(queue.word, historyNode);
 			queue.word = new WordState('');
 			lessonCompleted();
 		}
@@ -226,7 +223,7 @@
 				return;
 			}
 			if (n[0] !== undefined) {
-				addToHistory(n[0]);
+				addToHistory(n[0], historyNode);
 				if (ctx === undefined) addSpace(originalConfig.lang, historyNode);
 			}
 		}
@@ -244,14 +241,19 @@
 		}
 	}
 
-	function addToHistory(w: WordState) {
+	function addToHistory(w: WordState, node: HTMLElement) {
 		new Word({
-			target: historyNode,
+			target: node,
 			props: {
 				word: w.wordChars,
 				state: w.state
 			}
 		});
+	}
+
+	function clearHistory(node: HTMLElement) {
+		let child: ChildNode | null;
+		while ((child = node.firstChild)) node.removeChild(child);
 	}
 
 	async function showSessionStatsDialog() {
