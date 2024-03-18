@@ -18,6 +18,8 @@ export class Language {
     no: string = '';
     on: string = '';
     off: string = '';
+    caseSensitive: string = '';
+    caseInsensitive: string = '';
     none: string = '';
     disabled: string = '';
     infinite: string = '';
@@ -90,6 +92,7 @@ export class Language {
     configCheckModeWords: string = '';
     configAcceptBackspace: string = '';
     configLogLessonStats: string = '';
+    configCaseSensitive: string = '';
     configStopHotkey: string = '';
     configPauseHotkey: string = '';
     configRemap: string = '';

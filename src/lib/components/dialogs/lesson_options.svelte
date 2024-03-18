@@ -213,6 +213,19 @@
 		override={overrides.adaptive}
 		inheritValue={config.adaptive}
 	/>
+
+	<Bool
+		bind:getState={dataFns.caseSensitive}
+		on:updateForm={updateState}
+		{config}
+		id="caseSensitive"
+		label={config.lang.configCaseSensitive}
+		onLabel={config.lang.caseSensitive}
+		offLabel={config.lang.caseInsensitive}
+		initialState={state.caseSensitive}
+		override={overrides.caseSensitive}
+		inheritValue={config.caseSensitive}
+	/>
 </div>
 
 <style>

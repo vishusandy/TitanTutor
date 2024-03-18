@@ -1,18 +1,21 @@
 import type { BasicConfigProps } from "$lib/types/config";
 import { CheckMode } from "$lib/types/types";
+import { hasTouchScreen } from "$lib/util/device";
 
 export const defaultUserId = 'default';
+
+export const virtualKeyboard = hasTouchScreen();
 
 export const configDefaultValues: BasicConfigProps = {
     user: defaultUserId,
     lastLesson: null,
-    version: 1,
     checkMode: CheckMode.Char,
     backspace: true,
     wordBatchSize: 50,
     minQueue: 20,
-    shortcuts: { stop: 'F7', pause: 'F4'},
+    shortcuts: { stop: 'F7', pause: 'F4' },
     logStats: true,
+    caseSensitive: !virtualKeyboard,
     spaceOptional: false,
     random: true,
     until: 100,

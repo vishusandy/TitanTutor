@@ -33,7 +33,7 @@ export function processChars(e: InputEvent, config: Config, word: WordState, sta
         if (mapped === ' ') {
             act |= checkWordEnd({ key: ' ', preventDefault: () => { } }, config, word, stats);
         } else if (mapped !== undefined) {
-            word.addChar(mapped);
+            word.addChar(config.caseSensitive ? mapped: mapped.toLowerCase());
             act |= Action.CharAdded | Action.Refresh;
         }
     }

@@ -35,13 +35,11 @@ export class AdaptiveList implements Lesson {
     base: BaseWordList;
     pos: number;
     typoMap: Map<string, number>;
-    private typos: TypoList;
     wordProbTree: BinaryTree<string, number>;
 
-    constructor(base: BaseWordList, typos: TypoList) {
+    private constructor(base: BaseWordList, typos: TypoList) {
         this.pos = 0;
         this.base = base;
-        this.typos = typos;
         this.typoMap = new Map(typos);
         this.wordProbTree = AdaptiveList.newWordProbTree(this.base.words, typos);
     }
@@ -51,10 +49,6 @@ export class AdaptiveList implements Lesson {
     }
 
     static async loadTypos(base: BaseWordList | UserWordList, db: IDBDatabase): Promise<TypoList> {
-        // const def = () => { return { lesson_id: '', typos: emptyTypoList((base as BaseWordList).words) } };
-        // const a = await getCallback(db, adaptive_store, base.id, (r: TypoData) => r, def, def);
-        // return a.typos;
-
         const data = await get<TypoData>(db, adaptive_store, base.id);
         if (data === undefined) {
             return emptyTypoList((base as BaseWordList).words);
@@ -70,28 +64,6 @@ export class AdaptiveList implements Lesson {
         }
         save(db, adaptive_store, { lesson_id, typos });
     }
-
-    // addTypos(word: WordState) {
-    //     const m = Math.min(word.wordChars.length, word.inputChars.length);
-    //     const mx = Math.max(word.wordChars.length, word.inputChars.length);
-    //     let ic: string, wc: string, r: number | undefined;
-    //     for (let i = 0; i < m; i++) {
-    //         wc = word.wordChars[i];
-    //         ic = word.inputChars[i];
-    //         if (wc !== ic) {
-    //             r = this.typoMap.get(wc);
-    //             if (r === undefined) {
-    //                 this.typoMap.set(wc, 1);
-    //             } else {
-    //                 this.typoMap.set(wc, r + 1);
-    //             }
-    //         }
-    //     }
-    //     for (const c of word.inputChars) {
-
-    //     }
-    // }
-
 
     /**
      * Creates a new binary tree representing the probability of encountering each word.
@@ -123,11 +95,15 @@ export class AdaptiveList implements Lesson {
      * Calculate the probability of encountering a given character.
      *
      *   Formula:
+     * 
+     * ```
      *       ( n / (sum*factor) + (1-1/factor) ) / ( length * (1-1/factor) + 1/factor )
+     * ```
+     * 
      *   where:
-     *       n = num of typos for a given char,
-     *       sum = total number of typos,
-     *       factor = number to apply to ensure characters without typos do not get a probability of 0 (or NaN value)
+     *   - n = num of typos for a given char
+     *   - sum = total number of typos
+     *   - factor = number to apply to ensure characters without typos do not get a probability of 0 (or NaN value)
      *   
      *   @param {TypoList} typos - Array of (char, typo count) tuples
      *   @param {number} factor - Lower factor means probabilities are more affected by typo count.  Must be above 1 to prevent NaN values.
@@ -237,7 +213,7 @@ export class AdaptiveList implements Lesson {
 
         // allow multiple chars (eg mobile input)
         for (const c of [...e.data]) {
-            const mapped = config.remap.get(c);
+            const mapped = (config.caseSensitive) ? config.remap.get(c) : config.remap.get(c)?.toLocaleLowerCase();
             if (mapped === ' ') {
                 act |= checkWordEnd({ key: ' ', preventDefault: () => { } }, config, word, stats);
             } else if (mapped !== undefined) {

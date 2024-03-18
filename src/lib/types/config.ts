@@ -14,15 +14,15 @@ export type ShortuctConfig = {
  */
 export type ConfigProps = {
     user: string,
-    lastLesson: string | null;
-    version: number;
-    tts: Audio | undefined;
-    shortcuts: ShortuctConfig;
-    logStats: boolean;
-    audioDefaults: string[]; // array to match different browsers' tts languages
-    remap: Remap;
-    lang: Language;
-    userStats: UserStats;
+    lastLesson: string | null,
+    tts: Audio | undefined,
+    shortcuts: ShortuctConfig,
+    logStats: boolean,
+    caseSensitive: boolean,
+    audioDefaults: string[], // array to match different browsers' tts languages
+    remap: Remap,
+    lang: Language,
+    userStats: UserStats,
 } & LessonTypingConfig;
 
 /**

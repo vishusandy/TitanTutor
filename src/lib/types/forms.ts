@@ -45,6 +45,7 @@ export const defaultLessonFormState: LessonFormState = {
     minQueue: 'user',
     spaceOptional: 'user',
     adaptive: 'user',
+    caseSensitive: 'user',
 };
 
 export const defaultLessonOptsAvail: LessonOptsAvailable = {
@@ -56,6 +57,7 @@ export const defaultLessonOptsAvail: LessonOptsAvailable = {
     minQueue: 'enabled',
     spaceOptional: 'enabled',
     adaptive: 'enabled',
+    caseSensitive: 'enabled'
 };
 
 /** 

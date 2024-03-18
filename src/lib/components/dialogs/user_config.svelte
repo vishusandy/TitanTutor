@@ -9,6 +9,8 @@
 	import { CheckMode } from '$lib/types/types';
 
 	export let config: Config;
+	export let db: IDBDatabase;
+	db;
 
 	let checkMode: CheckMode = config.checkMode;
 	let backspace: boolean = config.backspace;
@@ -23,6 +25,7 @@
 	let random: boolean = config.random;
 	let untilFn: () => number | null;
 	let adaptive: boolean = config.adaptive;
+	let caseSensitive: boolean = config.caseSensitive;
 
 	let selectedKbMapping: string = config.remap.getId();
 	let selectedLang: string = config.lang.lang;
@@ -34,10 +37,10 @@
 		return new Config({
 			user: config.user,
 			lastLesson: config.lastLesson,
-			version: 1,
 			tts: config.tts,
 			shortcuts: { stop, pause },
 			logStats,
+			caseSensitive,
 			audioDefaults: defaultTtsLangs(lang.lang),
 			remap,
 			lang,
@@ -98,6 +101,9 @@
 
 	<label for="logStats">{config.lang.configLogLessonStats}</label>
 	<input id="logStats" type="checkbox" bind:checked={logStats} />
+
+	<label for="caseSensitive">{config.lang.configCaseSensitive}</label>
+	<input id="caseSensitive" type="checkbox" bind:checked={caseSensitive} />
 
 	<label for="spaceOptional">{config.lang.configSpaceOptional}</label>
 	<div>

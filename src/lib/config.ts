@@ -87,7 +87,8 @@ export class Config implements ConfigProps {
             checkMode: opts.checkMode ?? this.checkMode,
             backspace: opts.backspace ?? this.backspace,
             spaceOptional: opts.spaceOptional ?? this.spaceOptional,
-            adaptive: opts.adaptive ?? this.adaptive
+            adaptive: opts.adaptive ?? this.adaptive,
+            caseSensitive: opts.caseSensitive ?? this.caseSensitive,
         }
     }
 
@@ -100,13 +101,13 @@ export class Config implements ConfigProps {
         return new Config({
             user: this.user,
             lastLesson: this.lastLesson,
-            version: this.version,
             checkMode: opts.checkMode ?? this.checkMode,
             backspace: opts.backspace ?? this.backspace,
             wordBatchSize: opts.wordBatchSize ?? this.wordBatchSize,
             minQueue: opts.minQueue ?? this.minQueue,
             shortcuts: this.shortcuts,
             logStats: this.logStats,
+            caseSensitive: opts.caseSensitive ?? this.caseSensitive,
             tts: this.tts,
             audioDefaults: this.audioDefaults,
             remap: this.remap,
@@ -177,7 +178,7 @@ export async function deserialize(s: ConfigStorable, fetchFn: typeof fetch = fet
     const tts = Audio.deserialize(o.tts);
     const userStats = UserStats.deserialize(o.userStats);
 
-    const c: ConfigProps = { ...o, lang, remap, tts, userStats };
+    const c: ConfigProps = { ...configDefaultValues, ...o, lang, remap, tts, userStats };
     return new Config(c);
 }
 

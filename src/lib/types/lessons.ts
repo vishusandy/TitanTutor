@@ -18,7 +18,8 @@ export type LessonBasicConfig = {
     minQueue: number,
     checkMode: CheckMode,
     backspace: boolean,
-    spaceOptional: boolean
+    spaceOptional: boolean,
+    caseSensitive: boolean,
 };
 
 /**
