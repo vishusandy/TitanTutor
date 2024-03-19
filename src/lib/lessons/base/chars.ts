@@ -13,6 +13,7 @@ import type { LessonStats } from "$lib/stats";
 import type { Action } from "$lib/types/types";
 import { checkWordEnd, processInput } from "$lib/util/typing";
 import { chars_typeid } from "$lib/conf/lesson_types";
+import { defaultLessonOptsAvail } from '$lib/types/forms';
 
 export type StorableChars = { type: typeof chars_typeid, name: string, lang: string, chars: string[], min: number, max: number, weights: number[] } & StorableBaseLesson;
 
@@ -125,25 +126,11 @@ export class RandomChars implements BaseLesson {
 
     overrides(): LessonOptsAvailable {
         return {
+            ...defaultLessonOptsAvail,
             random: true,
-            until: 'enabled',
-            checkMode: 'enabled',
-            backspace: 'enabled',
-            wordBatchSize: 'enabled',
-            minQueue: 'enabled',
-            spaceOptional: 'enabled',
             adaptive: 'disabled',
+
         };
-        // return {
-        //     random: false,
-        //     until: null,
-        //     checkMode: CheckMode.WordRepeat,
-        //     backspace: false,
-        //     wordBatchSize: 11,
-        //     minQueue: 7,
-        //     spaceOptional: true,
-        //     adaptive: true,
-        // };
     }
 
     // Process character input
