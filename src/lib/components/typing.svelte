@@ -205,11 +205,6 @@
 	function handleAction<T = undefined>(action: Action, ctx: T | undefined = undefined) {
 		if (action === 0) return;
 
-		if (action & Action.MissedSpace) {
-			handleAction(Action.NextWord & Action.Refresh, true);
-			addMissedSpace(originalConfig.lang, historyNode);
-		}
-
 		if (action & Action.LessonCompleted) {
 			if (!queue.word.empty()) addToHistory(queue.word, historyNode);
 			queue.word = new WordState('');
@@ -224,8 +219,20 @@
 			}
 			if (n[0] !== undefined) {
 				addToHistory(n[0], historyNode);
-				if (ctx === undefined) addSpace(originalConfig.lang, historyNode);
+				if (ctx === undefined) {
+					if ((action & Action.MissedSpace) === 0) {
+						addSpace(originalConfig.lang, historyNode);
+					}
+				}
 			}
+		}
+
+		if (action & Action.MissedSpace) {
+			// handleAction(Action.NextWord & Action.Refresh, true);
+			addMissedSpace(originalConfig.lang, historyNode);
+			// console.log(`before: ${action}`);
+			// action &= ~Action.NextWord;
+			// console.log(`after: ${action}`);
 		}
 
 		if (action & Action.Refresh) {
@@ -357,10 +364,8 @@
 				word={queue.word.wordChars}
 				state={queue.word.state}
 				active={true}
-			/><span class="queue">
-				{#each queue.queue as q}
-					<span class="spacer" />
-					<QueuedWord word={q} />
+			/><span class="queue"
+				>{#each queue.queue as q}<span class="spacer" /><QueuedWord word={q} />
 				{/each}
 			</span>
 		</div>
@@ -503,6 +508,7 @@
 		scroll-snap-type: y mandatory;
 		box-shadow: 0px 0px 7px #cfcfcf;
 		box-sizing: border-box;
+		white-space: pre-wrap;
 		// filter: drop-shadow(1px 1px 2px var(--drop-shadow-color))
 		// 	drop-shadow(2px 2px 4px var(--drop-shadow-color))
 		// 	drop-shadow(4px 4px 8px var(--drop-shadow-color));

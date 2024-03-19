@@ -14,13 +14,14 @@ $active-letter: #b39a0d;
 $active-error: #bb3737;
 $active-complete: #20b0e9;
 $queue-color: #202d33;
+$space-color: #bbb;
 
 
 .word {
     display: inline-block;
     scroll-snap-align: center;
     background: transparent;
-    margin: 1.4rem 0px;
+    margin: 0.823em 0px;
 }
 
 .word:after {
@@ -29,11 +30,10 @@ $queue-color: #202d33;
 
 
 .word.active {
-    // font-size: 140%;
     color: $active-color;
 
     .letter {
-        // border-bottom: 1px solid $active-color;
+        color: $active-color;
         text-decoration: underline;
 
     }
@@ -41,18 +41,15 @@ $queue-color: #202d33;
     .letter.active {
         color: $active-letter;
         text-decoration: underline;
-        // border-bottom: 1px solid $active-letter;
     }
 
     .letter.error {
         color: $active-error;
         text-decoration: underline;
-        // border-bottom: 1px solid $active-error;
     }
 
     .letter.complete {
         text-decoration: underline;
-        // border-bottom: 1px solid $active-complete;
         color: $active-complete;
     }
 }
@@ -90,12 +87,6 @@ $queue-color: #202d33;
     }
 }
 
-// .tutor-words.paused .word.active .letter.active {
-//     // border-bottom: 1px solid $active-color;
-//     border-bottom: 1px solid #b39a0d;
-//     color: #b39a0d;
-// }
-
 .tutor-words:not(.paused) {
     .word.active {
         scroll-snap-stop: always;
@@ -110,8 +101,7 @@ $queue-color: #202d33;
     display: inline;
     margin: 0px 0.1em;
     line-height: 0.4em;
-    color: #bbb;
-    // border-bottom: 1px solid #888;
+    color: $space-color;
     text-decoration: underline;
 }
 
@@ -119,20 +109,14 @@ $queue-color: #202d33;
     content: ' ';
 }
 
-.history .spacer {
+.history .spacer:not(.missed-space) {
     text-decoration: none;
 }
 
-.missed-space {
-    display: inline;
+.spacer.missed-space {
+    color: $error-color;
 }
 
-.missed-space::before {
-    // add a zero-width space for         line breaks
-    content: ' ';
-    color: $error-color;
-    border-bottom: 1px solid $error-color;
-}
 
 
 .checkmark {

@@ -11,7 +11,7 @@ export function addSpace(lang: Language, historyNode: HTMLElement) {
 
 export function addMissedSpace(lang: Language, historyNode: HTMLElement) {
     const el = document.createElement('div');
-    el.classList.add('missed-space');
+    el.classList.add('missed-space', 'spacer');
     // el.innerHTML =
     // 	"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><path  d='M14.1 27.2l7.1 7.2 16.7-16.8'/></svg>";
     el.title = lang.missedSpace;

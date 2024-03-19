@@ -31,9 +31,15 @@ export function processChars(e: InputEvent, config: Config, word: WordState, sta
     for (const c of [...e.data]) {
         const mapped = config.remap.get(c);
         if (mapped === ' ') {
-            act |= checkWordEnd({ key: ' ', preventDefault: () => { } }, config, word, stats);
+            console.log('processing space');
+            const a = checkWordEnd({ key: ' ', preventDefault: () => { } }, config, word, stats);
+            act |= a;
+            if (a === Action.None) {
+                word.addChar(mapped);
+                act |= Action.CharAdded | Action.Refresh;
+            }
         } else if (mapped !== undefined) {
-            word.addChar(config.caseSensitive ? mapped: mapped.toLowerCase());
+            word.addChar(config.caseSensitive ? mapped : mapped.toLowerCase());
             act |= Action.CharAdded | Action.Refresh;
         }
     }
@@ -50,6 +56,7 @@ type kbEvent = {
     key: string;
     preventDefault: () => void;
 };
+
 export function checkWordEnd(e: kbEvent, config: Config, word: WordState, stats: LessonStats): Action {
     if (e.key === 'Backspace') {
         word.addBackspace(config.backspace);
