@@ -1,17 +1,23 @@
 
 
 fix:
+    - space in char mode doesn't cause error or advance the current letter
     - shift and other keys (e.g. arrow keys) unpauses
     - WPM is incorrectly calculated
 
 finish:
-    - add button to clear ALL IndexedDB data
-    - add button in lesson settings to clear typos for adaptive lessons
     - show custom word lists in lesson selection
         - show under "User Lessons" group (with transation for "User Lessons")
 
 features:
+    - add button to clear ALL IndexedDB data
+    - lesson options
+        - add button in lesson settings to clear typos for adaptive lessons
+        - show why certain options are disabled (source of override)
+        - distinguish user inherited values better
+    - add button to go to next lesson when lesson is finished
     - manage/create custom word lists
+    - add option to always save stats without prompt
     - add length property to measure word progress
     - multilingual example text
 
