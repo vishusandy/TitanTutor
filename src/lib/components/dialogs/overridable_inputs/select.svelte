@@ -88,10 +88,10 @@
 		if (selectInput !== undefined && map.has(selectInput.value)) {
 			state = map.get(selectInput.value)!;
 			selected = selectInput.value;
+			sendUpdate();
 			return;
 		}
 		e.preventDefault();
-		sendUpdate();
 	}
 </script>
 

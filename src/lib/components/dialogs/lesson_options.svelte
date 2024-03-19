@@ -49,15 +49,15 @@
 			if (overrides[k] !== 'enabled' && overrides[k] !== 'disabled') {
 				// @ts-ignore
 				s[k] = overrides[k];
-				continue;
-			}
-			if (opts[k] !== undefined) {
+				// continue;
+			} else if (opts[k] !== undefined) {
 				// @ts-ignore
 				s[k] = opts[k];
-				continue;
+				// continue;
+			} else {
+				// @ts-ignore
+				s[k] = defaultLessonFormState[k];
 			}
-			// @ts-ignore
-			s[k] = defaultLessonFormState[k];
 		}
 		return s;
 	}
