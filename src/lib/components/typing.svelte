@@ -357,9 +357,10 @@
 				word={queue.word.wordChars}
 				state={queue.word.state}
 				active={true}
-			/><span class="spacer" /><span class="queue">
+			/><span class="queue">
 				{#each queue.queue as q}
-					<QueuedWord word={q} />{' '}
+					<span class="spacer" />
+					<QueuedWord word={q} />
 				{/each}
 			</span>
 		</div>

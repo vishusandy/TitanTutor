@@ -33,21 +33,26 @@ $queue-color: #202d33;
     color: $active-color;
 
     .letter {
-        border-bottom: 1px solid $active-color;
+        // border-bottom: 1px solid $active-color;
+        text-decoration: underline;
+
     }
 
     .letter.active {
         color: $active-letter;
-        border-bottom: 1px solid $active-letter;
+        text-decoration: underline;
+        // border-bottom: 1px solid $active-letter;
     }
 
     .letter.error {
         color: $active-error;
-        border-bottom: 1px solid $active-error;
+        text-decoration: underline;
+        // border-bottom: 1px solid $active-error;
     }
 
     .letter.complete {
-        border-bottom: 1px solid $active-complete;
+        text-decoration: underline;
+        // border-bottom: 1px solid $active-complete;
         color: $active-complete;
     }
 }
@@ -101,16 +106,22 @@ $queue-color: #202d33;
     }
 }
 
-
 .spacer {
     display: inline;
-
+    margin: 0px 0.1em;
+    line-height: 0.4em;
+    color: #bbb;
+    // border-bottom: 1px solid #888;
+    text-decoration: underline;
 }
 
 .spacer::before {
     content: ' ';
 }
 
+.history .spacer {
+    text-decoration: none;
+}
 
 .missed-space {
     display: inline;
