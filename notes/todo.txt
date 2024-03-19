@@ -1,8 +1,6 @@
 
 
 fix:
-    - switching from char to word mode doesn't word in lesson options
-    - space in char mode doesn't cause error or advance the current letter
     - shift and other keys (e.g. arrow keys) unpauses
     - WPM is incorrectly calculated
 
