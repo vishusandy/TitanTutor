@@ -27,7 +27,7 @@
 	} from '$lib/util/dialog';
 	import { lessonInSeries, lessonPlans } from '$lib/conf/lesson_plans';
 	import type { LessonChange } from '$lib/types/events';
-	import { adaptive_typeid } from '$lib/conf/lesson_types';
+	import { adaptive_typeid } from '$lib/conf/lesson_ids';
 	import type { AdaptiveList } from '$lib/lessons/base/adaptive_list';
 
 	export let db: IDBDatabase;
@@ -277,7 +277,7 @@
 	}
 
 	async function showAudioDialog(_: Event) {
-		showVoiceDialog(originalConfig, db).then((audio?: Audio) => {
+		showVoiceDialog(originalConfig, db).then((audio?) => {
 			if (audio !== undefined) {
 				originalConfig.tts = audio;
 				originalConfig.saveUserConfig(db);

@@ -24,7 +24,7 @@
 	let curLesson: Lesson = lesson;
 	let overrides = curLesson.overrides();
 	$: overrides = curLesson.overrides();
-	let state: LessonFormState = initializeState(config, lessonOptions);
+	let state: LessonFormState = initializeState(lessonOptions);
 
 	let waiting = false;
 	let dirty = false;
@@ -41,7 +41,7 @@
 	// @ts-ignore
 	let dataFns: { [K in keyof LessonFormState]: () => LessonFormState[K] } = {};
 
-	function initializeState(config: Config, opts: Partial<LessonTypingConfig>): LessonFormState {
+	function initializeState(opts: Partial<LessonTypingConfig>): LessonFormState {
 		// @ts-ignore
 		let s: LessonFormState = {};
 		let k: keyof LessonTypingConfig;
@@ -49,11 +49,9 @@
 			if (overrides[k] !== 'enabled' && overrides[k] !== 'disabled') {
 				// @ts-ignore
 				s[k] = overrides[k];
-				// continue;
 			} else if (opts[k] !== undefined) {
 				// @ts-ignore
 				s[k] = opts[k];
-				// continue;
 			} else {
 				// @ts-ignore
 				s[k] = defaultLessonFormState[k];
@@ -93,7 +91,7 @@
 
 		let k: keyof LessonFormState;
 		for (k in defaultLessonFormState) {
-			if (state[k] === 'user') {
+			if (state[k] === 'inherit') {
 				newOpts[k] = undefined;
 			} else {
 				// @ts-ignore
@@ -110,7 +108,6 @@
 	<OptionalNumber
 		bind:getState={dataFns.until}
 		on:updateForm={updateState}
-		{config}
 		id="until"
 		label={config.lang.configUntil}
 		initialState={state.until}
@@ -120,12 +117,13 @@
 		step={1}
 		override={overrides.until}
 		inheritValue={config.until}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
 	/>
 
 	<Bool
 		bind:getState={dataFns.random}
 		on:updateForm={updateState}
-		{config}
 		id="random"
 		label={config.lang.configRandom}
 		onLabel={config.lang.on}
@@ -133,12 +131,13 @@
 		initialState={state.random}
 		override={overrides.random}
 		inheritValue={config.random}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
 	/>
 
 	<Number
 		bind:getState={dataFns.minQueue}
 		on:updateForm={updateState}
-		{config}
 		id="minQueue"
 		label={config.lang.configMinQueue}
 		initialState={state.minQueue}
@@ -147,12 +146,13 @@
 		max={100}
 		override={overrides.minQueue}
 		inheritValue={config.minQueue}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
 	/>
 
 	<Number
 		bind:getState={dataFns.wordBatchSize}
 		on:updateForm={updateState}
-		{config}
 		id="wordBatchSize"
 		label={config.lang.configWordBatchSize}
 		initialState={state.wordBatchSize}
@@ -161,12 +161,13 @@
 		max={100}
 		override={overrides.wordBatchSize}
 		inheritValue={config.wordBatchSize}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
 	/>
 
 	<Bool
 		bind:getState={dataFns.backspace}
 		on:updateForm={updateState}
-		{config}
 		id="backspace"
 		label={config.lang.configAcceptBackspace}
 		onLabel={config.lang.accept}
@@ -174,24 +175,26 @@
 		initialState={state.backspace}
 		override={overrides.backspace}
 		inheritValue={config.backspace}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
 	/>
 
 	<Select
 		bind:getState={dataFns.checkMode}
 		on:updateForm={updateState}
-		{config}
 		id="checkMode"
 		label={config.lang.configCheckMode}
 		choices={wordModeChoices}
 		initialValue={state.checkMode}
 		override={overrides.checkMode}
 		inheritValue={wordModeChoices[config.checkMode].key}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
 	/>
 
 	<Bool
 		bind:getState={dataFns.spaceOptional}
 		on:updateForm={updateState}
-		{config}
 		id="spaceOptional"
 		label={config.lang.configSpaceOptional}
 		onLabel={config.lang.yes}
@@ -199,12 +202,13 @@
 		initialState={state.spaceOptional}
 		override={overrides.spaceOptional}
 		inheritValue={config.spaceOptional}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
 	/>
 
 	<Bool
 		bind:getState={dataFns.adaptive}
 		on:updateForm={updateState}
-		{config}
 		id="adaptive"
 		label={config.lang.configAdaptive}
 		onLabel={config.lang.on}
@@ -212,12 +216,13 @@
 		initialState={state.adaptive}
 		override={overrides.adaptive}
 		inheritValue={config.adaptive}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
 	/>
 
 	<Bool
 		bind:getState={dataFns.caseSensitive}
 		on:updateForm={updateState}
-		{config}
 		id="caseSensitive"
 		label={config.lang.configCaseSensitive}
 		onLabel={config.lang.caseSensitive}
@@ -225,6 +230,8 @@
 		initialState={state.caseSensitive}
 		override={overrides.caseSensitive}
 		inheritValue={config.caseSensitive}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
 	/>
 </div>
 

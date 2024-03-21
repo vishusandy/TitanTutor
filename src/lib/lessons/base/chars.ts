@@ -12,7 +12,7 @@ import type { WordState } from "$lib/word_state";
 import type { LessonStats } from "$lib/stats";
 import type { Action } from "$lib/types/types";
 import { checkWordEnd, processInput } from "$lib/util/typing";
-import { chars_typeid } from "$lib/conf/lesson_types";
+import { chars_typeid } from "$lib/conf/lesson_ids";
 import { defaultLessonOptsAvail } from '$lib/types/forms';
 
 export type StorableChars = { type: typeof chars_typeid, name: string, lang: string, chars: string[], min: number, max: number, weights: number[] } & StorableBaseLesson;
@@ -89,7 +89,7 @@ export class RandomChars implements BaseLesson {
         };
     }
 
-    static async fromStorable(s: StorableChars, _: typeof fetch = fetch): Promise<RandomChars> {
+    static async fromStorable(s: StorableChars, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<RandomChars> {
         const chars: [string, number][] = s.chars.map((c, i) => [c, s.weights[i]])
         return new RandomChars(chars, s.id, s.name, s.lang, s.min, s.max);
     }

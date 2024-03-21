@@ -10,7 +10,7 @@ export type OptAvailable<T> = 'enabled' | 'disabled' | T;
  * 
   * `UserValue<T>` expands to: `T | "user"`
  */
-export type UserValue<T> = T | 'user';
+export type UserValue<T> = T | 'inherit';
 
 /**
  * Helper type that extends {@link UserValue} by allowing the string "disabled" to specify that it cannot be used.
@@ -37,15 +37,15 @@ export type LessonFormState = { [P in keyof LessonTypingConfig]: UserValue<Lesso
 export type LessonOptsAvailable = { [K in keyof LessonTypingConfig]: OptAvailable<LessonTypingConfig[K]> };
 
 export const defaultLessonFormState: LessonFormState = {
-    random: 'user',
-    until: 'user',
-    checkMode: 'user',
-    backspace: 'user',
-    wordBatchSize: 'user',
-    minQueue: 'user',
-    spaceOptional: 'user',
-    adaptive: 'user',
-    caseSensitive: 'user',
+    random: 'inherit',
+    until: 'inherit',
+    checkMode: 'inherit',
+    backspace: 'inherit',
+    wordBatchSize: 'inherit',
+    minQueue: 'inherit',
+    spaceOptional: 'inherit',
+    adaptive: 'inherit',
+    caseSensitive: 'inherit',
 };
 
 export const defaultLessonOptsAvail: LessonOptsAvailable = {

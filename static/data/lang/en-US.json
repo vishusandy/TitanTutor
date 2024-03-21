@@ -16,7 +16,7 @@
     "caseSensitive": "Case-sensitive",
     "caseInsensitive": "Case-insensitive",
     "none": "None",
-    "disabled": "Disabled",
+    "disabledLabel": "Disabled:",
     "infinite": "Infinite",
     "accept": "Accept",
     "ignore": "Ignore",
@@ -40,7 +40,7 @@
     "charMode": "Character Mode",
     "space": "Space",
     "missedSpace": "Missed space",
-    "useUserValue": "Inherit from user settings",
+    "useUserValue": "User:",
     "openTtsDialog": "Audio",
     "ttsDialogTitle": "Text To Speech",
     "ttsLanguageLabel": "Language",
@@ -92,5 +92,12 @@
     "configLanguage": "Language",
     "seriesNextLesson": "Next lesson",
     "seriesPrevLesson": "Previous lesson",
-    "seriesSelectLesson": "Select lesson"
+    "seriesSelectLesson": "Select lesson",
+    "incompatible": "Incompatible with %s",
+    "classStockWords": "Word list",
+    "classUserWords": "User lesson",
+    "classRandomChars": "Random Characters",
+    "classAdaptive": "Adaptive lesson",
+    "classRandomize": "Randomize",
+    "classUntil": "Max Words"
 }

@@ -3,7 +3,7 @@ import type { StorableLesson } from "../../types/lessons";
 import type { Config } from "$lib/config";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { defaultBatch } from "$lib/util/util";
-import { until_typeid } from "$lib/conf/lesson_types";
+import { until_typeid } from "$lib/conf/lesson_ids";
 import type { WordState } from "$lib/word_state";
 import type { LessonStats } from "$lib/stats";
 import type { Action } from "$lib/types/types";
@@ -88,7 +88,7 @@ export class UntilN implements Lesson {
         if (typeof form.until === 'number') {
             return new UntilN(lesson, form.until);
         }
-        if (form.until === 'user' && typeof config.until === 'number') {
+        if (form.until === 'inherit' && typeof config.until === 'number') {
             return new UntilN(lesson, config.until);
         }
 

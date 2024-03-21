@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { Config } from '$lib/config';
 	import type { OptAvailable, UserValue } from '$lib/types/forms';
 	import { updateCheckboxProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
+	import Inherit from './_inherit.svelte';
 
-	export let config: Config;
 	export let label: string;
 	export let id: string;
-	export let userLabel: string = config.lang.useUserValue;
+	export let inheritLabel: string;
+	export let overrideLabel: string;
 	export let initialState: UserValue<number>;
 	export let defaultValue: number;
 	export let min: number | undefined = undefined;
@@ -56,7 +56,7 @@
 		}
 
 		switch (state) {
-			case 'user':
+			case 'inherit':
 				updateCheckboxProperties(checkboxInput, false, true);
 				break;
 			default:
@@ -68,11 +68,11 @@
 		if (isDisabled) return;
 
 		switch (state) {
-			case 'user':
+			case 'inherit':
 				state = value;
 				break;
 			default:
-				state = 'user';
+				state = 'inherit';
 		}
 
 		sendUpdate();
@@ -90,10 +90,10 @@
 	/>
 	<label class:disabled={isDisabled} for={id}>{label}</label>
 </div>
-{#if state === 'user'}
-	<div class="check-value valign">
-		<input type="number" disabled value={inheritValue} title={userLabel} />
-	</div>
+{#if state === 'inherit'}
+	<Inherit {inheritLabel}>
+		<input type="number" disabled value={inheritValue} title={inheritLabel} />
+	</Inherit>
 {:else if Number.isInteger(state)}
 	<div class="check-value valign">
 		<input

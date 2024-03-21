@@ -9,6 +9,7 @@ finish:
         - show under "User Lessons" group (with transation for "User Lessons")
 
 features:
+    - check form changes for equality with original value; if equal return 
     - add button to clear ALL IndexedDB data
     - lesson options
         - add button in lesson settings to clear typos for adaptive lessons

@@ -1,15 +1,15 @@
 <script lang="ts">
-	import type { Config } from '$lib/config';
 	import type { OptAvailable, UserValue } from '$lib/types/forms';
 	import { updateCheckboxProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
+	import Inherit from './_inherit.svelte';
 
-	export let config: Config;
 	export let label: string;
 	export let id: string;
-	export let userLabel: string = config.lang.useUserValue;
-	export let nullLabel: string = config.lang.none;
+	export let inheritLabel: string;
+	export let overrideLabel: string;
+	export let nullLabel: string;
 	export let initialState: UserValue<number | null>;
 	export let defaultValue: number;
 	export let min: number | undefined = undefined;
@@ -56,7 +56,7 @@
 		}
 
 		switch (state) {
-			case 'user':
+			case 'inherit':
 				updateCheckboxProperties(checkboxInput, false, true);
 				break;
 			case null:
@@ -72,9 +72,9 @@
 
 		switch (state) {
 			case null:
-				state = 'user';
+				state = 'inherit';
 				break;
-			case 'user':
+			case 'inherit':
 				state = value;
 				break;
 			default:
@@ -96,14 +96,14 @@
 	/>
 	<label class:disabled={isDisabled} for={id}>{label}</label>
 </div>
-{#if state === 'user'}
-	<div class="label check-value valign disabled">
+{#if state === 'inherit'}
+	<Inherit {inheritLabel}>
 		{#if inheritValue !== null}
-			<input title={userLabel} disabled type="number" value={inheritValue} />
+			<input title={inheritLabel} disabled type="number" value={inheritValue} />
 		{:else}
 			{nullLabel}
 		{/if}
-	</div>
+	</Inherit>
 {:else if state === null}
 	<div class="check-value valign" class:disabled={override !== 'enabled'}>{nullLabel}</div>
 {:else if Number.isInteger(state)}

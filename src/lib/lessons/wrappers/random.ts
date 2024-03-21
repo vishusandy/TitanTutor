@@ -4,7 +4,7 @@ import type { Config } from "$lib/config";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonFormState, type LessonOptsAvailable } from "$lib/types/forms";
 import { shuffle, defaultBatch } from "$lib/util/util";
 import type { BaseWordList } from "../base/wordlist";
-import { random_typeid, userwordlist_typeid, wordlist_typeid } from "$lib/conf/lesson_types";
+import { random_typeid, userwordlist_typeid, wordlist_typeid } from "$lib/conf/lesson_ids";
 import type { WordState } from "$lib/word_state";
 import type { LessonStats } from "$lib/stats";
 import type { Action } from "$lib/types/types";
@@ -82,7 +82,7 @@ export class RandomList implements Lesson {
     static async fromForm(lesson: Lesson, config: Config, db: IDBDatabase, form: LessonFormState): Promise<Lesson> {
         const ovr = lesson.overrides().random;
         if (ovr === 'disabled' || ovr === false || (lesson.getType() !== wordlist_typeid && lesson.getType() !== userwordlist_typeid)) return lesson;
-        if (ovr === true || form.random === true || (form.random === 'user' && config.random === true)) {
+        if (ovr === true || form.random === true || (form.random === 'inherit' && config.random === true)) {
             return new RandomList(lesson.baseLesson() as BaseWordList);
         }
         return lesson;

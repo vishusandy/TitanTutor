@@ -3,7 +3,7 @@ import type { Config } from "$lib/config";
 import { BaseWordList, type StorableBaseWordList } from "./wordlist";
 import { Lesson } from "../lesson";
 import type { StorableBaseLesson } from "../../types/lessons";
-import { userwordlist_typeid } from "$lib/conf/lesson_types";
+import { userwordlist_typeid } from "$lib/conf/lesson_ids";
 
 export type StorableUserWordlist = { type: typeof userwordlist_typeid, words: string[] } & StorableBaseWordList;
 
@@ -30,7 +30,7 @@ export class UserWordList extends BaseWordList {
         };
     }
 
-    static async fromStorable(s: StorableUserWordlist, _: typeof fetch = fetch): Promise<UserWordList> {
+    static async fromStorable(s: StorableUserWordlist, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<UserWordList> {
         return new UserWordList(s.words, s.id, s.name, s.lang);
     }
 

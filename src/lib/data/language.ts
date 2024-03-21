@@ -21,7 +21,7 @@ export class Language {
     caseSensitive: string = '';
     caseInsensitive: string = '';
     none: string = '';
-    disabled: string = '';
+    disabledLabel: string = '';
     infinite: string = '';
     accept: string = '';
     ignore: string = '';
@@ -100,6 +100,13 @@ export class Language {
     seriesNextLesson: string = '';
     seriesPrevLesson: string = '';
     seriesSelectLesson: string = '';
+    incompatible: string = '';
+    classStockWords: string = '';
+    classUserWords: string = '';
+    classRandomChars: string = '';
+    classAdaptive: string = '';
+    classRandomize: string = '';
+    classUntil: string = '';
 
     constructor(
         lang: LanguageObject,

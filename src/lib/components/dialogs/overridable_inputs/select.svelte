@@ -1,14 +1,14 @@
 <script lang="ts" generics="T">
-	import type { Config } from '$lib/config';
 	import type { OptAvailable, UserValue } from '$lib/types/forms';
 	import { updateCheckboxProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
+	import Inherit from './_inherit.svelte';
 
-	export let config: Config;
 	export let id: string;
 	export let label: string;
-	export let userLabel: string = config.lang.useUserValue;
+	export let inheritLabel: string;
+	export let overrideLabel: string;
 	export let choices: { key: string; label: string; value: T }[];
 	export let initialValue: UserValue<T>;
 	export let override: OptAvailable<T>;
@@ -32,7 +32,7 @@
 	const rev = new Map(Array.from(choices.map(({ key, value }) => [value, key])));
 
 	let selected: string | undefined = undefined;
-	if (initialValue !== 'user' && initialValue !== 'disabled') {
+	if (initialValue !== 'inherit' && initialValue !== 'disabled') {
 		selected = rev.get(initialValue) ?? choices[0].key;
 	}
 
@@ -60,7 +60,7 @@
 			case 'disabled':
 				updateCheckboxProperties(checkboxInput, false, false, true);
 				break;
-			case 'user':
+			case 'inherit':
 				updateCheckboxProperties(checkboxInput, false, true);
 				break;
 			default:
@@ -72,12 +72,12 @@
 		if (isDisabled) return;
 
 		switch (state) {
-			case 'user':
+			case 'inherit':
 				const v = choices.find((s) => s.key === selected) ?? choices[0];
 				state = v.value;
 				break;
 			default:
-				state = 'user';
+				state = 'inherit';
 		}
 
 		sendUpdate();
@@ -105,12 +105,14 @@
 	/>
 	<label class:disabled={isDisabled} for={id}>{label}</label>
 </div>
-{#if state === 'user'}
-	<select disabled title={userLabel}>
-		{#each choices as { key, label } (key)}
-			<option value={key} selected={inheritValue === key}>{label}</option>
-		{/each}
-	</select>
+{#if state === 'inherit'}
+	<Inherit {inheritLabel}>
+		<select disabled title={inheritLabel}>
+			{#each choices as { key, label } (key)}
+				<option value={key} selected={inheritValue === key}>{label}</option>
+			{/each}
+		</select>
+	</Inherit>
 {:else}
 	<select disabled={isDisabled} bind:this={selectInput} on:change={selectChanged}>
 		{#each choices as { key, label } (key)}

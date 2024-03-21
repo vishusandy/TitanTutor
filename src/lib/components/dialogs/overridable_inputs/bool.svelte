@@ -1,16 +1,17 @@
 <script lang="ts">
-	import type { Config } from '$lib/config';
 	import type { OptAvailable, UserValue } from '$lib/types/forms';
 	import { updateCheckboxProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
+	import Inherit from './_inherit.svelte';
+	import Override from './_override.svelte';
 
-	export let config: Config;
 	export let label: string;
 	export let id: string;
-	export let userLabel: string = config.lang.useUserValue;
-	export let onLabel: string = config.lang.on;
-	export let offLabel: string = config.lang.off;
+	export let inheritLabel: string;
+	export let overrideLabel: string;
+	export let onLabel: string;
+	export let offLabel: string;
 	export let initialState: UserValue<boolean>;
 	export let override: OptAvailable<boolean>;
 	export let inheritValue: boolean;
@@ -46,7 +47,7 @@
 		}
 
 		switch (state) {
-			case 'user':
+			case 'inherit':
 				updateCheckboxProperties(checkboxInput, false, true);
 				break;
 			case true:
@@ -64,14 +65,14 @@
 		if (isDisabled) return;
 
 		switch (state) {
-			case 'user':
+			case 'inherit':
 				state = true;
 				break;
 			case true:
 				state = false;
 				break;
 			case false:
-				state = 'user';
+				state = 'inherit';
 				break;
 			default:
 				override = 'disabled';
@@ -86,15 +87,31 @@
 	<input bind:this={checkboxInput} on:click={nextCheckboxState} {id} type="checkbox" />
 	<label for={id} class:disabled={isDisabled}>{label}</label>
 </div>
-<div class="label" class:disabled={isDisabled}>
-	{#if state === 'user'}
-		<input disabled type="checkbox" title={userLabel} checked={inheritValue} />
-	{:else if state === true && override !== 'disabled'}
-		{onLabel}
-	{:else}
-		{offLabel}
-	{/if}
-</div>
+{#if state === 'inherit'}
+	<Inherit {inheritLabel}>
+		{#if inheritValue}
+			{onLabel}
+		{:else}
+			{offLabel}
+		{/if}
+	</Inherit>
+{:else if override !== 'enabled'}
+	<Override {overrideLabel}>
+		{#if override === true}
+			{onLabel}
+		{:else}
+			{offLabel}
+		{/if}
+	</Override>
+{:else}
+	<div class="label">
+		{#if state === true}
+			{onLabel}
+		{:else}
+			{offLabel}
+		{/if}
+	</div>
+{/if}
 
 <style>
 	.optional {

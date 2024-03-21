@@ -6,7 +6,7 @@ import { stockLessons } from '$lib/conf/lessons';
 import type { LessonOptsAvailable } from '$lib/types/forms';
 import { get, lesson_opts_store } from '$lib/db';
 import type { StorableLesson, StorableBaseLesson, LessonTypingConfig } from '../types/lessons';
-import { addWrappers, baseClasses, wrapperClasses } from '$lib/data/lesson_classes';
+import { addWrappers, getLessonClass } from '$lib/data/lesson_classes';
 import type { WordState } from '$lib/word_state';
 import type { LessonStats } from '$lib/stats';
 import type { Action } from '$lib/types/types';
@@ -118,19 +118,11 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
      * @returns {Promise} returns a promise that will yield a {@link Lesson} instance
      */
     static async deserialize(storable: StorableLesson, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-        for (const c of baseClasses) {
-            if (storable.type === c.getTypeId()) {
-                return c.fromStorable(storable as any, fetchFn);
-            }
+        const c = getLessonClass(storable.type);
+        if (c === undefined) {
+            throw new Error(`Attempted to load lesson with invalid type: '${storable.type}'`);
         }
-
-        for (const c of wrapperClasses) {
-            if (storable.type === c.getTypeId()) {
-                return c.fromStorable(storable as any, db, fetchFn);
-            }
-        }
-
-        throw new Error(`Attempted to load lesson with invalid type`);
+        return c.fromStorable(storable, db, fetchFn);
     }
 
     /**

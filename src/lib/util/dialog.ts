@@ -9,9 +9,10 @@ import type { InnerDialogComponent, CloseFn } from "../types/types";
 import type { Lesson } from "$lib/lessons/lesson";
 import type { LessonTypingConfig } from "$lib/types/lessons";
 import User from "../components/dialogs/user_config.svelte";
+import type { Audio } from "$lib/audio";
 
 
-export function showVoiceDialog(config: Config, db: IDBDatabase) {
+export function showVoiceDialog(config: Config, db: IDBDatabase): Promise<Audio | undefined> {
     const dialogProps = { title: config.lang.ttsDialogTitle, content: Tts, hasSubmit: true, config, db }
     return createDialog(dialogProps);
 }

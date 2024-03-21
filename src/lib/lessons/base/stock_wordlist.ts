@@ -1,7 +1,7 @@
 import { base } from "$app/paths";
 
 import { BaseWordList, type StorableBaseWordList } from "./wordlist";
-import { wordlist_typeid } from "$lib/conf/lesson_types";
+import { wordlist_typeid } from "$lib/conf/lesson_ids";
 
 // filename is the json file located within data/words/
 export type StorableStockList = { type: typeof wordlist_typeid, filename: string } & StorableBaseWordList;
@@ -30,7 +30,7 @@ export class StockWordList extends BaseWordList {
         };
     }
 
-    static async fromStorable(s: StorableStockList, fetchFn: typeof fetch = fetch): Promise<StockWordList> {
+    static async fromStorable(s: StorableStockList, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<StockWordList> {
         const req = new Request(`${base}/data/words/${s.filename}`);
 
         return fetchFn(req)

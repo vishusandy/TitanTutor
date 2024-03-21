@@ -8,7 +8,7 @@ import { BinaryTree } from "$lib/util/bst";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonOptsAvailable, type LessonFormState } from "$lib/types/forms";
 import type { UserWordList } from "./user_wordlist";
 import { adaptive_store, get, save } from "$lib/db";
-import { adaptive_typeid, userwordlist_typeid, wordlist_typeid } from "$lib/conf/lesson_types";
+import { adaptive_typeid, userwordlist_typeid, wordlist_typeid } from "$lib/conf/lesson_ids";
 import { CheckMode } from "$lib/types/types";
 import type { WordState } from "$lib/word_state";
 import type { LessonStats } from "$lib/stats";
@@ -183,7 +183,7 @@ export class AdaptiveList implements Lesson {
             return lesson;
         }
 
-        if (ovr === true || (ovr === 'enabled' && (form.adaptive === true || (form.adaptive === 'user' && config.adaptive === true)))) {
+        if (ovr === true || (ovr === 'enabled' && (form.adaptive === true || (form.adaptive === 'inherit' && config.adaptive === true)))) {
             const typos = await AdaptiveList.loadTypos(lesson as BaseWordList, db);
             return new AdaptiveList(lesson.baseLesson() as BaseWordList, typos);
         }
