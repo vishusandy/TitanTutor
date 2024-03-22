@@ -6,6 +6,7 @@ export type LanguageObject = { [P in keyof Language]: string };
 export class Language {
     lang: string = '';
     langName: string = '';
+    tutorTitle: string = '';
     textDirection: string = 'ltr';
     loading: string = '';
     stopMsg: string = '';

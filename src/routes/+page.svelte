@@ -23,7 +23,7 @@
 </script>
 
 <svelte:head>
-	<title>Keyboard Tutor</title>
+	<title>{config.lang.tutorTitle}</title>
 </svelte:head>
 
 <Typing originalConfig={config} {lesson} lessonStats={sessionStats} {db} {lessonOpts} />

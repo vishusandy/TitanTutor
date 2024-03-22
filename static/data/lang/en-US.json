@@ -1,6 +1,7 @@
 {
     "lang": "en-US",
     "langName": "English",
+    "tutorTitle": "Titan Tutor",
     "textDirection": "ltr",
     "loading": "Loading...",
     "stopMsg": "Are you sure you want to stop the current lesson?",
