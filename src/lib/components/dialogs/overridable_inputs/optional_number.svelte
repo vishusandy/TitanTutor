@@ -115,9 +115,9 @@
 		{/if}
 	</Inherit>
 {:else if state === null}
-	<div class="check-value valign" class:disabled={override !== 'enabled'}>{nullLabel}</div>
+	<div class="check-value" class:disabled={override !== 'enabled'}>{nullLabel}</div>
 {:else if Number.isInteger(state)}
-	<div class="check-value valign input">
+	<div class="check-value input">
 		<input
 			bind:this={numberInput}
 			on:change={numberChanged}

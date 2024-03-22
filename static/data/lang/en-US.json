@@ -40,7 +40,7 @@
     "charMode": "Character Mode",
     "space": "Space",
     "missedSpace": "Missed space",
-    "useUserValue": "User:",
+    "useUserValue": "User",
     "openTtsDialog": "Audio",
     "ttsDialogTitle": "Text To Speech",
     "ttsLanguageLabel": "Language",

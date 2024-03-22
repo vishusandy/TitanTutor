@@ -19,6 +19,7 @@
 
 <style>
 	.override {
+		align-self: start;
 		display: flex;
 		flex-flow: column;
 		font-family: var(--font-humanist);

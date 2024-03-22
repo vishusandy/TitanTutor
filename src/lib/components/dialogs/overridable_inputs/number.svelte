@@ -103,7 +103,7 @@
 		<input type="number" disabled value={inheritValue} />
 	</Inherit>
 {:else if Number.isInteger(state)}
-	<div class="check-value valign">
+	<div class="check-value">
 		<input
 			disabled={override !== 'enabled'}
 			bind:this={numberInput}
@@ -116,7 +116,7 @@
 		/>
 	</div>
 {:else}
-	<div class="check-value valign">
+	<div class="check-value">
 		<input bind:this={numberInput} type="number" disabled />
 	</div>
 {/if}

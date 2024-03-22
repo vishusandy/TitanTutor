@@ -11,6 +11,7 @@
 
 <style>
 	.inherit {
+		align-self: start;
 		font-family: var(--font-humanist);
 		display: flex;
 		align-items: center;

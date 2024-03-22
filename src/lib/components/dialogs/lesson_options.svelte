@@ -165,6 +165,8 @@
 		overrideMessage={overrideSources.until}
 	/>
 
+	<div class="grid-sep" />
+
 	<Bool
 		bind:getState={dataFns.random}
 		on:updateForm={updateState}
@@ -179,6 +181,8 @@
 		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.random}
 	/>
+
+	<div class="grid-sep" />
 
 	<Number
 		bind:getState={dataFns.minQueue}
@@ -196,6 +200,8 @@
 		overrideMessage={overrideSources.minQueue}
 	/>
 
+	<div class="grid-sep" />
+
 	<Number
 		bind:getState={dataFns.wordBatchSize}
 		on:updateForm={updateState}
@@ -212,6 +218,8 @@
 		overrideMessage={overrideSources.wordBatchSize}
 	/>
 
+	<div class="grid-sep" />
+
 	<Bool
 		bind:getState={dataFns.backspace}
 		on:updateForm={updateState}
@@ -227,6 +235,8 @@
 		overrideMessage={overrideSources.backspace}
 	/>
 
+	<div class="grid-sep" />
+
 	<Select
 		bind:getState={dataFns.checkMode}
 		on:updateForm={updateState}
@@ -240,6 +250,8 @@
 		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.checkMode}
 	/>
+
+	<div class="grid-sep" />
 
 	<Bool
 		bind:getState={dataFns.spaceOptional}
@@ -256,6 +268,8 @@
 		overrideMessage={overrideSources.spaceOptional}
 	/>
 
+	<div class="grid-sep" />
+
 	<Bool
 		bind:getState={dataFns.adaptive}
 		on:updateForm={updateState}
@@ -270,6 +284,8 @@
 		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.adaptive}
 	/>
+
+	<div class="grid-sep" />
 
 	<Bool
 		bind:getState={dataFns.caseSensitive}
@@ -292,9 +308,25 @@
 		display: grid;
 		grid-template-columns: min-content auto;
 		column-gap: 2rem;
-		row-gap: 1.3rem;
+		/* row-gap: 1.3rem; */
+		/* row-gap: 0.9rem; */
 		margin: 1rem auto;
 		min-width: 40ch;
 		width: min-content;
+		align-content: center;
+	}
+
+	.grid-sep {
+		grid-column: 1/3;
+		border-bottom: 1px solid #efefef;
+		width: 100%;
+		margin: 0.7rem auto;
+	}
+	:global(.grid .optional > input:first-child) {
+		align-self: start;
+		margin-right: 0.5em;
+	}
+	:global(.grid .optional > label) {
+		align-self: start;
 	}
 </style>
