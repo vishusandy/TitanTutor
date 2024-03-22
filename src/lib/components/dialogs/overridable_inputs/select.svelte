@@ -1,4 +1,6 @@
 <script lang="ts" generics="T">
+	import Override from './_override.svelte';
+
 	import type { OptAvailable, UserValue } from '$lib/types/forms';
 	import { updateCheckboxProperties } from '$lib/util/dom';
 	import { onMount } from 'svelte';
@@ -9,6 +11,7 @@
 	export let label: string;
 	export let inheritLabel: string;
 	export let overrideLabel: string;
+	export let overrideMessage: string;
 	export let choices: { key: string; label: string; value: T }[];
 	export let initialValue: UserValue<T>;
 	export let override: OptAvailable<T>;
@@ -34,6 +37,11 @@
 	let selected: string | undefined = undefined;
 	if (initialValue !== 'inherit' && initialValue !== 'disabled') {
 		selected = rev.get(initialValue) ?? choices[0].key;
+	}
+
+	let overrideKey = '';
+	if (override !== 'disabled' && override !== 'enabled') {
+		overrideKey = rev.get(override) ?? choices[0].key;
 	}
 
 	onMount(() => {
@@ -105,7 +113,17 @@
 	/>
 	<label class:disabled={isDisabled} for={id}>{label}</label>
 </div>
-{#if state === 'inherit'}
+{#if override !== 'enabled'}
+	<Override {overrideLabel} {overrideMessage}>
+		{#if override !== 'disabled'}
+			<select disabled>
+				{#each choices as { key, label } (key)}
+					<option value={key} selected={overrideKey === key}>{label}</option>
+				{/each}
+			</select>
+		{/if}
+	</Override>
+{:else if state === 'inherit'}
 	<Inherit {inheritLabel}>
 		<select disabled title={inheritLabel}>
 			{#each choices as { key, label } (key)}
@@ -124,6 +142,7 @@
 <style>
 	select {
 		width: min-content;
+		height: min-content;
 	}
 	.optional {
 		display: flex;

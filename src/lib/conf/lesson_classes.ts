@@ -7,12 +7,9 @@
 import { StockWordList } from '../lessons/base/stock_wordlist';
 import { RandomList } from '../lessons/wrappers/random';
 import { UntilN } from '../lessons/wrappers/until_n';
-import type { Config } from '$lib/config';
 import { UserWordList } from '../lessons/base/user_wordlist';
 import { AdaptiveList } from '../lessons/base/adaptive_list';
 import { RandomChars } from '../lessons/base/chars';
-import type { LessonFormState } from '$lib/types/forms';
-import type { Lesson } from '$lib/lessons/lesson';
 import { adaptive_typeid, chars_typeid, random_typeid, until_typeid, userwordlist_typeid, wordlist_typeid } from '$lib/conf/lesson_ids';
 import {
     LessonClass,

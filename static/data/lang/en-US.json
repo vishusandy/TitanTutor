@@ -16,7 +16,7 @@
     "caseSensitive": "Case-sensitive",
     "caseInsensitive": "Case-insensitive",
     "none": "None",
-    "disabledLabel": "Disabled:",
+    "disabledLabel": "Disabled",
     "infinite": "Infinite",
     "accept": "Accept",
     "ignore": "Ignore",
@@ -93,11 +93,12 @@
     "seriesNextLesson": "Next lesson",
     "seriesPrevLesson": "Previous lesson",
     "seriesSelectLesson": "Select lesson",
-    "incompatible": "Incompatible with %s",
+    "incompatibleWrapper": "Incompatible with %s",
+    "incompatibleLesson": "Incompatible with current lesson '%s'",
     "classStockWords": "Word list",
     "classUserWords": "User lesson",
     "classRandomChars": "Random Characters",
-    "classAdaptive": "Adaptive lesson",
+    "classAdaptive": "Adaptive",
     "classRandomize": "Randomize",
     "classUntil": "Max Words"
 }

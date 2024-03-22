@@ -100,7 +100,8 @@ export class Language {
     seriesNextLesson: string = '';
     seriesPrevLesson: string = '';
     seriesSelectLesson: string = '';
-    incompatible: string = '';
+    incompatibleWrapper: string = '';
+    incompatibleLesson: string = '';
     classStockWords: string = '';
     classUserWords: string = '';
     classRandomChars: string = '';

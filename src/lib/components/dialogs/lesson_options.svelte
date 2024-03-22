@@ -5,15 +5,17 @@
 	import Select from './overridable_inputs/select.svelte';
 
 	import type { Config } from '$lib/config';
-	import type { Lesson } from '$lib/lessons/lesson';
-	import { addWrappers } from '$lib/data/lesson_classes';
+	import { Lesson } from '$lib/lessons/lesson';
+	import { addWrappers, getLessonClass } from '$lib/data/lesson_classes';
 	import type { LessonTypingConfig } from '$lib/types/lessons';
 	import {
 		defaultLessonFormState,
+		defaultLessonOptsAvail,
 		type FormValueReturn,
 		type LessonFormState
 	} from '$lib/types/forms';
 	import { CheckMode } from '$lib/types/types';
+	import { adaptive_typeid } from '$lib/conf/lesson_ids';
 
 	export let config: Config;
 	export let lesson: Lesson;
@@ -21,10 +23,12 @@
 	export let db: IDBDatabase;
 	db; // suppress the unused-export-let warning from above
 
+	// @ts-ignore
+	let overrideSources: { [K in keyof LessonFormState]: string } = {};
 	let curLesson: Lesson = lesson;
 	let overrides = curLesson.overrides();
-	$: overrides = curLesson.overrides();
 	let state: LessonFormState = initializeState(lessonOptions);
+	setOverrideLabels();
 
 	let waiting = false;
 	let dirty = false;
@@ -40,6 +44,41 @@
 
 	// @ts-ignore
 	let dataFns: { [K in keyof LessonFormState]: () => LessonFormState[K] } = {};
+
+	function overrideMessage(k: keyof LessonTypingConfig): string {
+		let classes = Lesson.listClasses(curLesson).reverse();
+		let first: boolean = true;
+
+		for (const c of classes) {
+			if (c.overrides()[k] !== 'enabled') {
+				const l = getLessonClass(c.getType());
+				if (l === undefined) {
+					first = false;
+					continue;
+				}
+
+				const incompat =
+					first && l.classId !== adaptive_typeid
+						? config.lang.incompatibleLesson
+						: config.lang.incompatibleWrapper;
+
+				return incompat.replace('%s', l.name(config.lang));
+			}
+			first = false;
+		}
+
+		return '';
+	}
+
+	function setOverrideLabels() {
+		let k: keyof LessonTypingConfig;
+		for (k in defaultLessonOptsAvail) {
+			if (overrides[k] === 'enabled') {
+				continue;
+			}
+			overrideSources[k] = overrideMessage(k);
+		}
+	}
 
 	function initializeState(opts: Partial<LessonTypingConfig>): LessonFormState {
 		// @ts-ignore
@@ -57,6 +96,7 @@
 				s[k] = defaultLessonFormState[k];
 			}
 		}
+		overrideSources = overrideSources;
 		return s;
 	}
 
@@ -77,6 +117,9 @@
 		curLesson = await addWrappers(lesson.baseLesson(), config, db, state);
 		overrides = curLesson.overrides();
 		state = state;
+		overrideSources = overrideSources;
+
+		setOverrideLabels();
 
 		waiting = false;
 		if (dirty === true) {
@@ -119,6 +162,7 @@
 		inheritValue={config.until}
 		inheritLabel={config.lang.useUserValue}
 		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.until}
 	/>
 
 	<Bool
@@ -133,6 +177,7 @@
 		inheritValue={config.random}
 		inheritLabel={config.lang.useUserValue}
 		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.random}
 	/>
 
 	<Number
@@ -148,6 +193,7 @@
 		inheritValue={config.minQueue}
 		inheritLabel={config.lang.useUserValue}
 		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.minQueue}
 	/>
 
 	<Number
@@ -163,6 +209,7 @@
 		inheritValue={config.wordBatchSize}
 		inheritLabel={config.lang.useUserValue}
 		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.wordBatchSize}
 	/>
 
 	<Bool
@@ -177,6 +224,7 @@
 		inheritValue={config.backspace}
 		inheritLabel={config.lang.useUserValue}
 		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.backspace}
 	/>
 
 	<Select
@@ -190,6 +238,7 @@
 		inheritValue={wordModeChoices[config.checkMode].key}
 		inheritLabel={config.lang.useUserValue}
 		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.checkMode}
 	/>
 
 	<Bool
@@ -204,6 +253,7 @@
 		inheritValue={config.spaceOptional}
 		inheritLabel={config.lang.useUserValue}
 		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.spaceOptional}
 	/>
 
 	<Bool
@@ -218,6 +268,7 @@
 		inheritValue={config.adaptive}
 		inheritLabel={config.lang.useUserValue}
 		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.adaptive}
 	/>
 
 	<Bool
@@ -232,6 +283,7 @@
 		inheritValue={config.caseSensitive}
 		inheritLabel={config.lang.useUserValue}
 		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.caseSensitive}
 	/>
 </div>
 

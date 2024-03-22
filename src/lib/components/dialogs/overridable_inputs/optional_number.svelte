@@ -4,11 +4,13 @@
 	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 	import Inherit from './_inherit.svelte';
+	import Override from './_override.svelte';
 
 	export let label: string;
 	export let id: string;
 	export let inheritLabel: string;
 	export let overrideLabel: string;
+	export let overrideMessage: string;
 	export let nullLabel: string;
 	export let initialState: UserValue<number | null>;
 	export let defaultValue: number;
@@ -96,7 +98,15 @@
 	/>
 	<label class:disabled={isDisabled} for={id}>{label}</label>
 </div>
-{#if state === 'inherit'}
+{#if override !== 'enabled'}
+	<Override {overrideLabel} {overrideMessage}>
+		{#if override === null}
+			{nullLabel}
+		{:else if override !== 'disabled'}
+			<input type="number" disabled value={override} />
+		{/if}
+	</Override>
+{:else if state === 'inherit'}
 	<Inherit {inheritLabel}>
 		{#if inheritValue !== null}
 			<input title={inheritLabel} disabled type="number" value={inheritValue} />

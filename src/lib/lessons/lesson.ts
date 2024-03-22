@@ -263,4 +263,15 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         } while (c !== undefined);
         return null;
     }
+    
+    static listClasses(lesson: Lesson): Lesson[] {
+        let classes: Lesson[] = [];
+        let l: Lesson, c: Lesson | undefined = lesson;
+        do {
+            l = c;
+            classes.push(l);
+            c = l.getChild();
+        } while (c !== undefined);
+        return classes;
+    }
 }

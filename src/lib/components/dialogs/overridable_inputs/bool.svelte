@@ -10,6 +10,7 @@
 	export let id: string;
 	export let inheritLabel: string;
 	export let overrideLabel: string;
+	export let overrideMessage: string;
 	export let onLabel: string;
 	export let offLabel: string;
 	export let initialState: UserValue<boolean>;
@@ -96,11 +97,11 @@
 		{/if}
 	</Inherit>
 {:else if override !== 'enabled'}
-	<Override {overrideLabel}>
+	<Override {overrideLabel} {overrideMessage}>
 		{#if override === true}
-			{onLabel}
+			({onLabel})
 		{:else}
-			{offLabel}
+			({offLabel})
 		{/if}
 	</Override>
 {:else}

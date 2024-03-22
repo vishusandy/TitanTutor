@@ -29,6 +29,7 @@
 		align-items: center;
 	}
 	.override-label {
+		color: #ce2d2d;
 		margin-inline-end: 1rem;
 	}
 
