@@ -94,7 +94,7 @@
     "seriesPrevLesson": "Previous lesson",
     "seriesSelectLesson": "Select lesson",
     "incompatibleWrapper": "Incompatible with %s",
-    "incompatibleLesson": "Incompatible with current lesson '%s'",
+    "incompatibleLesson": "Incompatible with current lesson, which uses '%s'",
     "classStockWords": "Word list",
     "classUserWords": "User lesson",
     "classRandomChars": "Random Characters",
