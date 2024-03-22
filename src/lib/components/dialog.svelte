@@ -107,6 +107,7 @@
 		padding: 0px;
 		box-shadow: 0px 0px 15px #939596;
 		animation: dialog-slide-in 0.2s ease-out 0s 1;
+		min-height: 10rem;
 	}
 
 	header {
@@ -163,6 +164,8 @@
 		text-align: right;
 		background-color: var(--header-footer-color);
 		border-top: 1px solid var(--form-border-inner-color);
+		position: sticky;
+		bottom: 0px;
 	}
 
 	footer button {
