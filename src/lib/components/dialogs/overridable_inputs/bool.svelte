@@ -88,15 +88,7 @@
 	<input bind:this={checkboxInput} on:click={nextCheckboxState} {id} type="checkbox" />
 	<label for={id} class:disabled={isDisabled}>{label}</label>
 </div>
-{#if state === 'inherit'}
-	<Inherit {inheritLabel}>
-		{#if inheritValue}
-			{onLabel}
-		{:else}
-			{offLabel}
-		{/if}
-	</Inherit>
-{:else if override !== 'enabled'}
+{#if override !== 'enabled'}
 	<Override {overrideLabel} {overrideMessage}>
 		{#if override === true}
 			({onLabel})
@@ -104,6 +96,14 @@
 			({offLabel})
 		{/if}
 	</Override>
+{:else if state === 'inherit'}
+	<Inherit {inheritLabel}>
+		{#if inheritValue}
+			{onLabel}
+		{:else}
+			{offLabel}
+		{/if}
+	</Inherit>
 {:else}
 	<div class="label">
 		{#if state === true}
