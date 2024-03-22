@@ -29,11 +29,16 @@
 		align-items: center;
 	}
 	.override-label {
-		color: #ce2d2d;
+		/* color: #ce2d2d; */
+		color: #b62e2e;
 		margin-inline-end: 1rem;
 	}
-
 	.override-slot {
 		font-style: italic;
+	}
+
+	.override-message {
+		margin-top: 0.5em;
+		color: #9d9d9d;
 	}
 </style>
