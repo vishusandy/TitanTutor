@@ -20,7 +20,6 @@
 	const dispatch = createEventDispatcher();
 
 	function update(lessonId: string) {
-		console.log(`changing to ${lessonId}`);
 		const seriesId = lessonInSeries.get(lessonId);
 		if (seriesId === undefined) return;
 
@@ -29,7 +28,6 @@
 		series = s;
 		prev = series.prev(lessonId);
 		next = series.next(lessonId);
-		console.log(`changing to ${lessonId} prev=${prev} next=${next}`);
 		id = lessonId;
 		dispatch('lessonChanged', { to: lessonId });
 	}
@@ -39,7 +37,6 @@
 		if (window.confirm(stopMsg)) {
 			update(t.value);
 		} else {
-			console.log(`value was ${id}, setting to ${t.value}`);
 			t.value = id;
 		}
 	}

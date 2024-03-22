@@ -31,7 +31,6 @@ export function processChars(e: InputEvent, config: Config, word: WordState, sta
     for (const c of [...e.data]) {
         const mapped = config.remap.get(c);
         if (mapped === ' ') {
-            console.log('processing space');
             const a = checkWordEnd({ key: ' ', preventDefault: () => { } }, config, word, stats);
             act |= a;
             if (a === Action.None) {
@@ -74,7 +73,6 @@ export function checkWordEnd(e: kbEvent, config: Config, word: WordState, stats:
 }
 
 function wordEndWordMode(e: kbEvent, word: WordState, stats: LessonStats): Action {
-    console.log(`word mode end`);
 
     if (e.key === ' ' || e.key === 'Enter') {
         if (word.completed()) {

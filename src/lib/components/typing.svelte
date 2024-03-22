@@ -158,7 +158,6 @@
 
 	async function changeLesson(e: LessonChange) {
 		const id = e.to;
-		console.log(`setting lesson id to ${id}`);
 		lesson = await Lesson.load(id, originalConfig, db);
 		Lesson.saveLast(lesson, originalConfig, db);
 		queue = new Queue(originalConfig, lesson, lessonOpts, lessonStats);
@@ -228,11 +227,7 @@
 		}
 
 		if (action & Action.MissedSpace) {
-			// handleAction(Action.NextWord & Action.Refresh, true);
 			addMissedSpace(originalConfig.lang, historyNode);
-			// console.log(`before: ${action}`);
-			// action &= ~Action.NextWord;
-			// console.log(`after: ${action}`);
 		}
 
 		if (action & Action.Refresh) {
