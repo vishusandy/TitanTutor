@@ -4,7 +4,7 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 
 function getBasePath() {
-    if (process.argv.includes('dev')) return '';
+    if (process.argv.includes('dev')) return '/';
     return /** @type { '' | `/${string}` | undefined }`*/ (process.env.BASE_PATH);
 };
 
