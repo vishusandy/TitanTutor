@@ -28,6 +28,7 @@
 	import type { LessonChange } from '$lib/types/events';
 	import { adaptive_typeid } from '$lib/conf/lesson_ids';
 	import type { AdaptiveList } from '$lib/lessons/base/adaptive_list';
+	import { base } from '$app/paths';
 
 	export let db: IDBDatabase;
 	export let originalConfig: Config;
@@ -277,10 +278,10 @@
 	<header class="header">
 		<ul>
 			<li>
-				<a href="/settings">{config.lang.openConfigDialog}</a>
+				<a href={base + '/settings'}>{config.lang.openConfigDialog}</a>
 			</li>
 			<li>
-				<a href="/stats">{originalConfig.lang.openUserStatsDialog}</a>
+				<a href={base + '/stats'}>{originalConfig.lang.openUserStatsDialog}</a>
 			</li>
 		</ul>
 	</header>

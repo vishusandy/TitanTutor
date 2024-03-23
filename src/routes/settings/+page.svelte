@@ -16,6 +16,7 @@
 	import { CheckMode } from '$lib/types/types';
 	import { clearAll } from '$lib/db';
 	import { showVoiceDialog } from '$lib/util/dialog';
+	import { base } from '$app/paths';
 
 	export let data: PageData;
 	let db = data.db;
@@ -69,8 +70,9 @@
 			}
 		});
 	}
+
 	function cancel() {
-		goto('/');
+		goto(base);
 	}
 
 	function save() {
@@ -97,7 +99,7 @@
 
 		newConfig.saveUserConfig(db);
 
-		goto('/');
+		goto(base);
 	}
 </script>
 

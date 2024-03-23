@@ -4,6 +4,7 @@
 	import type { UserStats } from '$lib/stats';
 	import { formatDuration } from '$lib/util/util';
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 
 	export let data: PageData;
 	let db = data.db;
@@ -55,7 +56,7 @@
 		config.saveUserConfig(db);
 	}
 	function cancel() {
-		goto('/');
+		goto(base);
 	}
 </script>
 
