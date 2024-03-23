@@ -208,7 +208,7 @@
 	.settings {
 		width: max-content;
 		margin: 0px auto;
-		padding: 1rem 0px;
+		padding: 1rem 1rem 2rem;
 	}
 
 	.grid,
