@@ -56,7 +56,7 @@
 		config.saveUserConfig(db);
 	}
 	function cancel() {
-		goto(base);
+		goto(base === '' ? '/': base);
 	}
 </script>
 

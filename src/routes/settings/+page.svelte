@@ -72,7 +72,7 @@
 	}
 
 	function cancel() {
-		goto(base);
+		goto(base === '' ? '/' : base);
 	}
 
 	function save() {
@@ -99,7 +99,7 @@
 
 		newConfig.saveUserConfig(db);
 
-		goto(base);
+		goto(base === '' ? '/' : base);
 	}
 </script>
 
