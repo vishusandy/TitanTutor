@@ -1,10 +1,12 @@
 
 
 fix:
+    - remove indeterminate state from overridable check boxes as it is confusing
     - shift and other keys (e.g. arrow keys) unpauses
     - WPM is incorrectly calculated
 
 finish:
+    - allow user to change shortcuts
     - show custom word lists in lesson selection
         - show under "User Lessons" group (with transation for "User Lessons")
 

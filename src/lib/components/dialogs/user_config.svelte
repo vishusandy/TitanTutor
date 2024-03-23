@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Config } from '$lib/config';
+	import { Config, defaultConfig } from '$lib/config';
 	import { Language } from '$lib/data/language';
 	import { Remap } from '$lib/data/remap';
 	import { keyboardRemappings } from '$lib/conf/kbmaps';
@@ -7,6 +7,7 @@
 	import { languageList } from '$lib/conf/locales';
 	import OptionalNumber from './form_inputs/optional_number.svelte';
 	import { CheckMode } from '$lib/types/types';
+	import { clearAll } from '$lib/db';
 
 	export let config: Config;
 	export let db: IDBDatabase;
@@ -62,6 +63,13 @@
 
 	function remapChanged(_: Event) {
 		Remap.load(selectedKbMapping).then((r) => (remap = r));
+	}
+
+	async function clearData(e: Event) {
+		if (window.confirm(config.lang.actionClearDataPrompt)) {
+			clearAll(db);
+			config = await defaultConfig();
+		}
 	}
 </script>
 
@@ -128,14 +136,18 @@
 	/>
 </div>
 
+<!-- <div class="actions">
+	<button class="danger" on:click={clearData}>{config.lang.actionClearData}</button>
+</div> -->
+
 <style>
 	.grid {
 		display: grid;
-		grid-template-columns: min-content auto;
+		grid-template-columns: max-content max-content;
 		column-gap: 2rem;
 		row-gap: 1.3rem;
 		margin: 1rem auto;
-		min-width: 40ch;
+		/* min-width: 40ch; */
 		width: min-content;
 	}
 </style>

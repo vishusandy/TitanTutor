@@ -7,6 +7,7 @@ export class Language {
     lang: string = '';
     langName: string = '';
     tutorTitle: string = '';
+    settingsTitle: string = '';
     textDirection: string = 'ltr';
     loading: string = '';
     stopMsg: string = '';
@@ -32,6 +33,8 @@ export class Language {
     submit: string = '';
     cancel: string = '';
     close: string = '';
+    save: string = '';
+    back: string = '';
     day: string = '';
     days: string = '';
     hour: string = '';
@@ -109,6 +112,8 @@ export class Language {
     classAdaptive: string = '';
     classRandomize: string = '';
     classUntil: string = '';
+    actionClearData: string = '';
+    actionClearDataPrompt: string = '';
 
     constructor(
         lang: LanguageObject,

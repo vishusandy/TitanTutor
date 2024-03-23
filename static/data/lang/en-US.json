@@ -2,6 +2,7 @@
     "lang": "en-US",
     "langName": "English",
     "tutorTitle": "Titan Tutor",
+    "settingsTitle": "Titan Tutor - Settings",
     "textDirection": "ltr",
     "loading": "Loading...",
     "stopMsg": "Are you sure you want to stop the current lesson?",
@@ -27,6 +28,8 @@
     "submit": "Submit",
     "cancel": "Cancel",
     "close": "Close",
+    "save": "Save",
+    "back": "Back",
     "day": "day",
     "days": "days",
     "hour": "hour",
@@ -101,5 +104,8 @@
     "classRandomChars": "Random Characters",
     "classAdaptive": "Adaptive",
     "classRandomize": "Randomize",
-    "classUntil": "Max Words"
+    "classUntil": "Max Words",
+    "actionClearData": "Clear Data",
+    "actionClearDataPrompt": "Are you sure you want to clear ALL data?",
+    "": ""
 }

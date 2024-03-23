@@ -15,7 +15,6 @@
 	import { WordState } from '$lib/word_state';
 	import { Queue } from '$lib/queue';
 	import { Action, CheckMode } from '$lib/types/types';
-	import type { Audio } from '$lib/audio';
 	import { Lesson } from '$lib/lessons/lesson';
 	import type { LessonTypingConfig } from '$lib/types/lessons';
 	import {
@@ -262,25 +261,6 @@
 		showStatsDialog(originalConfig.lang.statsDialogSessionTitle, originalConfig, db, lessonStats);
 	}
 
-	async function showUserStatsDialog() {
-		showStatsDialog(
-			originalConfig.lang.statsDialogUserTitle,
-			originalConfig,
-			db,
-			originalConfig.userStats
-		);
-	}
-
-	async function showAudioDialog(_: Event) {
-		showVoiceDialog(originalConfig, db).then((audio?) => {
-			if (audio !== undefined) {
-				originalConfig.tts = audio;
-				originalConfig.saveUserConfig(db);
-				queue.playCurrentWord();
-			}
-		});
-	}
-
 	async function showLessonOptions(): Promise<void> {
 		const data = await showLessonConfigDialog(originalConfig, db, lesson, lessonOpts);
 		if (data !== undefined) {
@@ -290,17 +270,6 @@
 			reset(lessonOptions);
 		}
 	}
-
-	async function showUserConfig(_: Event) {
-		showConfigDialog(originalConfig, db).then((conf?: Config) => {
-			if (conf !== undefined) {
-				originalConfig = conf;
-				reset();
-				originalConfig.saveUserConfig(db);
-				reset();
-			}
-		});
-	}
 </script>
 
 <svelte:document on:keydown={shortcuts} />
@@ -308,19 +277,10 @@
 	<header class="header">
 		<ul>
 			<li>
-				<button class="link" type="button" on:click={showUserConfig}
-					>{originalConfig.lang.openConfigDialog}</button
-				>
+				<a href="/settings">{config.lang.openConfigDialog}</a>
 			</li>
 			<li>
-				<button class="link" type="button" on:click={showAudioDialog}
-					>{originalConfig.lang.openTtsDialog}</button
-				>
-			</li>
-			<li>
-				<button class="link" type="button" on:click={showUserStatsDialog}
-					>{originalConfig.lang.openUserStatsDialog}</button
-				>
+				<a href="/stats">{originalConfig.lang.openUserStatsDialog}</a>
 			</li>
 		</ul>
 	</header>

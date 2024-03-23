@@ -57,10 +57,10 @@
 </script>
 
 <div class="optional">
+	<input bind:this={checkboxInput} on:click={nextCheckboxState} {id} type="checkbox" />
 	<label for={id}>{label}</label>
 </div>
 <div class="check-value" class:input={state !== null}>
-	<input bind:this={checkboxInput} on:click={nextCheckboxState} {id} type="checkbox" />
 	{#if state === null}
 		{nullLabel}
 	{:else}

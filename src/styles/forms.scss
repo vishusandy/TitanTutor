@@ -121,6 +121,14 @@ input[type="submit"]:active {
     --button-bg: #5320b9;
 }
 
+button.danger, input.danger[type="submit"] {
+    --button-bg: #e23024;
+    color: white;
+}
+button.danger:hover, input.danger[type="submit"]:hover {
+    --button-bg: #cc271b;
+}
+
 
 label,
 .label {

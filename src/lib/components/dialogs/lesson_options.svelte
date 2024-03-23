@@ -306,19 +306,16 @@
 <style>
 	.grid {
 		display: grid;
-		grid-template-columns: min-content auto;
-		column-gap: 2rem;
-		/* row-gap: 1.3rem; */
-		/* row-gap: 0.9rem; */
+		grid-template-columns: min-content max-content;
+		column-gap: 3rem;
 		margin: 1rem auto;
-		min-width: 40ch;
 		width: min-content;
 		align-content: center;
 	}
 
 	.grid-sep {
 		grid-column: 1/3;
-		border-bottom: 1px solid #efefef;
+		/* border-bottom: 1px solid #efefef; */
 		width: 100%;
 		margin: 0.7rem auto;
 	}
