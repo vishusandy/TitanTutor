@@ -62,6 +62,11 @@ export function checkWordEnd(e: kbEvent, config: Config, word: WordState, stats:
         e.preventDefault();
         return Action.Refresh;
     }
+    if (e.key === 'Alt' || e.key === 'Shift' || e.key === 'Control') {
+        e.preventDefault();
+        return Action.None;
+    }
+
 
 
     switch (config.checkMode) {

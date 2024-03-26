@@ -75,7 +75,14 @@
 
 	async function startInput(e: Event) {
 		if ('key' in e) {
-			if (e.key === 'Tab') return;
+			if (
+				e.key === 'Tab' ||
+				e.key === 'Alt' ||
+				e.key === 'Shift' ||
+				e.key === 'Control' ||
+				(<string>e.key).substring(0, 5) === 'Arrow'
+			)
+				return;
 			if (e.key === config.shortcuts.pause) {
 				e.preventDefault();
 				return;

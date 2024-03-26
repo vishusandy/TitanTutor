@@ -2,7 +2,6 @@
 
 fix:
     - remove indeterminate state from overridable check boxes as it is confusing
-    - shift and other keys (e.g. arrow keys) unpauses
     - WPM is incorrectly calculated
 
 finish:
