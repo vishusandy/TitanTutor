@@ -1,10 +1,11 @@
 <script lang="ts">
 	import '$lib/../styles/global.scss';
+	import '$lib/../styles/manage.scss';
 
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
-	import { redirect } from '@sveltejs/kit';
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 
 	import { Config, defaultConfig } from '$lib/config';
 	import { Language } from '$lib/data/language';
@@ -16,7 +17,6 @@
 	import { CheckMode } from '$lib/types/types';
 	import { clearAll } from '$lib/db';
 	import { showVoiceDialog } from '$lib/util/dialog';
-	import { base } from '$app/paths';
 
 	export let data: PageData;
 	let db = data.db;
@@ -107,7 +107,7 @@
 	<title>{config.lang.settingsTitle}</title>
 </svelte:head>
 
-<div class="settings">
+<div class="manage">
 	<header>
 		<h1>{config.lang.configDialogTitile}</h1>
 	</header>
@@ -196,52 +196,12 @@
 </div>
 
 <style>
-	h1 {
-		margin: 0px auto;
-		font-size: 1.8rem;
-		font-weight: bold;
-		text-align: center;
-		color: #353535;
-		font-family: var(--font-title);
-	}
-
-	.settings {
-		width: max-content;
-		margin: 0px auto;
-		padding: 1rem 1rem 2rem;
-	}
-
-	.grid,
-	.actions {
-		border: 1px solid #b2b8be;
-		border-radius: 0.4rem;
-		background-color: #f9f9f9;
-		box-shadow: 0px 0px 3px #50505020;
-	}
-
 	.grid {
-		/* background-color: #f7f9fa; */
-		margin-top: 1.8rem;
-		padding: 1.6rem 2.4rem;
-		font-family: var(--font-humanist);
-		display: grid;
 		grid-template-columns: max-content max-content;
-		column-gap: 3rem;
-		row-gap: 1.3rem;
-	}
-
-	.actions {
-		margin-top: 3rem;
-		padding: 1rem 2.4rem;
-		grid-column: 1/3;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
 	}
 
 	.grid > select,
 	.grid > input {
-		/* grid-column: 2/4; */
 		grid-column-start: 2;
 		grid-column-end: 3;
 	}
@@ -252,48 +212,33 @@
 		column-gap: 0.4rem;
 	}
 
-	:global(.settings .check-value) {
+	:global(.manage .check-value) {
 		min-height: 2rem;
 		display: flex;
 		align-content: center;
 	}
-	:global(.settings .check-value) {
+	:global(.manage .check-value) {
 		grid-column: 2/3;
 	}
-	:global(.settings .check-value input[type='checkbox']) {
+	:global(.manage .check-value input[type='checkbox']) {
 		align-self: center;
-		/* margin-inline-end: 1rem; */
 	}
 
-	.actions button {
-		width: max-content;
-		margin: 0.45rem 0px;
-	}
-
-	:global(.settings .grid > label) {
+	:global(.manage .grid > label) {
 		align-self: start;
 	}
-	:global(.settings .grid select) {
-		height: min-content;
-		/* max-width: max-content; */
-		/* justify-self: start; */
-	}
-
-	:global(.settings > .grid input) {
+	:global(.manage .grid select) {
 		height: min-content;
 	}
 
-	footer {
-		margin-top: 2rem;
-		grid-column: 1/3;
-		text-align: right;
+	:global(.manage > .grid input) {
+		height: min-content;
 	}
 
 	.note {
 		color: #9d9d9d;
 	}
-	:global(.settings label) {
+	:global(.manage label) {
 		font-size: 105%;
-		/* font-style: normal; */
 	}
 </style>

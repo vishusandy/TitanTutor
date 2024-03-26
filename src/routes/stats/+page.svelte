@@ -1,7 +1,9 @@
 <script lang="ts">
+	import '$lib/../styles/global.scss';
+	import '$lib/../styles/manage.scss';
+
 	import type { PageData } from '../$types';
 
-	import type { UserStats } from '$lib/stats';
 	import { formatDuration } from '$lib/util/util';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
@@ -11,8 +13,6 @@
 	let config = data.config;
 
 	let stats = config.userStats;
-	const userStats = (stats as unknown as UserStats).sessions !== undefined;
-
 	let grossWpm: string = '';
 	let netWpm: string = '';
 	let accuracy: string = '';
@@ -56,14 +56,14 @@
 		config.saveUserConfig(db);
 	}
 	function cancel() {
-		goto(base === '' ? '/': base);
+		goto(base === '' ? '/' : base);
 	}
 </script>
 
-<header>
-	<h1>{config.lang.statsDialogUserTitle}</h1>
-</header>
-<div class="grid-container">
+<div class="manage">
+	<header>
+		<h1>{config.lang.statsDialogUserTitle}</h1>
+	</header>
 	<div class="grid">
 		<div class="label">{config.lang.statsDialogWords}</div>
 		<div>{stats.words}</div>
@@ -95,8 +95,8 @@
 		<div>{accuracy}</div>
 	</div>
 
-	<div class="actions">
-		<form>
+	<form>
+		<div class="actions">
 			<div class="track-stats-container">
 				<input
 					id="log-stats"
@@ -110,8 +110,8 @@
 			<button type="button" class="danger" on:click={clearUserStats}
 				>{config.lang.statsDialogClearUserStats}</button
 			>
-		</form>
-	</div>
+		</div>
+	</form>
 
 	<footer>
 		<button on:click={cancel}>{config.lang.back}</button>
@@ -119,65 +119,21 @@
 </div>
 
 <style>
-	header {
-		margin-top: 1rem;
-		margin-bottom: 1.8rem;
-	}
-
-	h1 {
-		margin: 0px auto;
-		font-size: 1.8rem;
-		font-weight: bold;
-		text-align: center;
-		color: #353535;
-		font-family: var(--font-title);
-	}
-
-	.grid-container {
-		width: fit-content;
-		margin: 0px auto;
-		font-family: var(--font-humanist);
-		padding: 0rem 1rem 1rem;
-	}
-	.grid,
-	.actions {
-		box-sizing: border-box;
-		border: 1px solid #b2b8be;
-		border-radius: 0.4rem;
-		background-color: #f9f9f9;
-		box-shadow: 0px 0px 3px #50505020;
-		padding: 1rem 2rem;
-		width: 100%;
-		margin: 1rem auto;
-	}
-
 	.grid {
-		display: grid;
-		/* grid-template-columns: min-content auto; */
-		grid-template-columns: auto auto;
-		column-gap: 3rem;
-
-		row-gap: 1.3rem;
-		/* width: min-content; */
+		grid-template-columns: max-content max-content;
 		white-space: nowrap;
 	}
 
 	.actions {
-		text-align: center;
+		flex-direction: column;
+		align-items: center;
 	}
 
 	.track-stats-container {
-		display: flex;
-		justify-content: center;
 		margin-bottom: 0.5rem;
 	}
 
 	#log-stats {
 		margin-right: 0.4rem;
-	}
-
-	footer {
-		margin: 2.5rem 1rem 1rem;
-		text-align: right;
 	}
 </style>
