@@ -1,17 +1,17 @@
 
 
 fix:
-    - remove indeterminate state from overridable check boxes as it is confusing
     - WPM is incorrectly calculated
 
 finish:
     - allow user to change shortcuts
+        - must be a function key OR have alt/ctrl/meta modifier
     - show custom word lists in lesson selection
         - show under "User Lessons" group (with transation for "User Lessons")
 
 features:
+    - remove indeterminate state from overridable check boxes as it is confusing
     - check form changes for equality with original value; if equal return 
-    - add button to clear ALL IndexedDB data
     - lesson options
         - add button in lesson settings to clear typos for adaptive lessons
         - show why certain options are disabled (source of override)
