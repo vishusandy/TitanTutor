@@ -300,13 +300,36 @@
 		</div>
 
 		<div class="tutor-bar">
-			<div class="tutor-bar-left" />
-			<div class="tutor-bar-right">
+			<div class="tutor-bar-left">
 				{#if config.until !== null}
 					<div class="word-progress">{queue.history.length} / {config.until}</div>
 				{:else}
 					<div class="word-progress">{queue.history.length} / ∞</div>
 				{/if}
+			</div>
+			<div class="tutor-bar-right">
+				<button
+					type="button"
+					class="fade-icon stats-button"
+					on:click={showSessionStatsDialog}
+					title={originalConfig.lang.openSessionStatsDialog}><Stats /></button
+				>
+				<button
+					type="button"
+					class="fade-icon cog-button"
+					on:click={showLessonOptions}
+					title={originalConfig.lang.openLessonConfigDialog}><Cog /></button
+				>
+
+				<button
+					type="button"
+					class="fade-icon stop-button"
+					disabled={!started}
+					on:click={confirmEndLesson}
+					title={originalConfig.lang.stop}
+				>
+					<Stop />
+				</button>
 			</div>
 		</div>
 
@@ -326,48 +349,20 @@
 			</span>
 		</div>
 
-		<nav class="tutor-below">
-			<div class="tutor-menu">
-				<div class="tutor-menu-left">
-					{#if series !== undefined}
-						<Series
-							on:lessonChanged={(e) => changeLesson(e.detail)}
-							{series}
-							seriesIndex={seriesIdx}
-							stopMsg={originalConfig.lang.stopMsg}
-							done={finished || !started}
-							prevText={originalConfig.lang.seriesPrevLesson}
-							nextText={originalConfig.lang.seriesNextLesson}
-							lessonSelectText={originalConfig.lang.seriesSelectLesson}
-						/>
-					{/if}
-				</div>
-				<div class="tutor-menu-right">
-					<button
-						type="button"
-						class="fade-icon stats-button"
-						on:click={showSessionStatsDialog}
-						title={originalConfig.lang.openSessionStatsDialog}><Stats /></button
-					>
-					<button
-						type="button"
-						class="fade-icon cog-button"
-						on:click={showLessonOptions}
-						title={originalConfig.lang.openLessonConfigDialog}><Cog /></button
-					>
-
-					<button
-						type="button"
-						class="fade-icon stop-button"
-						disabled={!started}
-						on:click={confirmEndLesson}
-						title={originalConfig.lang.stop}
-					>
-						<Stop />
-					</button>
-				</div>
-			</div>
-		</nav>
+		<div class="tutor-menu">
+			{#if series !== undefined}
+				<Series
+					on:lessonChanged={(e) => changeLesson(e.detail)}
+					{series}
+					seriesIndex={seriesIdx}
+					stopMsg={originalConfig.lang.stopMsg}
+					done={finished || !started}
+					prevText={originalConfig.lang.seriesPrevLesson}
+					nextText={originalConfig.lang.seriesNextLesson}
+					lessonSelectText={originalConfig.lang.seriesSelectLesson}
+				/>
+			{/if}
+		</div>
 
 		{#if !finished}
 			<div class="tutor-bottom">
@@ -408,12 +403,6 @@
 </div>
 
 <style lang="scss">
-	.tutor-below {
-		width: var(--width);
-		max-width: var(--max-width);
-		text-align: center;
-		margin: 0px auto 2rem;
-	}
 	.counter {
 		font-family: var(--font-sans-serif);
 		display: flex;
@@ -478,13 +467,6 @@
 		background-color: #f9f9f9;
 	}
 
-	.tutor-bottom {
-		text-align: center;
-		width: var(--width);
-		max-width: var(--max-width);
-		margin: 1.5rem auto;
-	}
-
 	.tutor-input {
 		box-shadow: none !important;
 		font-size: 1.2rem;
@@ -522,7 +504,17 @@
 		--input-border: rgba(36, 58, 92, 0.4);
 	}
 
+	.tutor-bottom {
+		text-align: center;
+		width: var(--width);
+		max-width: var(--max-width);
+		margin: 1.5rem auto;
+	}
+
 	.tutor-menu {
+		width: var(--width);
+		max-width: var(--max-width);
+		margin: 0px auto 2rem;
 		color: rgb(211, 209, 218);
 		display: flex;
 		flex-wrap: wrap;
@@ -532,14 +524,13 @@
 		border-radius: 0.7rem;
 		padding: 0.5rem 0.3rem;
 		box-shadow: 0px 1px 7px #3a3a3a3b;
+		align-content: center;
+		// text-align: center;
 	}
 
-	.tutor-menu-right {
-		font-size: 1.2rem;
-		display: flex;
-		flex-grow: 1;
-		justify-content: right;
-	}
+	// :global(.tutor-menu .next-btn) {
+	// 	flex-grow: 1;
+	// }
 
 	.tutor-bar {
 		box-sizing: border-box;
@@ -550,6 +541,11 @@
 		max-width: var(--max-width);
 		display: flex;
 		justify-content: space-between;
+	}
+
+	.tutor-bar-right {
+		font-size: 1.2rem;
+		display: flex;
 	}
 
 	.word-progress {
@@ -610,7 +606,7 @@
 		}
 
 		.tutor-menu-right {
-			justify-content: right;
+			justify-content: center;
 		}
 	}
 </style>

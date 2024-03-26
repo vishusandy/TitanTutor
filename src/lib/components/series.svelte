@@ -54,7 +54,7 @@
 	}
 </script>
 
-<div>
+<div class="prev-btn">
 	<button
 		on:click={onPrev}
 		class="prev fade-icon"
@@ -65,15 +65,17 @@
 	>
 		<Triangle />
 	</button>
-	<select on:change={onLessonSelect} on:click={(e) => e.stopPropagation()} title={lessonSelectText}>
-		{#each lessonPlans.values() as s}
-			<optgroup label={s.name}>
-				{#each s.lessons as l}
-					<option value={l} selected={id === l}>{stockLessons.get(l)?.name}</option>
-				{/each}
-			</optgroup>
-		{/each}
-	</select>
+</div>
+<select on:change={onLessonSelect} on:click={(e) => e.stopPropagation()} title={lessonSelectText}>
+	{#each lessonPlans.values() as s}
+		<optgroup label={s.name}>
+			{#each s.lessons as l}
+				<option value={l} selected={id === l}>{stockLessons.get(l)?.name}</option>
+			{/each}
+		</optgroup>
+	{/each}
+</select>
+<div class="next-btn">
 	<button
 		on:click={onNext}
 		class="next fade-icon"
@@ -87,36 +89,38 @@
 </div>
 
 <style>
-	div {
-		font-size: 1.2rem;
-		display: flex;
-		/* flex-wrap: wrap; */
-		align-items: center;
-	}
-
 	select {
 		background-color: #f7f9fa;
-		/* box-shadow: none; */
-		width: 70%;
-		flex-shrink: 2;
+		/* flex-grow: 1; */
 	}
 
 	button {
-		width: 2.4rem;
-		height: 2.4rem;
+		width: 2rem;
+		height: 2rem;
+		padding: 0px;
 	}
 
-	div :global(.prev svg) {
+	.prev-btn,
+	.next-btn {
+		align-self: center;
+		flex-grow: 1;
+	}
+
+	.next-btn {
+		text-align: end;
+	}
+
+	:global(.prev svg) {
 		transform: rotate(-90deg);
 	}
-	div :global(.next svg) {
+	:global(.next svg) {
 		transform: rotate(90deg);
 	}
 
-	div :global(button svg) {
+	:global(button svg) {
 		fill: #f5af00;
 	}
-	div :global(button:focus-within svg) {
+	:global(button:focus-within svg) {
 		fill: #f56800;
 	}
 </style>
