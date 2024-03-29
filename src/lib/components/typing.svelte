@@ -18,30 +18,25 @@
 	import { Lesson } from '$lib/lessons/lesson';
 	import type { LessonTypingConfig } from '$lib/types/lessons';
 	import {
-		showConfigDialog,
 		showLessonConfigDialog,
 		showStatsConfirmDialog,
-		showStatsDialog,
-		showVoiceDialog
+		showStatsDialog
 	} from '$lib/util/dialog';
-	import { lessonInSeries, lessonPlans } from '$lib/conf/lesson_plans';
 	import type { LessonChange } from '$lib/types/events';
 	import { adaptive_typeid } from '$lib/conf/lesson_ids';
 	import type { AdaptiveList } from '$lib/lessons/base/adaptive_list';
 	import { base } from '$app/paths';
+	import type { StorableUserWordlist } from '$lib/lessons/base/user_wordlist';
 
 	export let db: IDBDatabase;
 	export let originalConfig: Config;
 	export let lesson: Lesson;
 	export let lessonOpts: Partial<LessonTypingConfig>;
 	export let lessonStats: LessonStats;
+	export let customLessons: StorableUserWordlist[];
 
 	let config = originalConfig.mergeLessonOptions(lessonOpts).mergeAvailable(lesson.overrides());
 	let queue = new Queue(config, lesson, lessonOpts, lessonStats);
-	let seriesId: string | undefined = lessonInSeries.get(lesson.baseLesson().id);
-	let series = seriesId !== undefined ? lessonPlans.get(seriesId) : undefined;
-	let seriesIdx =
-		series !== undefined ? series.lessons.findIndex((v) => v == lesson.baseLesson().id) : 0;
 
 	let started: boolean = false;
 	let paused: boolean = true;
@@ -168,10 +163,6 @@
 		lesson = await Lesson.load(id, originalConfig, db);
 		Lesson.saveLast(lesson, originalConfig, db);
 		queue = new Queue(originalConfig, lesson, lessonOpts, lessonStats);
-		seriesId = lessonInSeries.get(lesson.baseLesson().id);
-		series = seriesId !== undefined ? lessonPlans.get(seriesId) : undefined;
-		seriesIdx =
-			series !== undefined ? series.lessons.findIndex((v) => v == lesson.baseLesson().id) : 0;
 
 		started = false;
 		paused = true;
@@ -290,6 +281,9 @@
 			<li>
 				<a href={base + '/stats'}>{originalConfig.lang.openUserStatsDialog}</a>
 			</li>
+			<li>
+				<a href={base + 'lessons'}>{config.lang.openLessonEditDialog}</a>
+			</li>
 		</ul>
 	</header>
 
@@ -357,18 +351,13 @@
 		</div>
 
 		<div class="tutor-menu">
-			{#if series !== undefined}
-				<Series
-					on:lessonChanged={(e) => changeLesson(e.detail)}
-					{series}
-					seriesIndex={seriesIdx}
-					stopMsg={originalConfig.lang.stopMsg}
-					done={finished || !started}
-					prevText={originalConfig.lang.seriesPrevLesson}
-					nextText={originalConfig.lang.seriesNextLesson}
-					lessonSelectText={originalConfig.lang.seriesSelectLesson}
-				/>
-			{/if}
+			<Series
+				id={lesson.baseLesson().id}
+				on:lessonChanged={(e) => changeLesson(e.detail)}
+				done={finished || !started}
+				{customLessons}
+				lang={config.lang}
+			/>
 		</div>
 
 		{#if !finished}

@@ -147,7 +147,7 @@
 	}
 </script>
 
-<div class="grid">
+<div class="dialog-grid">
 	<OptionalNumber
 		bind:getState={dataFns.until}
 		on:updateForm={updateState}
@@ -304,9 +304,9 @@
 </div>
 
 <style>
-	.grid {
+	.dialog-grid {
 		display: grid;
-		grid-template-columns: min-content max-content;
+		grid-template-columns: min-content auto;
 		column-gap: 3rem;
 		margin: 1rem auto;
 		width: min-content;

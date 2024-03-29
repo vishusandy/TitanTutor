@@ -5,8 +5,7 @@
 	import type { PageData } from '../$types';
 
 	import { formatDuration } from '$lib/util/util';
-	import { goto } from '$app/navigation';
-	import { base } from '$app/paths';
+	import { home } from '$lib/util/nav';
 
 	export let data: PageData;
 	let db = data.db;
@@ -56,7 +55,7 @@
 		config.saveUserConfig(db);
 	}
 	function cancel() {
-		goto(base === '' ? '/' : base);
+		home();
 	}
 </script>
 

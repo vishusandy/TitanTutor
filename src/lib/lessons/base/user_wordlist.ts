@@ -8,8 +8,8 @@ import { userwordlist_typeid } from "$lib/conf/lesson_ids";
 export type StorableUserWordlist = { type: typeof userwordlist_typeid, words: string[] } & StorableBaseWordList;
 
 export class UserWordList extends BaseWordList {
-    constructor(words: string[], id: string, name: string, lang: string) {
-        super(words, id, name, lang);
+    constructor(words: string[], id: string, name: string) {
+        super(words, id, name, 'user');
     }
 
     static getTypeId(): string {
@@ -31,18 +31,15 @@ export class UserWordList extends BaseWordList {
     }
 
     static async fromStorable(s: StorableUserWordlist, db: IDBDatabase, fetchFn: typeof fetch = fetch): Promise<UserWordList> {
-        return new UserWordList(s.words, s.id, s.name, s.lang);
+        return new UserWordList(s.words, s.id, s.name);
     }
 
-    static newStorable(id: string, name: string, lang: string, words: string[]): StorableUserWordlist {
-        return { type: userwordlist_typeid, id, name, words, lang }
+    static newStorable(id: string, name: string, words: string[]): StorableUserWordlist {
+        return { type: userwordlist_typeid, id, name, words, lang: 'user' };
     }
 }
 
 export async function loadUserLesson(config: Config, db: IDBDatabase, id: string, fetchFn: typeof fetch = fetch): Promise<Lesson> {
-    // const err = () => { throw new Error(`Could not find lesson ${id}`) };
-    // return await getCallback<StorableBaseLesson, Promise<Lesson>, Promise<Lesson>>(db, user_lessons_store, id, (res) => Lesson.deserializeAndBuild(id, res, config, db, fetchFn), err, err);
-
     const data = await get<StorableBaseLesson>(db, user_lessons_store, id);
     if (data === undefined) {
         throw new Error(`Could not find lesson ${id}`);

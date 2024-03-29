@@ -8,6 +8,7 @@ export class Language {
     langName: string = '';
     tutorTitle: string = '';
     settingsTitle: string = '';
+    manageSettingsTitle: string = '';
     textDirection: string = 'ltr';
     loading: string = '';
     stopMsg: string = '';
@@ -20,6 +21,8 @@ export class Language {
     no: string = '';
     on: string = '';
     off: string = '';
+    delete: string = '';
+    edit: string = '';
     caseSensitive: string = '';
     caseInsensitive: string = '';
     none: string = '';
@@ -27,6 +30,7 @@ export class Language {
     infinite: string = '';
     accept: string = '';
     ignore: string = '';
+    start: string = '';
     stop: string = '';
     pause: string = '';
     resume: string = '';
@@ -114,6 +118,18 @@ export class Language {
     classUntil: string = '';
     actionClearData: string = '';
     actionClearDataPrompt: string = '';
+    openLessonEditDialog: string = '';
+    lessonDialogCustomTitle: string = '';
+    lessonDialogStockTitle: string = '';
+    lessonDialogNewLesson: string = '';
+    lessonDialogAddLesson: string = '';
+    lessonDialogEditLesson: string = '';
+    lessonDialogLessonName: string = '';
+    lessonDialogLessonId: string = '';
+    lessonDialogWords: string = '';
+    lessonDialogExistingId: string = '';
+    lessonDialogConfirmDelete: string = '';
+    lessonDialogStartLesson: string = '';
 
     constructor(
         lang: LanguageObject,

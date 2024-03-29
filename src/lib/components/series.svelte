@@ -1,25 +1,31 @@
 <script lang="ts">
-	import { Series } from '$lib/lessons/series';
 	import { createEventDispatcher } from 'svelte';
 	import Triangle from './imgs/triangle.svelte';
 	import { stockLessons } from '$lib/conf/lessons';
 	import { lessonInSeries, lessonPlans } from '$lib/conf/lesson_plans';
+	import type { StorableUserWordlist } from '$lib/lessons/base/user_wordlist';
+	import type { Language } from '$lib/data/language';
 
-	export let series: Series;
-	export let seriesIndex: number;
 	export let done: boolean;
-	export let stopMsg: string;
-	export let prevText: string;
-	export let nextText: string;
-	export let lessonSelectText: string;
+	export let customLessons: StorableUserWordlist[];
+	export let lang: Language;
+	export let id: string;
 
-	let id = series.lessons[seriesIndex];
-	let prev = series.prev(id);
-	let next = series.next(id);
+	let seriesId = lessonInSeries.get(id);
+	let series = seriesId !== undefined ? lessonPlans.get(seriesId) : undefined;
+	let prev: string | null = series?.prev(id) ?? null;
+	let next: string | null = series?.next(id) ?? null;
 
 	const dispatch = createEventDispatcher();
 
 	function update(lessonId: string) {
+		if (lessonId.startsWith('user_')) {
+			prev = null;
+			next = null;
+			id = lessonId;
+			dispatch('lessonChanged', { to: lessonId });
+		}
+
 		const seriesId = lessonInSeries.get(lessonId);
 		if (seriesId === undefined) return;
 
@@ -31,10 +37,11 @@
 		id = lessonId;
 		dispatch('lessonChanged', { to: lessonId });
 	}
+
 	function onLessonSelect(e: Event) {
 		const t = <HTMLSelectElement | null>e.target;
 		if (!t) return;
-		if (window.confirm(stopMsg)) {
+		if (window.confirm(lang.stopMsg)) {
 			update(t.value);
 		} else {
 			t.value = id;
@@ -42,56 +49,76 @@
 	}
 
 	function onPrev(e: Event) {
-		if (prev !== null && window.confirm(stopMsg)) {
+		if (prev !== null && window.confirm(lang.stopMsg)) {
 			update(prev);
 		}
 	}
 
 	function onNext(e: Event) {
-		if (next !== null && window.confirm(stopMsg)) {
+		if (next !== null && window.confirm(lang.stopMsg)) {
 			update(next);
 		}
 	}
 </script>
 
 <div class="prev-btn">
-	<button
-		on:click={onPrev}
-		class="prev fade-icon"
-		class:done
-		type="button"
-		disabled={prev === null}
-		title={prevText}
-	>
-		<Triangle />
-	</button>
+	{#if prev !== null}
+		<button
+			on:click={onPrev}
+			class="prev fade-icon"
+			class:done
+			type="button"
+			disabled={prev === null}
+			title={lang.seriesPrevLesson}
+		>
+			<Triangle />
+		</button>
+	{/if}
 </div>
-<select on:change={onLessonSelect} on:click={(e) => e.stopPropagation()} title={lessonSelectText}>
-	{#each lessonPlans.values() as s}
+<select
+	on:change={onLessonSelect}
+	on:click={(e) => e.stopPropagation()}
+	title={lang.seriesSelectLesson}
+>
+	{#if series !== undefined}
+		<optgroup label={series.name}>
+			{#each series.lessons as l}
+				<option value={l} selected={id === l}>{stockLessons.get(l)?.name}</option>
+			{/each}
+		</optgroup>
+	{/if}
+	<!-- {#each lessonPlans.values() as s}
 		<optgroup label={s.name}>
 			{#each s.lessons as l}
 				<option value={l} selected={id === l}>{stockLessons.get(l)?.name}</option>
 			{/each}
 		</optgroup>
-	{/each}
+	{/each} -->
+	{#if customLessons.length !== 0}
+		<optgroup label={lang.lessonDialogCustomTitle}>
+			{#each customLessons as l (l.id)}
+				<option value={l.id} selected={id === l.id}>{l.name}</option>
+			{/each}
+		</optgroup>{/if}
 </select>
 <div class="next-btn">
-	<button
-		on:click={onNext}
-		class="next fade-icon"
-		class:done
-		type="button"
-		disabled={next === null}
-		title={nextText}
-	>
-		<Triangle />
-	</button>
+	{#if next !== null}
+		<button
+			on:click={onNext}
+			class="next fade-icon"
+			class:done
+			type="button"
+			disabled={next === null}
+			title={lang.seriesNextLesson}
+		>
+			<Triangle />
+		</button>
+	{/if}
 </div>
 
 <style>
 	select {
 		background-color: #f7f9fa;
-		/* flex-grow: 1; */
 	}
 
 	button {

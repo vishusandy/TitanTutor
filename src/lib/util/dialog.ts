@@ -7,9 +7,11 @@ import type { Config } from "../config";
 import type { BaseStats } from "../stats";
 import type { InnerDialogComponent, CloseFn } from "../types/types";
 import type { Lesson } from "$lib/lessons/lesson";
-import type { LessonTypingConfig } from "$lib/types/lessons";
+import type { LessonTypingConfig, StorableBaseLesson } from "$lib/types/lessons";
 import User from "../components/dialogs/user_config.svelte";
 import type { Audio } from "$lib/audio";
+import EditLesson from "$lib/components/dialogs/edit_lesson.svelte";
+import type { UserWordList } from "$lib/lessons/base/user_wordlist";
 
 
 export function showVoiceDialog(config: Config, db: IDBDatabase): Promise<Audio | undefined> {
@@ -25,6 +27,12 @@ export function showStatsDialog<T extends BaseStats>(title: string, config: Conf
 export function showStatsConfirmDialog<T extends BaseStats>(config: Config, db: IDBDatabase, stats: T): Promise<boolean | undefined> {
     const dialogProps: DialogProps = { title: config.lang.statsDialogSaveTitle, content: Stats, hasSubmit: true, config, db, cancelLabel: config.lang.no, submitLabel: config.lang.yes };
     const passProps = { stats };
+    return createDialog(dialogProps, passProps);
+}
+
+export function showEditLessonDialog(config: Config, db: IDBDatabase, lesson: UserWordList | null): Promise<StorableBaseLesson | undefined> {
+    const dialogProps: DialogProps = { title: (lesson !== null) ? config.lang.lessonDialogEditLesson : config.lang.lessonDialogAddLesson, content: EditLesson, hasSubmit: true, config, db, cancelLabel: config.lang.cancel, submitLabel: config.lang.save };
+    const passProps = { lesson };
     return createDialog(dialogProps, passProps);
 }
 

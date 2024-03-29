@@ -7,7 +7,7 @@ import type { Config } from "$lib/config";
 import { BinaryTree } from "$lib/util/bst";
 import { defaultLessonOptsAvail, mergeOptsAvail, type LessonOptsAvailable, type LessonFormState } from "$lib/types/forms";
 import type { UserWordList } from "./user_wordlist";
-import { adaptive_store, get, save } from "$lib/db";
+import { adaptive_store, addUpdate, get } from "$lib/db";
 import { adaptive_typeid, userwordlist_typeid, wordlist_typeid } from "$lib/conf/lesson_ids";
 import { CheckMode } from "$lib/types/types";
 import type { WordState } from "$lib/word_state";
@@ -57,12 +57,12 @@ export class AdaptiveList implements Lesson {
 
     }
 
-    saveTypos(db: IDBDatabase, lesson_id: string) {
+    saveTypos(db: IDBDatabase, lesson_id: string): Promise<any | undefined> {
         const typos: TypoList = [];
         for (let a of this.typoMap.entries()) {
             typos.push(a);
         }
-        save(db, adaptive_store, { lesson_id, typos });
+        return addUpdate(db, adaptive_store, { lesson_id, typos });
     }
 
     /**

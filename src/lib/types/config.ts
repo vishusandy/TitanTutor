@@ -23,6 +23,7 @@ export type ConfigProps = {
     remap: Remap,
     lang: Language,
     userStats: UserStats,
+    nextCustomId: number,
 } & LessonTypingConfig;
 
 /**

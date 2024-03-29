@@ -5,7 +5,7 @@ import { defaultMap } from '$lib/conf/kbmaps';
 import { Language } from "./data/language";
 import { UserStats } from "./stats";
 import type { LessonTypingConfig } from '$lib/types/lessons'
-import { config_store, get } from "$lib/db";
+import { addUpdate, config_store, get } from "$lib/db";
 import { defaultLessonOptsAvail, type LessonOptsAvailable } from "./types/forms";
 import { configDefaultValues } from "$lib/conf/config";
 import { defaultUserId } from "$lib/conf/config";
@@ -65,12 +65,9 @@ export class Config implements ConfigProps {
      * Stores a user's settings in IndexedDB.
      * @param {IDBDatabase} db - the IndexedDB connection to use
      */
-    saveUserConfig(db: IDBDatabase) {
-        const t = db.transaction([config_store], "readwrite");
-
+    saveUserConfig(db: IDBDatabase): Promise<any | undefined> {
         const data = this.toJSON();
-        const c = t.objectStore(config_store);
-        c.put(data);
+        return addUpdate(db, config_store, data);
     }
 
     /**
@@ -113,6 +110,7 @@ export class Config implements ConfigProps {
             remap: this.remap,
             lang: this.lang,
             userStats: this.userStats,
+            nextCustomId: this.nextCustomId,
             spaceOptional: opts.spaceOptional ?? this.spaceOptional,
             random: opts.random ?? this.random,
             until: opts.until === undefined ? this.until : opts.until,
@@ -196,3 +194,4 @@ export async function loadUserConfig(db: IDBDatabase): Promise<Config> {
     }
     return deserialize(data);
 }
+

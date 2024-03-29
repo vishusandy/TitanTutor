@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <bx:grid x="0" y="0" width="10" height="10"/>
+  </defs>
+  <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0); visibility: hidden;" d="M 20 420 L 420 20 L 480 80 L 80 480 L 20 420 Z"/>
+  <line style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0); visibility: hidden;" x1="500" y1="0" x2="0" y2="500"/>
+  <path style="stroke: rgb(0, 0, 0); fill: rgb(216, 52, 27);" d="M 440 80 C 460 100 450 110 440 120 L 420 140 L 360 80 L 380 60 C 390 50 400.239 39.761 420 60 M 420 60 L 440 80">
+    <title>eraser</title>
+  </path>
+  <polygon style="stroke: rgb(0, 0, 0); fill: rgb(213, 213, 213);" points="360 80 340 100 400 160 420 140">
+    <title>metal</title>
+  </polygon>
+  <polygon style="stroke: rgb(0, 0, 0); fill: rgb(255, 204, 117);" points="60 380 340 100 370 130 90 410">
+    <title>top-half</title>
+  </polygon>
+  <polygon style="stroke: rgb(0, 0, 0); fill: rgb(255, 157, 73);" points="400 160 370 130 90 410 120 440">
+    <title>bottom-half</title>
+  </polygon>
+  <path style="stroke: rgb(0, 0, 0); fill: rgb(242, 235, 217);" d="M 50 470 L 120 440 L 90 410 L 60 380 L 30 450 L 50 470 Z">
+    <title>wood-tip</title>
+  </path>
+  <polygon style="stroke: rgb(0, 0, 0); fill: rgb(155, 154, 163);" points="10 490 50 470 30 450">
+    <title>lead-tip</title>
+  </polygon>
+</svg>

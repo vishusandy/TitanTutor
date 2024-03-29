@@ -4,9 +4,8 @@
 
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
-	import { base } from '$app/paths';
 
+	import { home } from '$lib/util/nav';
 	import { Config, defaultConfig } from '$lib/config';
 	import { Language } from '$lib/data/language';
 	import { Remap } from '$lib/data/remap';
@@ -72,7 +71,7 @@
 	}
 
 	function cancel() {
-		goto(base === '' ? '/' : base);
+		home();
 	}
 
 	function save() {
@@ -87,6 +86,7 @@
 			remap,
 			lang,
 			userStats: config.userStats,
+			nextCustomId: config.nextCustomId,
 			spaceOptional,
 			random,
 			until: untilFn(),
@@ -99,7 +99,7 @@
 
 		newConfig.saveUserConfig(db);
 
-		goto(base === '' ? '/' : base);
+		home();
 	}
 </script>
 

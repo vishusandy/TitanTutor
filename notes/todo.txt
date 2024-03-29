@@ -1,6 +1,7 @@
 
 
 fix:
+    - using shortuct (f4) to unpause initially does not word at first
     - WPM is incorrectly calculated
 
 finish:
@@ -10,6 +11,8 @@ finish:
         - show under "User Lessons" group (with transation for "User Lessons")
 
 features:
+    - allow users to manage overrides on lessons page
+    - add lesson stats to track overall stats for a particular lesson
     - remove indeterminate state from overridable check boxes as it is confusing
     - check form changes for equality with original value; if equal return 
     - lesson options
@@ -28,7 +31,17 @@ questions:
     - track first word error separately than all word errors?
 
 
-
+shortcuts
+    - lessons
+    - user settings
+    - lesson settings
+    - user stats
+    - lesson stats
+    - cancel/back
+    - submit/save
+    - next lesson
+    - prev lesson
+    
 
 
 

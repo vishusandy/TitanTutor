@@ -4,7 +4,7 @@ import type { Language } from '$lib/data/language';
 import { loadUserLesson } from './base/user_wordlist';
 import { stockLessons } from '$lib/conf/lessons';
 import type { LessonOptsAvailable } from '$lib/types/forms';
-import { get, lesson_opts_store } from '$lib/db';
+import { addUpdate, get, lesson_opts_store } from '$lib/db';
 import type { StorableLesson, StorableBaseLesson, LessonTypingConfig } from '../types/lessons';
 import { addWrappers, getLessonClass } from '$lib/data/lesson_classes';
 import type { WordState } from '$lib/word_state';
@@ -202,10 +202,8 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
      * @param {Partial<LessonTypingConfig>} opts - the lesson options to save
      * @param {IDBDatabase} db - the IndexedDB connection to use
      */
-    static saveLessonOptions(id: string, opts: Partial<LessonTypingConfig>, db: IDBDatabase) {
-        const t = db.transaction(lesson_opts_store, "readwrite");
-        const s = t.objectStore(lesson_opts_store);
-        s.put({ lesson_id: id, ...opts });
+    static saveLessonOptions(id: string, opts: Partial<LessonTypingConfig>, db: IDBDatabase): Promise<any | undefined> {
+        return addUpdate(db, lesson_opts_store, { lesson_id: id, ...opts });
     }
 
     /**
@@ -263,7 +261,7 @@ export abstract class Lesson implements Iterator<string>, Iterable<string> {
         } while (c !== undefined);
         return null;
     }
-    
+
     static listClasses(lesson: Lesson): Lesson[] {
         let classes: Lesson[] = [];
         let l: Lesson, c: Lesson | undefined = lesson;

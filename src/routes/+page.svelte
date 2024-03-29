@@ -15,6 +15,7 @@
 	let lesson = data.lesson;
 	let lessonOpts = data.lessonOpts;
 	let sessionStats = new LessonStats(lesson.baseLesson().id, config.checkMode);
+	let customLessons = data.customLessons;
 
 	onMount(() => {
 		document.documentElement.lang = config.lang.lang;
@@ -26,4 +27,11 @@
 	<title>{config.lang.tutorTitle}</title>
 </svelte:head>
 
-<Typing originalConfig={config} {lesson} lessonStats={sessionStats} {db} {lessonOpts} />
+<Typing
+	originalConfig={config}
+	{lesson}
+	lessonStats={sessionStats}
+	{db}
+	{lessonOpts}
+	{customLessons}
+/>

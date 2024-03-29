@@ -16,6 +16,7 @@ export const configDefaultValues: BasicConfigProps = {
     shortcuts: { stop: 'F7', pause: 'F4' },
     logStats: true,
     caseSensitive: !virtualKeyboard,
+    nextCustomId: 1,
     spaceOptional: false,
     random: true,
     until: 100,

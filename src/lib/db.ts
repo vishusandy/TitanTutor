@@ -1,19 +1,32 @@
 import { defaultUserId } from "./conf/config";
 
 const DB_NAME = 'titantutor';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 export const config_store = 'user_config';
 export const lesson_opts_store = 'lesson_options';
 export const user_lessons_store = 'user_lessons';
 export const adaptive_store = 'adaptive';
+export const lesson_stats_store = 'lesson_stats'
 
-const stores = [
-    { store: 'user_config', key: 'user' },
-    { store: 'lesson_options', key: 'lesson_id' },
-    { store: 'user_lessons', key: 'id' },
-    { store: 'adaptive', key: 'lesson_id' },
+type StoreType = {
+    store: string,
+    key: string,
+    autoIncrement: boolean,
+};
+
+const stores: StoreType[] = [
+    { store: config_store, key: 'user', autoIncrement: false },
+    { store: lesson_opts_store, key: 'lesson_id', autoIncrement: false },
+    { store: user_lessons_store, key: 'id', autoIncrement: true },
+    { store: adaptive_store, key: 'lesson_id', autoIncrement: false },
+    { store: lesson_stats_store, key: 'lesson_id', autoIncrement: false },
 ];
+
+function createStore(db: IDBDatabase, s: StoreType) {
+    const objStore = db.createObjectStore(s.store, { keyPath: s.key, autoIncrement: s.autoIncrement });
+    objStore.createIndex(s.key, s.key, { unique: true });
+}
 
 export function connect(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
@@ -36,8 +49,7 @@ export function connect(): Promise<IDBDatabase> {
 
             if (e.oldVersion < 1) {
                 for (const s of stores) {
-                    const objStore = db.createObjectStore(s.store, { keyPath: s.key });
-                    objStore.createIndex(s.key, s.key, { unique: true });
+                    createStore(db, s);
                 }
             } else {
                 if (e.oldVersion === 1) {
@@ -55,6 +67,11 @@ export function connect(): Promise<IDBDatabase> {
                         db.createObjectStore(config_store, { keyPath: 'user' })
                             .createIndex('user', 'user', { unique: true });
                     }
+                }
+                if (e.oldVersion <= 2) {
+                    db.deleteObjectStore(user_lessons_store);
+                    createStore(db, { store: user_lessons_store, key: 'id', autoIncrement: true });
+                    createStore(db, { store: lesson_stats_store, key: 'lesson_id', autoIncrement: false })
                 }
             }
         }
@@ -94,4 +111,41 @@ export function save<T>(db: IDBDatabase, store_name: string, data: T) {
     const t = db.transaction([store_name], "readwrite");
     const store = t.objectStore(store_name);
     store.put(data);
+}
+
+export function addUpdate<T>(db: IDBDatabase, store_name: string, data: T): Promise<any | undefined> {
+    let result: any = undefined;
+    return new Promise((resolve) => {
+        const t = db.transaction([store_name], "readwrite");
+        t.oncomplete = () => resolve(result);
+        t.onerror = () => resolve(undefined);
+
+        const req = t.objectStore(store_name).put(data);
+        req.onsuccess = () => { result = req.result };
+    });
+}
+
+export function list<T>(db: IDBDatabase, store_name: string): Promise<T[] | undefined> {
+    let result: T[];
+    let err: boolean = false;
+
+    return new Promise((resolve) => {
+        const t = db.transaction([store_name], 'readonly');
+        t.oncomplete = () => (!err) ? resolve(result) : resolve(undefined);
+        t.onerror = () => resolve(undefined);
+
+        const req = t.objectStore(store_name).getAll();
+        req.onsuccess = () => result = req.result;
+        req.onerror = () => err = true;
+    });
+}
+
+export function remove(db: IDBDatabase, store_name: string, key: string): Promise<string | undefined> {
+    return new Promise((resolve) => {
+        const t = db.transaction(store_name, 'readwrite');
+        t.oncomplete = () => resolve(key);
+        t.onerror = () => resolve(undefined);
+
+        t.objectStore(store_name).delete(key);
+    });
 }

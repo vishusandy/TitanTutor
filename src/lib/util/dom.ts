@@ -23,3 +23,10 @@ export function updateCheckboxProperties(checkboxInput: HTMLInputElement, checke
     checkboxInput.indeterminate = indeterminate;
     checkboxInput.disabled = disabled;
 }
+
+export function adjustTextarea(e: Event) {
+    const t = <HTMLTextAreaElement | null>e.target;
+    if (!t) return;
+    t.style.height = 'auto';
+    t.style.height = t.scrollHeight + 'px';
+}

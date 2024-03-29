@@ -5,7 +5,7 @@
 
 	export let stats: T;
 	export let config: Config;
-    export let db: IDBDatabase;
+	export let db: IDBDatabase;
 
 	const userStats = (stats as unknown as UserStats).sessions !== undefined;
 
@@ -53,7 +53,7 @@
 	}
 </script>
 
-<div class="grid">
+<div class="dialog-grid">
 	<div class="label">{config.lang.statsDialogWords}</div>
 	<div>{stats.words}</div>
 
@@ -64,7 +64,7 @@
 	<div>{stats.keystrokes}</div>
 </div>
 <hr />
-<div class="grid">
+<div class="dialog-grid">
 	<div class="label">Duration</div>
 	<div>{formatDuration(stats.duration, config.lang)}</div>
 
@@ -75,7 +75,7 @@
 	<div>{stats.correctedErrors}</div>
 </div>
 <hr />
-<div class="grid">
+<div class="dialog-grid">
 	<div class="label">{config.lang.statsDialogGrossWpm}</div>
 	<div>{grossWpm}</div>
 
@@ -107,7 +107,7 @@
 {/if}
 
 <style>
-	.grid {
+	.dialog-grid {
 		display: grid;
 		/* grid-template-columns: min-content auto; */
 		grid-template-columns: auto auto;
@@ -120,15 +120,15 @@
 		white-space: nowrap;
 	}
 
-	.grid > * {
+	.dialog-grid > * {
 		margin: 0.65rem 0px;
 	}
 
-	.grid :nth-child(2n) {
+	.dialog-grid :nth-child(2n) {
 		text-align: left;
 	}
 
-	.grid :nth-child(2n + 1) {
+	.dialog-grid :nth-child(2n + 1) {
 		text-align: left;
 	}
 

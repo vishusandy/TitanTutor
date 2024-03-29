@@ -46,6 +46,7 @@
 			remap,
 			lang,
 			userStats: config.userStats,
+			nextCustomId: config.nextCustomId,
 			spaceOptional,
 			random,
 			until: untilFn(),
@@ -77,7 +78,7 @@
 	<label for="language">{config.lang.configLanguage}</label>
 	<select id="language" bind:value={selectedLang} on:change={langChanged}>
 		{#each languageList as item (item.path)}
-			<option value={item.path}>{item.name}</option>
+			<option value={item.path} selected={item.path === selectedLang}>{item.name}</option>
 		{/each}
 	</select>
 
