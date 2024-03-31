@@ -62,12 +62,11 @@ export function checkWordEnd(e: kbEvent, config: Config, word: WordState, stats:
         e.preventDefault();
         return Action.Refresh;
     }
+
     if (e.key === 'Alt' || e.key === 'Shift' || e.key === 'Control') {
         e.preventDefault();
         return Action.None;
     }
-
-
 
     switch (config.checkMode) {
         case CheckMode.Char:
@@ -78,7 +77,6 @@ export function checkWordEnd(e: kbEvent, config: Config, word: WordState, stats:
 }
 
 function wordEndWordMode(e: kbEvent, word: WordState, stats: LessonStats): Action {
-
     if (e.key === ' ' || e.key === 'Enter') {
         if (word.completed()) {
             e.preventDefault();
@@ -100,6 +98,10 @@ function wordEndWordMode(e: kbEvent, word: WordState, stats: LessonStats): Actio
 }
 
 function wordEndCharMode(e: kbEvent, config: Config, word: WordState): Action {
+    if (controlKeys.has(e.key)) {
+        return Action.None;
+    }
+    
     if (word.atEnd()) {
         if (e.key === ' ') {
             e.preventDefault();
