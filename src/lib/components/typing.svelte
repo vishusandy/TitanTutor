@@ -261,7 +261,13 @@
 	}
 
 	async function showLessonOptions(): Promise<void> {
-		const data = await showLessonConfigDialog(originalConfig, db, lesson, lessonOpts);
+		const data = await showLessonConfigDialog(
+			originalConfig,
+			db,
+			lesson,
+			lessonOpts,
+			config.lang.lessonConfigConfirmSubmit
+		);
 		if (data !== undefined) {
 			let lessonOptions: Partial<LessonTypingConfig>;
 			[lesson, lessonOptions] = data;
@@ -571,12 +577,16 @@
 		height: 2.5rem;
 	}
 
+	.cog-button {
+		padding: 0.4rem;
+	}
 	:global(.stop-button svg) {
 		fill: #f34747;
 	}
 
 	:global(.cog-button svg) {
-		fill: #9c9191;
+		// fill: #9c9191;
+		fill: orange;
 	}
 
 	:global(.stats-button svg) {

@@ -130,6 +130,7 @@ export class Language {
     lessonDialogExistingId: string = '';
     lessonDialogConfirmDelete: string = '';
     lessonDialogStartLesson: string = '';
+    lessonDialogEditLessonSettings: string = '';
 
     constructor(
         lang: LanguageObject,

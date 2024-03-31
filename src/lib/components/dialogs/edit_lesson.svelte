@@ -30,26 +30,15 @@
 	}
 
 	export function getData(): StorableBaseLesson {
-		return UserWordList.newStorable('user_' + id, name, words);
+		const w: string[] = [];
+		words.forEach((a) => w.push(...a.split(' ').filter((v) => v)));
+		return UserWordList.newStorable('user_' + id, name, w);
 	}
 
 	function wordsChanged(e: Event) {
-		words = wordsInput.split(/\r?\n/).filter((s) => s !== '');
+		words = wordsInput.split(/\r?\n/).filter((s) => s);
 		adjustTextarea(e);
 	}
-
-	// function idChanged(e: Event) {
-	// 	const t = <HTMLInputElement | null>e.target;
-	// 	if (!t) return;
-	// 	const s = 'user_' + t.value;
-	// 	if (lessonIds.find((i) => i === s)) {
-	// 		idForm.setCustomValidity(config.lang.lessonDialogExistingId);
-	// 	} else if(id === '') {
-
-	// 	} else {
-	// 		idForm.setCustomValidity('');
-	// 	}
-	// }
 </script>
 
 <div class="dialog-grid">
@@ -60,13 +49,7 @@
 		<div class="wordsLabel">
 			<label for="lessonWords">{config.lang.lessonDialogWords}</label>
 		</div>
-		<textarea
-			bind:this={textarea}
-			bind:value={wordsInput}
-			on:input={wordsChanged}
-			id="lessonWords"
-			required
-		/>
+		<textarea bind:this={textarea} bind:value={wordsInput} on:input={wordsChanged} id="lessonWords" required />
 	</div>
 </div>
 

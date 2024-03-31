@@ -123,5 +123,5 @@
     "lessonDialogExistingId": "The chosen lesson ID already exists!",
     "lessonDialogConfirmDelete": "Are you sure you want to delete '%s'?",
     "lessonDialogStartLesson": "Start lesson '%s'?",
-    "": ""
+    "lessonDialogEditLessonSettings": "Edit lesson settings"
 }

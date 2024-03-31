@@ -41,8 +41,8 @@ export function showConfigDialog(config: Config, db: IDBDatabase): Promise<Confi
     return createDialog(dialogProps);
 }
 
-export async function showLessonConfigDialog(config: Config, db: IDBDatabase, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>): Promise<Promise<[Lesson, Partial<LessonTypingConfig>] | undefined>> {
-    const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, db, confirmPrompt: config.lang.lessonConfigConfirmSubmit };
+export async function showLessonConfigDialog(config: Config, db: IDBDatabase, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>, confirmPrompt: string | undefined): Promise<Promise<[Lesson, Partial<LessonTypingConfig>] | undefined>> {
+    const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, db, confirmPrompt };
     const passProps = { lesson, lessonOptions };
     return createDialog(dialogProps, passProps);
 }

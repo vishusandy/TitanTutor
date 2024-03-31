@@ -1,0 +1,17 @@
+{
+    "[svelte]": {
+        "editor.defaultFormatter": "svelte.svelte-vscode",
+        "editor.detectIndentation": false,
+        "editor.stickyTabStops": false,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": false,
+        "editor.useTabStops": true
+    },
+    "[typescript]": {
+        // "editor.detectIndentation": false,
+        "editor.stickyTabStops": false,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.useTabStops": true
+    },
+}

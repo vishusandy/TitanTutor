@@ -27,6 +27,8 @@ export type LessonBasicConfig = {
  */
 export type LessonTypingConfig = LessonWrapperConfig & LessonBasicConfig;
 
+export type StoredOverrides = Partial<LessonTypingConfig> & { id: string };
+
 /**
  * Specifies an `id` field which must be present in a lesson-s {@link StorableLesson} if it also implements {@link BaseLesson}
  */

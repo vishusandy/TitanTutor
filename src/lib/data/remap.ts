@@ -29,6 +29,7 @@ export abstract class Remap {
 
 /** The keys in this list will be ignored */
 export const controlKeys = new Set([
+    'Process',
     'Delete',
     'Enter',
     'ArrowDown',
@@ -42,7 +43,6 @@ export const controlKeys = new Set([
     'Escape',
     'Insert',
     'Shift',
-    // 'Tab',
 ]);
 
 

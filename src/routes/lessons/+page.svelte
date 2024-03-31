@@ -5,17 +5,19 @@
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 
+	import ManageButtons from '$lib/components/manageButtons.svelte';
+	
 	import { home } from '$lib/util/nav';
 	import { showEditLessonDialog } from '$lib/util/dialog';
 	import { addUpdate, list, user_lessons_store } from '$lib/db';
 	import { stockLessons } from '$lib/conf/lessons';
 	import { lessonPlans } from '$lib/conf/lesson_plans';
-	import ManageButtons from '$lib/components/manageButtons.svelte';
-
+	
 	export let data: PageData;
 	let db = data.db;
 	let config = data.config;
 	let customLessons = data.customLessons;
+	// let lessonSettings = data.lessonSettings;
 
 	onMount(() => {
 		document.documentElement.lang = config.lang.lang;
@@ -46,6 +48,10 @@
 			config.saveUserConfig(db);
 			home();
 		}
+	}
+	
+	function editSettings() {
+		
 	}
 
 	function cancel() {

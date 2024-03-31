@@ -1,16 +1,14 @@
 
 
 fix:
-    - using shortuct (f4) to unpause initially does not word at first
+    - using shortuct (f4) to unpause initially does not unpause at first
     - WPM is incorrectly calculated
 
 finish:
-    - allow user to change shortcuts
-        - must be a function key OR have alt/ctrl/meta modifier
-    - show custom word lists in lesson selection
-        - show under "User Lessons" group (with transation for "User Lessons")
 
 features:
+    - allow user to change shortcuts
+        - must be a function key OR have alt/ctrl/meta modifier
     - allow users to manage overrides on lessons page
     - add lesson stats to track overall stats for a particular lesson
     - remove indeterminate state from overridable check boxes as it is confusing
