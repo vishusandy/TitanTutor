@@ -7,15 +7,17 @@ fix:
 finish:
 
 features:
+    - add stats dialog button to lesson page
+    - add button to clear lesson stats in stats dialog
     - add language select to lessons page to optionally allow filtering by language
+    - remove indeterminate state from overridable check boxes as it is confusing
+    - add option to always save stats without prompt
+    
     - allow user to change shortcuts
         - must be a function key OR have alt/ctrl/meta modifier
-    - add lesson stats to track overall stats for a particular lesson
-    - remove indeterminate state from overridable check boxes as it is confusing
-    - add button to go to next lesson when lesson is finished
-    - add option to always save stats without prompt
     - add length property to measure word progress
     - multilingual example text
+    - add button to go to next lesson when lesson is finished?
 
 questions:
     - in char mode count space as a character
