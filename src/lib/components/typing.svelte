@@ -11,7 +11,7 @@
 
 	import { addMissedSpace, addSpace } from '$lib/util/dom';
 	import type { Config } from '$lib/config';
-	import { LessonStats } from '$lib/stats';
+	import { LessonStats, type StatsLog, type StatsEntry } from '$lib/stats';
 	import { WordState } from '$lib/word_state';
 	import { Queue } from '$lib/queue';
 	import { Action, CheckMode } from '$lib/types/types';
@@ -23,6 +23,7 @@
 	import type { AdaptiveList } from '$lib/lessons/base/adaptive_list';
 	import { base } from '$app/paths';
 	import type { StorableUserWordlist } from '$lib/lessons/base/user_wordlist';
+	import { addUpdate, get, lesson_stats_store } from '$lib/db';
 
 	export let db: IDBDatabase;
 	export let originalConfig: Config;
@@ -140,14 +141,20 @@
 			return;
 		}
 
+		const statsLog = await get<StatsLog>(db, lesson_stats_store, lesson.baseLesson().id);
 		await showStatsConfirmDialog(originalConfig, db, lessonStats).then((v: boolean | undefined) => {
 			if (v === true) {
 				originalConfig.userStats.add(lessonStats);
 				originalConfig.saveUserConfig(db);
+
 				const adaptive = Lesson.getClass(lesson, adaptive_typeid);
 				if (adaptive !== null) {
 					(<AdaptiveList>adaptive).saveTypos(db, lesson.baseLesson().id);
 				}
+
+				const log: StatsLog = statsLog ? statsLog : { lesson_id: lesson.baseLesson().id, entries: [] };
+				log.entries.push(lessonStats.baseStats());
+				addUpdate(db, lesson_stats_store, log);
 			}
 		});
 		finished = true;

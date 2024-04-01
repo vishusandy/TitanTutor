@@ -1,11 +1,25 @@
+import { wordLen } from "./conf/stats";
 import type { CheckMode } from "./types/types";
 import type { WordState } from "./word_state";
 
 // https://www.speedtypingonline.com/typing-equations
 
-export const wordLen: number = 5;
+
 
 export type UserStatsObject = { [P in keyof UserStats]: UserStats[P] };
+
+export type StatsEntry = {
+    duration: number,
+    keystrokes: number,
+    wordErrors: number,
+    backspaces: number,
+    words: number,
+    chars: number,
+    uncorrectedErrors: number,
+    correctedErrors: number,
+};
+
+export type StatsLog = {lesson_id: string, entries: StatsEntry[]};
 
 export abstract class BaseStats {
     duration: number = 0;
@@ -38,10 +52,12 @@ export abstract class BaseStats {
 export class LessonStats extends BaseStats {
     started: DOMHighResTimeStamp | undefined = undefined;
     mode: CheckMode;
+    id: string;
 
     constructor(id: string, mode: CheckMode) {
         super();
         this.mode = mode;
+        this.id = id;
     }
 
 
@@ -53,6 +69,19 @@ export class LessonStats extends BaseStats {
         this.backspaces += word.backspaces;
         this.chars += word.wordChars.length;
         this.wordErrors += word.wordAttempts;
+    }
+    
+    baseStats(): StatsEntry {
+        return {
+            duration: this.duration,
+            keystrokes: this.keystrokes,
+            wordErrors: this.wordErrors,
+            backspaces: this.backspaces,
+            words: this.words,
+            chars: this.chars,
+            uncorrectedErrors: this.uncorrectedErrors,
+            correctedErrors: this.correctedErrors,
+        }
     }
 
     resetWord(word: WordState) {
