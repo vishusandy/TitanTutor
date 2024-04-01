@@ -1,23 +1,19 @@
 
 
 fix:
-    - save lesson opts using autoinc instead of stored number in config
     - using shortuct (f4) to unpause initially does not unpause at first
     - WPM is incorrectly calculated
 
 finish:
 
 features:
+    - add language select to lessons page to optionally allow filtering by language
     - allow user to change shortcuts
         - must be a function key OR have alt/ctrl/meta modifier
-    - allow users to manage overrides on lessons page
     - add lesson stats to track overall stats for a particular lesson
     - remove indeterminate state from overridable check boxes as it is confusing
-    - check form changes for equality with original value; if equal return 
     - lesson options
         - add button in lesson settings to clear typos for adaptive lessons
-        - show why certain options are disabled (source of override)
-        - distinguish user inherited values better
     - add button to go to next lesson when lesson is finished
     - manage/create custom word lists
     - add option to always save stats without prompt

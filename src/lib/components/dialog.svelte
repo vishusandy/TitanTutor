@@ -69,29 +69,18 @@
 			</header>
 			<div class="content">
 				{#if hasSubmit}
-					<svelte:component
-						this={content}
-						bind:getData={submitData}
-						bind:config
-						bind:db
-						{...passProps}
-					/>
+					<svelte:component this={content} bind:getData={submitData} bind:config bind:db {...passProps} />
 				{:else}
 					<svelte:component this={content} bind:config bind:db {...passProps} />
 				{/if}
 			</div>
 			<footer>
-				<button
-					type="button"
-					id="dialog-close"
-					class="close"
-					on:click={handleClose}
-					bind:this={closeButton}
-					>{#if hasSubmit}{cancelLabel}{:else}{closeLabel}{/if}</button
-				>
 				{#if hasSubmit}
 					<button type="submit" bind:this={submitButton}>{submitLabel}</button>
 				{/if}
+				<button type="button" id="dialog-close" class="close" on:click={handleClose} bind:this={closeButton}
+					>{#if hasSubmit}{cancelLabel}{:else}{closeLabel}{/if}</button
+				>
 			</footer>
 		</div>
 	</form>

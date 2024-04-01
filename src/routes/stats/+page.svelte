@@ -6,6 +6,7 @@
 
 	import { formatDuration } from '$lib/util/util';
 	import { home } from '$lib/util/nav';
+	import { loadUserConfig } from '$lib/config';
 
 	export let data: PageData;
 	let db = data.db;
@@ -25,9 +26,7 @@
 	// Inspired by:
 	// https://carl-topham.com/articles/intl-number-formatting-percentage
 	function formatNaN(num: number, options?: Intl.NumberFormatOptions) {
-		return Number.isNaN(num)
-			? config.lang.notAvailable
-			: Intl.NumberFormat(navigator.language, options).format(num);
+		return Number.isNaN(num) ? config.lang.notAvailable : Intl.NumberFormat(navigator.language, options).format(num);
 	}
 
 	function calc() {
@@ -38,22 +37,27 @@
 
 	calc();
 
-	function clearUserStats() {
-		if (!window.confirm(config.lang.statsResetPrompt)) return;
+	async function clearUserStats() {
+		if (!window.confirm(config.lang.statsResetPrompt)) {
+			return;
+		}
 
-		config.saveUserConfig(db);
-		config = config;
-		stats.reset();
-		stats = stats;
+		const c = await loadUserConfig(db);
+		c.userStats.reset();
+		c.saveUserConfig(db);
+		config = c;
+		stats = c.userStats;
 		calc();
 	}
 
-	function changeTrackStats() {
+	async function changeTrackStats() {
 		trackStats = trackStatsCheckbox.checked;
-		config.logStats = trackStats;
-		config = config;
-		config.saveUserConfig(db);
+		const c = await loadUserConfig(db);
+		c.logStats = trackStats;
+		config = c;
+		c.saveUserConfig(db);
 	}
+
 	function cancel() {
 		home();
 	}
@@ -106,9 +110,7 @@
 				/>
 				<label for="log-stats">{config.lang.statsDialogTrackUserStats}</label>
 			</div>
-			<button type="button" class="danger" on:click={clearUserStats}
-				>{config.lang.statsDialogClearUserStats}</button
-			>
+			<button type="button" class="danger" on:click={clearUserStats}>{config.lang.statsDialogClearUserStats}</button>
 		</div>
 	</form>
 
