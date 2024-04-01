@@ -17,11 +17,7 @@
 	import { Action, CheckMode } from '$lib/types/types';
 	import { Lesson } from '$lib/lessons/lesson';
 	import type { LessonTypingConfig } from '$lib/types/lessons';
-	import {
-		showLessonConfigDialog,
-		showStatsConfirmDialog,
-		showStatsDialog
-	} from '$lib/util/dialog';
+	import { showLessonConfigDialog, showStatsConfirmDialog, showStatsDialog } from '$lib/util/dialog';
 	import type { LessonChange } from '$lib/types/events';
 	import { adaptive_typeid } from '$lib/conf/lesson_ids';
 	import type { AdaptiveList } from '$lib/lessons/base/adaptive_list';
@@ -288,7 +284,7 @@
 				<a href={base + '/stats'}>{originalConfig.lang.openUserStatsDialog}</a>
 			</li>
 			<li>
-				<a href={base + 'lessons'}>{config.lang.openLessonEditDialog}</a>
+				<a href={base + '/lessons'}>{config.lang.openLessonEditDialog}</a>
 			</li>
 		</ul>
 	</header>
@@ -340,11 +336,7 @@
 			</div>
 		</div>
 
-		<div
-			class="tutor-words"
-			class:paused
-			class:char-mode={originalConfig.checkMode === CheckMode.Char}
-		>
+		<div class="tutor-words" class:paused class:char-mode={originalConfig.checkMode === CheckMode.Char}>
 			<span bind:this={historyNode} class="history" /><Word
 				bind:span={activeWord}
 				word={queue.word.wordChars}

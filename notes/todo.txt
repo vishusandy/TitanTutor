@@ -1,6 +1,7 @@
 
 
 fix:
+    - save lesson opts using autoinc instead of stored number in config
     - using shortuct (f4) to unpause initially does not unpause at first
     - WPM is incorrectly calculated
 
