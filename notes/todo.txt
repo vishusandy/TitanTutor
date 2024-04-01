@@ -1,7 +1,6 @@
 
 
 fix:
-    - incorrect space doesn't trigger error in adaptive mode
     - using shortuct (f4) to unpause initially does not unpause at first
     - WPM is incorrectly calculated
 
