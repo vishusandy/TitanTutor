@@ -177,7 +177,7 @@
 			<label for="muted">{config.lang.enable}</label>
 		</legend>
 
-		<div class="grid">
+		<div class="dialog-grid">
 			<label for="lang" class:disabled={mute}>{config.lang.ttsLanguageLabel}</label>
 			<select id="lang" bind:this={langSelector} on:change={langChange} disabled={mute}>
 				{#each langs.keys() as l}
@@ -189,9 +189,7 @@
 				<label for="voice" class:disabled={mute}>{config.lang.ttsVoiceLabel}</label>
 				<select id="voice" bind:this={voiceSelector} on:change={voiceChange} disabled={mute}>
 					{#each voices as v}
-						<option value={v.name} selected={chosenVoice == v.name}
-							>{displayVoice(v.name, chosenLang)}</option
-						>
+						<option value={v.name} selected={chosenVoice == v.name}>{displayVoice(v.name, chosenLang)}</option>
 					{/each}
 				</select>
 			{/if}
@@ -207,7 +205,7 @@
 					id="pitch"
 					disabled={mute}
 				/>
-				<span class:disabled={mute}>{pitch.toFixed(1)}</span>
+				<div class:disabled={mute}>{pitch.toFixed(1)}</div>
 			</div>
 
 			<label for="rate" class:disabled={mute}>{config.lang.ttsRateLabel}</label>
@@ -221,7 +219,7 @@
 					id="rate"
 					disabled={mute}
 				/>
-				<span class:disabled={mute}>{rate.toFixed(1)}</span>
+				<div class:disabled={mute}>{rate.toFixed(1)}</div>
 			</div>
 
 			<label for="volume" class:disabled={mute}>{config.lang.ttsVolumeLabel}</label>
@@ -235,15 +233,13 @@
 					id="volume"
 					disabled={mute}
 				/>
-				<span class:disabled={mute}>{volume.toFixed(2)}</span>
+				<div class:disabled={mute}>{volume.toFixed(2)}</div>
 			</div>
 
 			<label for="text" class:disabled={mute}>{config.lang.ttsTextLabel}</label>
 			<input id="text" bind:value={text} disabled={mute} />
 			<div class="btn-cont">
-				<button class="play" type="button" on:click={play} disabled={mute}
-					>{config.lang.ttsPreview}</button
-				>
+				<button class="play" type="button" on:click={play} disabled={mute}>{config.lang.ttsPreview}</button>
 			</div>
 		</div>
 	</fieldset>
@@ -254,7 +250,7 @@
 		background-color: #f9f9f9;
 	}
 
-	.grid {
+	.dialog-grid {
 		display: grid;
 		grid-template-columns: min-content auto;
 		column-gap: 2rem;
@@ -266,24 +262,25 @@
 	.input-cell {
 		display: flex;
 		align-content: baseline;
+		align-items: center;
 	}
 
 	.input-cell input {
 		margin-right: 1rem;
 	}
 
-	.input-cell span {
+	.input-cell div {
 		background-color: #e4e5e9;
 		border-radius: 0.2rem;
-		padding: 0.1rem 0.3rem;
+		padding: 0.3rem 0.3rem;
 		width: 4ch;
 		text-align: center;
-		font-family: var(--font-slab);
+		font-family: var(--font-sans-serif);
 		font-size: 95%;
 	}
 
-	.input-cell span.disabled {
-		background-color: #f1f1f1;
+	.input-cell div.disabled {
+		background-color: #eeeeee;
 	}
 
 	.btn-cont {
