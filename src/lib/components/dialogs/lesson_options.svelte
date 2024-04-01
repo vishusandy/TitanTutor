@@ -17,7 +17,7 @@
 	import { CheckMode } from '$lib/types/types';
 	import { adaptive_typeid } from '$lib/conf/lesson_ids';
 	import type { TypoData } from '$lib/lessons/base/adaptive_list';
-	import { adaptive_store, addUpdate, remove } from '$lib/db';
+	import { adaptive_store, remove } from '$lib/db';
 
 	export let config: Config;
 	export let originalLesson: Lesson;
@@ -234,7 +234,7 @@
 
 	{#if adaptiveData}
 		<div class="clear-adaptive">
-			<button on:click={clearAdaptiveData}>{config.lang.lessonConfigClearAdaptive}</button>
+			<button class="danger" on:click={clearAdaptiveData}>{config.lang.lessonConfigClearAdaptive}</button>
 		</div>
 	{/if}
 

@@ -36,6 +36,10 @@
 	}
 
 	function handleSubmit(e: Event) {
+		if ('submitter' in e && e.submitter !== submitButton) {
+			return;
+		}
+
 		if (confirmPrompt === undefined || window.confirm(confirmPrompt)) {
 			animateClose();
 			setTimeout(() => closeCallback(submitData()), closeTime);
