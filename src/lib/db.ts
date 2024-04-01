@@ -7,7 +7,7 @@ export const config_store = 'user_config';
 export const lesson_opts_store = 'lesson_options';
 export const user_lessons_store = 'user_lessons';
 export const adaptive_store = 'adaptive';
-export const lesson_stats_store = 'lesson_stats'
+export const lesson_stats_store = 'lesson_stats';
 
 type StoreType = {
     store: string,

@@ -76,7 +76,7 @@ export class RandomList implements Lesson {
     }
 
     overrides(): LessonOptsAvailable {
-        return { ...mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail), adaptive: 'disabled' };
+        return { ...mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail) };
     }
 
     static async fromForm(lesson: Lesson, config: Config, db: IDBDatabase, form: LessonFormState): Promise<Lesson> {
