@@ -569,15 +569,12 @@
 		height: 2.5rem;
 	}
 
-	.cog-button {
-		padding: 0.4rem;
-	}
 	:global(.stop-button svg) {
 		fill: #f34747;
 	}
 
 	:global(.cog-button svg) {
-		// fill: #9c9191;
+		padding: 0.2rem;
 		fill: orange;
 	}
 
@@ -587,7 +584,9 @@
 		--bar-color2: rgb(12, 207, 214);
 		--bar-color3: rgb(230, 49, 124);
 	}
-
+	:global(.stats-button:focus-within svg) {
+		filter: grayscale(0%) !important;
+	}
 	// mobile devices
 	@media (pointer: coarse) {
 		:root {
@@ -601,10 +600,6 @@
 		.tutor-input {
 			padding: 0.4rem 0.75rem;
 			caret-color: auto;
-		}
-
-		.tutor-menu-right {
-			justify-content: center;
 		}
 	}
 </style>
