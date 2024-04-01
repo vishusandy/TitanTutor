@@ -86,6 +86,8 @@ export class Language {
     openLessonConfigDialog: string = '';
     lessonConfigDialogTitle: string = '';
     lessonConfigConfirmSubmit: string = '';
+    lessonConfigClearAdaptive: string = '';
+    lessonConfigClearAdaptiveConfirm: string = '';
     openConfigDialog: string = '';
     configDialogTitile: string = '';
     configSpaceOptional: string = '';

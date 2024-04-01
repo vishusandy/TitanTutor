@@ -1,6 +1,7 @@
 
 
 fix:
+    - incorrect space doesn't trigger error in adaptive mode
     - using shortuct (f4) to unpause initially does not unpause at first
     - WPM is incorrectly calculated
 
@@ -12,10 +13,7 @@ features:
         - must be a function key OR have alt/ctrl/meta modifier
     - add lesson stats to track overall stats for a particular lesson
     - remove indeterminate state from overridable check boxes as it is confusing
-    - lesson options
-        - add button in lesson settings to clear typos for adaptive lessons
     - add button to go to next lesson when lesson is finished
-    - manage/create custom word lists
     - add option to always save stats without prompt
     - add length property to measure word progress
     - multilingual example text

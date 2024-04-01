@@ -327,7 +327,7 @@
 				<button
 					type="button"
 					class="fade-icon stop-button"
-					disabled={!started}
+					disabled={!started || finished}
 					on:click={confirmEndLesson}
 					title={originalConfig.lang.stop}
 				>

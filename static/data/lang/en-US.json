@@ -81,6 +81,8 @@
     "openLessonConfigDialog": "Lesson Settings",
     "lessonConfigDialogTitle": "Lesson Settings",
     "lessonConfigConfirmSubmit": "This will reset your current lesson.  Continue?",
+    "lessonConfigClearAdaptive": "Clear Data",
+    "lessonConfigClearAdaptiveConfirm": "Are you sure you want to clear adaptive lesson data for '%s'?",
     "openConfigDialog": "Settings",
     "configDialogTitile": "User Settings",
     "configSpaceOptional": "Space optional",

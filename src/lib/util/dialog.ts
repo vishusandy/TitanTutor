@@ -12,6 +12,8 @@ import User from "../components/dialogs/user_config.svelte";
 import type { Audio } from "$lib/audio";
 import EditLesson from "$lib/components/dialogs/edit_lesson.svelte";
 import type { UserWordList } from "$lib/lessons/base/user_wordlist";
+import { adaptive_store, get } from "$lib/db";
+import type { TypoData } from "$lib/lessons/base/adaptive_list";
 
 
 export function showVoiceDialog(config: Config, db: IDBDatabase): Promise<Audio | undefined> {
@@ -42,8 +44,10 @@ export function showConfigDialog(config: Config, db: IDBDatabase): Promise<Confi
 }
 
 export async function showLessonConfigDialog(config: Config, db: IDBDatabase, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>, confirmPrompt: string | undefined): Promise<Promise<[Lesson, Partial<LessonTypingConfig>] | undefined>> {
+    const adaptiveData = await get<TypoData>(db, adaptive_store, lesson.baseLesson().id);
+    console.log('adaptive data:', adaptiveData);
     const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, db, confirmPrompt };
-    const passProps = { lesson, lessonOptions };
+    const passProps = { originalLesson: lesson, lessonOptions, adaptiveData };
     return createDialog(dialogProps, passProps);
 }
 

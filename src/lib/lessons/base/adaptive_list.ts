@@ -19,7 +19,7 @@ export type StorableAdaptive = { type: typeof adaptive_typeid, base: StorableBas
 
 export type TypoList = [string, number][];
 
-type TypoData = {
+export type TypoData = {
     'lesson_id': string,
     'typos': TypoList,
 };
@@ -62,6 +62,7 @@ export class AdaptiveList implements Lesson {
         for (let a of this.typoMap.entries()) {
             typos.push(a);
         }
+        console.log('saving typos:', typos)
         return addUpdate(db, adaptive_store, { lesson_id, typos });
     }
 

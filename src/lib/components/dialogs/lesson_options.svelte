@@ -16,16 +16,19 @@
 	} from '$lib/types/forms';
 	import { CheckMode } from '$lib/types/types';
 	import { adaptive_typeid } from '$lib/conf/lesson_ids';
+	import type { TypoData } from '$lib/lessons/base/adaptive_list';
+	import { adaptive_store, addUpdate, remove } from '$lib/db';
 
 	export let config: Config;
-	export let lesson: Lesson;
+	export let originalLesson: Lesson;
 	export let lessonOptions: Partial<LessonTypingConfig>;
+	export let adaptiveData: TypoData | undefined;
 	export let db: IDBDatabase;
 	db; // suppress the unused-export-let warning from above
 
 	// @ts-ignore
 	let overrideSources: { [K in keyof LessonFormState]: string } = {};
-	let curLesson: Lesson = lesson;
+	let curLesson: Lesson = originalLesson;
 	let overrides = curLesson.overrides();
 	let state: LessonFormState = initializeState(lessonOptions);
 	setOverrideLabels();
@@ -112,7 +115,7 @@
 			state[k] = dataFns[k]();
 		}
 
-		curLesson = await addWrappers(lesson.baseLesson(), config, db, state);
+		curLesson = await addWrappers(originalLesson.baseLesson(), config, db, state);
 		overrides = curLesson.overrides();
 		state = state;
 		overrideSources = overrideSources;
@@ -140,8 +143,15 @@
 			}
 		}
 
-		const newLesson = await addWrappers(lesson.baseLesson(), config, db, state);
+		const newLesson = await addWrappers(originalLesson.baseLesson(), config, db, state);
 		return [newLesson, newOpts];
+	}
+
+	function clearAdaptiveData() {
+		if (window.confirm(config.lang.lessonConfigClearAdaptiveConfirm.replace('%s', curLesson.baseLesson().name))) {
+			remove(db, adaptive_store, curLesson.baseLesson().id);
+			adaptiveData = undefined;
+		}
 	}
 </script>
 
@@ -222,6 +232,12 @@
 		overrideMessage={overrideSources.adaptive}
 	/>
 
+	{#if adaptiveData}
+		<div class="clear-adaptive">
+			<button on:click={clearAdaptiveData}>{config.lang.lessonConfigClearAdaptive}</button>
+		</div>
+	{/if}
+
 	<Bool
 		bind:getState={dataFns.spaceOptional}
 		on:updateForm={updateState}
@@ -289,6 +305,12 @@
 	.dialog-grid {
 		grid-template-columns: max-content max-content;
 		align-content: center;
+	}
+
+	.clear-adaptive {
+		grid-column: 2/3;
+		text-align: center;
+		margin-top: -1rem;
 	}
 
 	/* .grid-sep {
