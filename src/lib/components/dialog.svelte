@@ -96,7 +96,8 @@
 		padding: 0px;
 		box-shadow: 0px 0px 15px #939596;
 		animation: dialog-slide-in 0.2s ease-out 0s 1;
-		min-height: 10rem;
+		min-height: 13rem;
+		max-width: 98vw;
 	}
 
 	header {
@@ -144,7 +145,8 @@
 	}
 
 	.content {
-		padding: 2rem 3rem;
+		padding: 0px 3rem;
+		margin: 2rem 0px;
 	}
 
 	footer {

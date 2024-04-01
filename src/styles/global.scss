@@ -28,6 +28,15 @@ body>div {
     display: none;
 }
 
+.dialog-grid {
+    display: grid;
+    margin: 1rem auto;
+    width: min-content;
+    column-gap: 3rem;
+    row-gap: 1.4rem;
+    width: min-content;
+}
+
 @keyframes greyscale {
     0% {
         filter: grayscale(100%);

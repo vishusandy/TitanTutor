@@ -136,12 +136,6 @@
 			<option value={CheckMode.Char.toString()}>{config.lang.configCheckModeChars}</option>
 		</select>
 
-		<label for="wordBatchSize">{config.lang.configWordBatchSize}</label>
-		<input id="wordBatchSize" type="number" min="1" max="100" step="1" bind:value={wordBatchSize} />
-
-		<label for="minQueue">{config.lang.configMinQueue}</label>
-		<input id="minQueue" type="number" min="1" max="100" step="1" bind:value={minQueue} />
-
 		<OptionalNumber
 			bind:getData={untilFn}
 			{config}
@@ -151,6 +145,16 @@
 			defaultValue={100}
 			nullLabel={config.lang.infinite}
 		/>
+
+		<div class="merge">
+			<input id="adaptive" type="checkbox" bind:checked={adaptive} />
+			<label for="adaptive">{config.lang.configAdaptive}</label>
+		</div>
+
+		<div class="merge">
+			<input id="random" type="checkbox" bind:checked={random} />
+			<label for="random">{config.lang.configRandom}</label>
+		</div>
 
 		<div class="merge">
 			<input id="spaceOptional" type="checkbox" bind:checked={spaceOptional} />
@@ -164,23 +168,19 @@
 		</div>
 
 		<div class="merge">
-			<input id="logStats" type="checkbox" bind:checked={logStats} />
-			<label for="logStats">{config.lang.configLogLessonStats}</label>
-		</div>
-
-		<div class="merge">
 			<input id="caseSensitive" type="checkbox" bind:checked={caseSensitive} />
 			<label for="caseSensitive">{config.lang.configCaseSensitive}</label>
 		</div>
 
-		<div class="merge">
-			<input id="adaptive" type="checkbox" bind:checked={adaptive} />
-			<label for="adaptive">{config.lang.configAdaptive}</label>
-		</div>
+		<label for="wordBatchSize">{config.lang.configWordBatchSize}</label>
+		<input id="wordBatchSize" type="number" min="1" max="100" step="1" bind:value={wordBatchSize} />
+
+		<label for="minQueue">{config.lang.configMinQueue}</label>
+		<input id="minQueue" type="number" min="1" max="100" step="1" bind:value={minQueue} />
 
 		<div class="merge">
-			<input id="random" type="checkbox" bind:checked={random} />
-			<label for="random">{config.lang.configRandom}</label>
+			<input id="logStats" type="checkbox" bind:checked={logStats} />
+			<label for="logStats">{config.lang.configLogLessonStats}</label>
 		</div>
 	</div>
 

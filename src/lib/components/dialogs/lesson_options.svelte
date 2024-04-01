@@ -58,9 +58,7 @@
 				}
 
 				const incompat =
-					first && l.classId !== adaptive_typeid
-						? config.lang.incompatibleLesson
-						: config.lang.incompatibleWrapper;
+					first && l.classId !== adaptive_typeid ? config.lang.incompatibleLesson : config.lang.incompatibleWrapper;
 
 				return incompat.replace('%s', l.name(config.lang));
 			}
@@ -165,7 +163,19 @@
 		overrideMessage={overrideSources.until}
 	/>
 
-	<div class="grid-sep" />
+	<Select
+		bind:getState={dataFns.checkMode}
+		on:updateForm={updateState}
+		id="checkMode"
+		label={config.lang.configCheckMode}
+		choices={wordModeChoices}
+		initialValue={state.checkMode}
+		override={overrides.checkMode}
+		inheritValue={wordModeChoices[config.checkMode].key}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.checkMode}
+	/>
 
 	<Bool
 		bind:getState={dataFns.random}
@@ -182,7 +192,65 @@
 		overrideMessage={overrideSources.random}
 	/>
 
-	<div class="grid-sep" />
+	<Bool
+		bind:getState={dataFns.backspace}
+		on:updateForm={updateState}
+		id="backspace"
+		label={config.lang.configAcceptBackspace}
+		onLabel={config.lang.accept}
+		offLabel={config.lang.ignore}
+		initialState={state.backspace}
+		override={overrides.backspace}
+		inheritValue={config.backspace}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.backspace}
+	/>
+
+	<Bool
+		bind:getState={dataFns.adaptive}
+		on:updateForm={updateState}
+		id="adaptive"
+		label={config.lang.configAdaptive}
+		onLabel={config.lang.on}
+		offLabel={config.lang.off}
+		initialState={state.adaptive}
+		override={overrides.adaptive}
+		inheritValue={config.adaptive}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.adaptive}
+	/>
+
+	<Bool
+		bind:getState={dataFns.spaceOptional}
+		on:updateForm={updateState}
+		id="spaceOptional"
+		label={config.lang.configSpaceOptional}
+		onLabel={config.lang.yes}
+		offLabel={config.lang.no}
+		initialState={state.spaceOptional}
+		override={overrides.spaceOptional}
+		inheritValue={config.spaceOptional}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.spaceOptional}
+	/>
+
+	<Bool
+		bind:getState={dataFns.caseSensitive}
+		on:updateForm={updateState}
+		id="caseSensitive"
+		label={config.lang.configCaseSensitive}
+		onLabel={config.lang.caseSensitive}
+		offLabel={config.lang.caseInsensitive}
+		initialState={state.caseSensitive}
+		override={overrides.caseSensitive}
+		inheritValue={config.caseSensitive}
+		inheritLabel={config.lang.useUserValue}
+		overrideLabel={config.lang.disabledLabel}
+		overrideMessage={overrideSources.caseSensitive}
+	/>
 
 	<Number
 		bind:getState={dataFns.minQueue}
@@ -200,8 +268,6 @@
 		overrideMessage={overrideSources.minQueue}
 	/>
 
-	<div class="grid-sep" />
-
 	<Number
 		bind:getState={dataFns.wordBatchSize}
 		on:updateForm={updateState}
@@ -217,108 +283,20 @@
 		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.wordBatchSize}
 	/>
-
-	<div class="grid-sep" />
-
-	<Bool
-		bind:getState={dataFns.backspace}
-		on:updateForm={updateState}
-		id="backspace"
-		label={config.lang.configAcceptBackspace}
-		onLabel={config.lang.accept}
-		offLabel={config.lang.ignore}
-		initialState={state.backspace}
-		override={overrides.backspace}
-		inheritValue={config.backspace}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
-		overrideMessage={overrideSources.backspace}
-	/>
-
-	<div class="grid-sep" />
-
-	<Select
-		bind:getState={dataFns.checkMode}
-		on:updateForm={updateState}
-		id="checkMode"
-		label={config.lang.configCheckMode}
-		choices={wordModeChoices}
-		initialValue={state.checkMode}
-		override={overrides.checkMode}
-		inheritValue={wordModeChoices[config.checkMode].key}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
-		overrideMessage={overrideSources.checkMode}
-	/>
-
-	<div class="grid-sep" />
-
-	<Bool
-		bind:getState={dataFns.spaceOptional}
-		on:updateForm={updateState}
-		id="spaceOptional"
-		label={config.lang.configSpaceOptional}
-		onLabel={config.lang.yes}
-		offLabel={config.lang.no}
-		initialState={state.spaceOptional}
-		override={overrides.spaceOptional}
-		inheritValue={config.spaceOptional}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
-		overrideMessage={overrideSources.spaceOptional}
-	/>
-
-	<div class="grid-sep" />
-
-	<Bool
-		bind:getState={dataFns.adaptive}
-		on:updateForm={updateState}
-		id="adaptive"
-		label={config.lang.configAdaptive}
-		onLabel={config.lang.on}
-		offLabel={config.lang.off}
-		initialState={state.adaptive}
-		override={overrides.adaptive}
-		inheritValue={config.adaptive}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
-		overrideMessage={overrideSources.adaptive}
-	/>
-
-	<div class="grid-sep" />
-
-	<Bool
-		bind:getState={dataFns.caseSensitive}
-		on:updateForm={updateState}
-		id="caseSensitive"
-		label={config.lang.configCaseSensitive}
-		onLabel={config.lang.caseSensitive}
-		offLabel={config.lang.caseInsensitive}
-		initialState={state.caseSensitive}
-		override={overrides.caseSensitive}
-		inheritValue={config.caseSensitive}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
-		overrideMessage={overrideSources.caseSensitive}
-	/>
 </div>
 
 <style>
 	.dialog-grid {
-		display: grid;
-		grid-template-columns: min-content auto;
-		column-gap: 3rem;
-		margin: 1rem auto;
-		width: min-content;
+		grid-template-columns: max-content max-content;
 		align-content: center;
 	}
 
-	.grid-sep {
+	/* .grid-sep {
 		grid-column: 1/3;
-		/* border-bottom: 1px solid #efefef; */
+		border-bottom: 1px solid #e0e0e0;
 		width: 100%;
-		margin: 0.7rem auto;
-	}
+	} */
+
 	:global(.grid .optional > input:first-child) {
 		align-self: start;
 		margin-right: 0.5em;

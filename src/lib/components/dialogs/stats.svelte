@@ -22,9 +22,7 @@
 	// Inspired by:
 	// https://carl-topham.com/articles/intl-number-formatting-percentage
 	function formatNaN(num: number, options?: Intl.NumberFormatOptions) {
-		return Number.isNaN(num)
-			? config.lang.notAvailable
-			: Intl.NumberFormat(navigator.language, options).format(num);
+		return Number.isNaN(num) ? config.lang.notAvailable : Intl.NumberFormat(navigator.language, options).format(num);
 	}
 
 	function calc() {
@@ -99,24 +97,19 @@
 				/>
 				<label for="log-stats">{config.lang.statsDialogTrackUserStats}</label>
 			</div>
-			<button type="button" on:click={clearUserStats}
-				>{config.lang.statsDialogClearUserStats}</button
-			>
+			<button type="button" on:click={clearUserStats}>{config.lang.statsDialogClearUserStats}</button>
 		</div>
 	</form>
 {/if}
 
 <style>
 	.dialog-grid {
-		display: grid;
-		/* grid-template-columns: min-content auto; */
 		grid-template-columns: auto auto;
 		column-gap: 2rem;
-		/* row-gap: 1.3rem; */
+		row-gap: 0px;
 		margin: 0px auto;
-		/* width: min-content; */
 		width: 40ch;
-		max-width: 80%;
+		max-width: var(--max-width);
 		white-space: nowrap;
 	}
 

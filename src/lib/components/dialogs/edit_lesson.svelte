@@ -57,10 +57,7 @@
 	.dialog-grid {
 		display: grid;
 		grid-template-columns: max-content max-content;
-		column-gap: 3rem;
-		row-gap: 1.3rem;
 		margin: 1rem auto;
-		width: min-content;
 		align-content: center;
 		align-items: center;
 	}
