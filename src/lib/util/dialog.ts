@@ -45,7 +45,6 @@ export function showConfigDialog(config: Config, db: IDBDatabase): Promise<Confi
 
 export async function showLessonConfigDialog(config: Config, db: IDBDatabase, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>, confirmPrompt: string | undefined): Promise<Promise<[Lesson, Partial<LessonTypingConfig>] | undefined>> {
     const adaptiveData = await get<TypoData>(db, adaptive_store, lesson.baseLesson().id);
-    console.log('adaptive data:', adaptiveData);
     const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, db, confirmPrompt };
     const passProps = { originalLesson: lesson, lessonOptions, adaptiveData };
     return createDialog(dialogProps, passProps);

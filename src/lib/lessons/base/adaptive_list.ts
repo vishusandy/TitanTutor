@@ -62,7 +62,6 @@ export class AdaptiveList implements Lesson {
         for (let a of this.typoMap.entries()) {
             typos.push(a);
         }
-        console.log('saving typos:', typos)
         return addUpdate(db, adaptive_store, { lesson_id, typos });
     }
 
@@ -216,7 +215,12 @@ export class AdaptiveList implements Lesson {
         for (const c of [...e.data]) {
             const mapped = (config.caseSensitive) ? config.remap.get(c) : config.remap.get(c)?.toLocaleLowerCase();
             if (mapped === ' ') {
-                act |= checkWordEnd({ key: ' ', preventDefault: () => { } }, config, word, stats);
+                const a = checkWordEnd({ key: ' ', preventDefault: () => { } }, config, word, stats);
+                act |= a;
+                if (a === Action.None) {
+                    word.addChar(mapped);
+                    act |= Action.CharAdded | Action.Refresh;
+                }
             } else if (mapped !== undefined) {
                 word.input += mapped;
                 word.inputChars = [...word.input];
@@ -229,7 +233,7 @@ export class AdaptiveList implements Lesson {
                         this.typoMap.set(char, (count !== undefined) ? count + 1 : 1);
                         word.uncorrectedErrors += 1;
                     }
-                } else {
+                } else if(mapped !== undefined) {
                     word.uncorrectedErrors += 1;
                 }
                 act |= Action.CharAdded | Action.Refresh;
