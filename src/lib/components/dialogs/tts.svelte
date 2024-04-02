@@ -254,9 +254,6 @@
 		display: grid;
 		grid-template-columns: min-content auto;
 		column-gap: 2rem;
-		row-gap: 1.3rem;
-		margin: 1rem auto;
-		width: min-content;
 	}
 
 	.input-cell {

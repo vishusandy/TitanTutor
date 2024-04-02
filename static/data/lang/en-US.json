@@ -125,5 +125,7 @@
     "lessonDialogExistingId": "The chosen lesson ID already exists!",
     "lessonDialogConfirmDelete": "Are you sure you want to delete '%s'?",
     "lessonDialogStartLesson": "Start lesson '%s'?",
-    "lessonDialogEditLessonSettings": "Edit lesson settings"
+    "lessonDialogEditLessonSettings": "Edit lesson settings",
+    "statsLogTitle":"Stats for: %s",
+    "statsLogNoStats":"No stats available"
 }

@@ -303,7 +303,7 @@
 
 <style>
 	.dialog-grid {
-		grid-template-columns: max-content max-content;
+		grid-template-columns: auto auto;
 		align-content: center;
 	}
 

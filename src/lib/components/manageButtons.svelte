@@ -5,19 +5,25 @@
 	import Close from '$lib/components/imgs/close.svelte';
 	import Pencil2 from '$lib/components/imgs/pencil2.svelte';
 	import Cog from '$lib/components/imgs/cog.svelte';
+	import Stats from '$lib/components/imgs/stats.svelte';
 
 	import { Config, loadUserConfig } from '$lib/config';
-	import { showEditLessonDialog, showLessonConfigDialog } from '$lib/util/dialog';
+	import { showEditLessonDialog, showLessonConfigDialog, showLessonStatsLog } from '$lib/util/dialog';
 	import { remove, addUpdate, user_lessons_store, get, lesson_opts_store } from '$lib/db';
 	import { loadUserLesson, type UserWordList } from '$lib/lessons/base/user_wordlist';
 	import type { LessonTypingConfig, StorableBaseLesson, StoredOverrides } from '$lib/types/lessons';
 	import { Lesson } from '$lib/lessons/lesson';
+	import type { StatsLog } from '$lib/stats';
 
 	export let config: Config;
 	export let lesson: StorableBaseLesson;
 	export let db: IDBDatabase;
 	export let custom: boolean;
+	export let stats: StatsLog | undefined;
 	const dispatch = createEventDispatcher();
+
+	// let statsAlt = stats ? config.lang.statsLogNoStats : config.lang.openLessonConfigDialog;
+	let statsAlt = stats ? config.lang.openUserStatsDialog : config.lang.statsLogNoStats;
 
 	async function editLesson() {
 		if (!lesson.id.startsWith('user_')) {
@@ -69,6 +75,12 @@
 			addUpdate(db, lesson_opts_store, { lesson_id: lesson.id, ...result[1] });
 		}
 	}
+
+	async function showLessonStatsDialog() {
+		if (stats) {
+			showLessonStatsLog(config, db, lesson.id, lesson.name, stats);
+		}
+	}
 </script>
 
 <div class="buttons">
@@ -78,7 +90,10 @@
 	{#if custom}
 		<button class="edit-btn icon" on:click={() => editLesson()} title={config.lang.edit}><Pencil2 /></button>
 	{/if}
-	<button class="settings-btn icon" on:click={() => editSettings()}>
+	<button disabled={stats === undefined} on:click={showLessonStatsDialog} class="stats-btn icon" title={statsAlt}
+		><Stats /></button
+	>
+	<button class="settings-btn icon" on:click={() => editSettings()} title={config.lang.openLessonConfigDialog}>
 		<Cog />
 	</button>
 </div>
@@ -90,7 +105,7 @@
 	}
 
 	.buttons button {
-		margin-inline-end: 0.2rem;
+		/* margin-inline-end: 0.2rem; */
 	}
 
 	.icon {

@@ -133,6 +133,8 @@ export class Language {
     lessonDialogConfirmDelete: string = '';
     lessonDialogStartLesson: string = '';
     lessonDialogEditLessonSettings: string = '';
+    statsLogTitle: string = '';
+    statsLogNoStats: string = '';
 
     constructor(
         lang: LanguageObject,

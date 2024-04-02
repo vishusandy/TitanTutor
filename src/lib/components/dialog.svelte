@@ -71,13 +71,15 @@
 					<Close />
 				</button>
 			</header>
-			<div class="content">
-				{#if hasSubmit}
-					<svelte:component this={content} bind:getData={submitData} bind:config bind:db {...passProps} />
-				{:else}
-					<svelte:component this={content} bind:config bind:db {...passProps} />
-				{/if}
-			</div>
+		</div>
+		<div class="content">
+			{#if hasSubmit}
+				<svelte:component this={content} bind:getData={submitData} bind:config bind:db {...passProps} />
+			{:else}
+				<svelte:component this={content} bind:config bind:db {...passProps} />
+			{/if}
+		</div>
+		<div>
 			<footer>
 				{#if hasSubmit}
 					<button type="submit" bind:this={submitButton}>{submitLabel}</button>
@@ -101,10 +103,21 @@
 		box-shadow: 0px 0px 15px #939596;
 		animation: dialog-slide-in 0.2s ease-out 0s 1;
 		min-height: 13rem;
-		max-width: 98vw;
+		/* max-width: 98vw; */
+		/* height: 100%; */
+		display: grid;
+		/* grid-template-areas: 'header', 'content', 'footer'; */
+		grid-template-rows: max-content 1fr max-content;
+		grid-template-columns: auto;
+		/* grid-template-columns: 1fr; */
+	}
+
+	form {
+		display: contents;
 	}
 
 	header {
+		/* grid-area: header; */
 		font-family: var(--font-title);
 		padding: 1rem 1rem 1rem 1rem;
 		text-align: center;
@@ -125,6 +138,29 @@
 		user-select: none;
 	}
 
+	.content {
+		/* grid-area: content; */
+		padding: 0px 3rem;
+		margin: 1rem 0px;
+		overflow: auto;
+	}
+
+	footer {
+		/* grid-area: footer; */
+		margin: 0rem 0rem 0rem 0rem;
+		padding: 0.8rem 1rem 0.8rem 1rem;
+		text-align: right;
+		background-color: var(--header-footer-color);
+		border-top: 1px solid var(--form-border-inner-color);
+		position: sticky;
+		bottom: 0px;
+	}
+
+	footer button {
+		font-size: 0.9rem;
+		margin: 0.1rem 0.3rem;
+	}
+
 	.close-btn {
 		border: 0px;
 		line-height: 0px;
@@ -132,6 +168,14 @@
 		width: 1.5rem;
 		height: 1.5rem;
 		margin: 0px 0.3rem;
+	}
+
+	:global(dialog .dialog-grid) {
+		display: grid;
+		margin: 1rem auto;
+		/* width: min-content; */
+		column-gap: 3rem;
+		row-gap: 1.4rem;
 	}
 
 	:global(.close-btn svg) {
@@ -146,26 +190,6 @@
 
 	:global(.close-btn:hover svg, .close-btn:focus svg) {
 		stroke: #444;
-	}
-
-	.content {
-		padding: 0px 3rem;
-		margin: 2rem 0px;
-	}
-
-	footer {
-		margin: 0rem 0rem 0rem 0rem;
-		padding: 0.8rem 1rem 0.8rem 1rem;
-		text-align: right;
-		background-color: var(--header-footer-color);
-		border-top: 1px solid var(--form-border-inner-color);
-		position: sticky;
-		bottom: 0px;
-	}
-
-	footer button {
-		font-size: 0.9rem;
-		margin: 0.1rem 0.3rem;
 	}
 
 	::backdrop {

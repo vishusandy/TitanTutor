@@ -13,11 +13,17 @@
 	import { stockLessons } from '$lib/conf/lessons';
 	import { lessonPlans } from '$lib/conf/lesson_plans';
 	import { loadUserConfig } from '$lib/config';
+	import type { StatsLog } from '$lib/stats';
 
 	export let data: PageData;
 	let db = data.db;
 	let config = data.config;
 	let customLessons = data.customLessons;
+	let stats = data.allStatsLogs;
+
+	const statsMap: Map<string, StatsLog> = stats
+		? new Map(stats.map((log: StatsLog) => [log.lesson_id, log]))
+		: new Map();
 
 	onMount(() => {
 		document.documentElement.lang = config.lang.lang;
@@ -67,7 +73,14 @@
 		<div class="custom subgrids">
 			{#each customLessons as les (les.id)}
 				<div class="custom-lesson">
-					<ManageButtons {config} lesson={les} {db} on:updated={refreshList} custom={true} />
+					<ManageButtons
+						{config}
+						lesson={les}
+						{db}
+						on:updated={refreshList}
+						custom={true}
+						stats={statsMap.get(les.id)}
+					/>
 					<button
 						class="lesson-btn"
 						class:highlight={les.id === config.lastLesson}
@@ -94,7 +107,14 @@
 							.filter((f) => f !== undefined) as l (l.id)}
 							{#if l}
 								<div class="stock-lesson">
-									<ManageButtons {config} lesson={l} {db} on:updated={refreshList} custom={false} />
+									<ManageButtons
+										{config}
+										lesson={l}
+										{db}
+										on:updated={refreshList}
+										custom={false}
+										stats={statsMap.get(l.id)}
+									/>
 									<button
 										class:highlight={l?.id === config.lastLesson}
 										class="lesson-btn"

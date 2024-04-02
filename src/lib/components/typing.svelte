@@ -11,7 +11,7 @@
 
 	import { addMissedSpace, addSpace } from '$lib/util/dom';
 	import type { Config } from '$lib/config';
-	import { LessonStats, type StatsLog, type StatsEntry } from '$lib/stats';
+	import { LessonStats, type StatsLog } from '$lib/stats';
 	import { WordState } from '$lib/word_state';
 	import { Queue } from '$lib/queue';
 	import { Action, CheckMode } from '$lib/types/types';
@@ -320,7 +320,7 @@
 			<div class="tutor-bar-right">
 				<button
 					type="button"
-					class="fade-icon stats-button"
+					class="fade-icon stats-btn"
 					on:click={showSessionStatsDialog}
 					title={originalConfig.lang.openSessionStatsDialog}><Stats /></button
 				>
@@ -585,15 +585,6 @@
 		fill: orange;
 	}
 
-	:global(.stats-button svg) {
-		--bar-color0: rgb(255, 166, 0);
-		--bar-color1: rgb(52, 153, 61);
-		--bar-color2: rgb(12, 207, 214);
-		--bar-color3: rgb(230, 49, 124);
-	}
-	:global(.stats-button:focus-within svg) {
-		filter: grayscale(0%) !important;
-	}
 	// mobile devices
 	@media (pointer: coarse) {
 		:root {
