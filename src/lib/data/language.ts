@@ -150,6 +150,14 @@ export class Language {
     readonly durationOtherHour: string = '';
     readonly durationOneDay: string = '';
     readonly durationOtherDay: string = '';
+    readonly durationShortOneSecond: string = '';
+    readonly durationShortOtherSecond: string = '';
+    readonly durationShortOneMinute: string = '';
+    readonly durationShortOtherMinute: string = '';
+    readonly durationShortOneHour: string = '';
+    readonly durationShortOtherHour: string = '';
+    readonly durationShortOneDay: string = '';
+    readonly durationShortOtherDay: string = '';
     
     [index: string]: string;
     

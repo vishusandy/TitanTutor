@@ -140,5 +140,13 @@
     "durationOneHour":"%n hour",
     "durationOtherHour":"%n hours",
     "durationOneDay":"%n day",
-    "durationOtherDay":"%n days"
+    "durationOtherDay":"%n days",
+    "durationShortOneSecond":"%ns",
+    "durationShortOtherSecond":"%ns",
+    "durationShortOneMinute":"%nm",
+    "durationShortOtherMinute":"%nm",
+    "durationShortOneHour":"%nh",
+    "durationShortOtherHour":"%nh",
+    "durationShortOneDay":"%nd",
+    "durationShortOtherDay":"%nd"
 }
