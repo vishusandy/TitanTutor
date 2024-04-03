@@ -1,35 +1,37 @@
 <script lang="ts">
 	import type { Config } from '$lib/config';
-	import { type StatsLog, type BaseStats } from '$lib/stats';
-	import { formatDuration } from '$lib/util/lang';
-	import { defaultStats } from '$lib/data/stats';
-	import type { StatsEntry } from '$lib/types/stats';
+	import { type StatsLog } from '$lib/stats';
+	import { formatDuration, getPluralStrs } from '$lib/util/lang';
 	import { calcAverages, toStatsArray } from '$lib/data/stats';
 	import { translateStatsKey } from '$lib/util/lang';
 
 	export let config: Config;
-	export let db: IDBDatabase;
 	export let stats: StatsLog;
-	export let lesson_id: string;
 	export let lesson_name: string;
+	export let db: IDBDatabase;
 
+	const plurals = getPluralStrs(config.lang, true);
 	const avgs = calcAverages(stats);
 	const print = toStatsArray(avgs);
 </script>
 
 <div class="dialog-grid">
-	<div />
-	<div class="label">{config.lang.statsLogTotal}</div>
-	<div class="label">{config.lang.statsLogAverage}</div>
+	<div class="grid-header" />
+	<div class="grid-header key">{config.lang.statsLogAverage}</div>
+	<div class="grid-header key">{config.lang.statsLogTotal}</div>
 
-	<div class="label">{config.lang.statsLogSessions}</div>
-	<div class="value">{avgs.count}</div>
+	<div class="key">{config.lang.statsLogSessions}</div>
 	<div />
+	<div class="value">{avgs.count}</div>
 
 	{#each print as e}
-		<div class="label">{translateStatsKey(config.lang, e[0])}</div>
-		<div class="value">{e[1]}</div>
-		<div class="value">{e[2]}</div>
+		<div class="key" class:duration={e[0] === 'duration'}>{translateStatsKey(config.lang, e[0])}</div>
+		<div class="value" class:duration={e[0] === 'duration'}>
+			{e[0] === 'duration' ? formatDuration(plurals, e[2], ' ') : e[2]}
+		</div>
+		<div class="value" class:duration={e[0] === 'duration'}>
+			{e[0] === 'duration' ? formatDuration(plurals, e[1], ' ') : e[1]}
+		</div>
 	{/each}
 </div>
 
@@ -41,7 +43,26 @@
 		/* row-gap: 1.3rem; */
 	}
 
+	.grid-header {
+		margin-bottom: 0.5rem;
+		text-align: center;
+	}
+
+	.key {
+		font-family: var(--font-humanist);
+		font-size: 0.95rem;
+		font-weight: bold;
+		color: #353535;
+		/* font-style: italic; */
+	}
+
 	.value {
-		/* font-family: var(--font-humanist); */
+		font-family: var(--font-sans-serif);
+		font-size: 0.9rem;
+		text-align: center;
+	}
+
+	.duration {
+		margin-bottom: 1rem;
 	}
 </style>

@@ -78,7 +78,7 @@
 
 	async function showLessonStatsDialog() {
 		if (stats) {
-			showLessonStatsLog(config, db, lesson.id, lesson.name, stats);
+			showLessonStatsLog(config, db, lesson.name, stats);
 		}
 	}
 </script>
