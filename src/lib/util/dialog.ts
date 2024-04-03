@@ -36,7 +36,7 @@ export function showStatsConfirmDialog<T extends BaseStats>(config: Config, db: 
 
 export function showLessonStatsLog(config: Config, db: IDBDatabase, lesson_name: string, stats: StatsLog) {
     const dialogProps: DialogProps = { title: config.lang.statsLogTitle.replace('%s', lesson_name), content: LessonStatsLog, hasSubmit: false, config, db, cancelLabel: config.lang.close };
-    const passProps = { lesson_name, stats };
+    const passProps = { lesson_name, statsLog: stats };
     return createDialog(dialogProps, passProps);
 }
 

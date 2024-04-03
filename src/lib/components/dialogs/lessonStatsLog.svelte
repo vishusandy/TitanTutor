@@ -6,13 +6,19 @@
 	import { translateStatsKey } from '$lib/util/lang';
 
 	export let config: Config;
-	export let stats: StatsLog;
+	export let statsLog: StatsLog;
 	export let lesson_name: string;
 	export let db: IDBDatabase;
 
+	const total = statsLog.entries.length;
+	let limit: number | undefined = undefined;
+	let start: number = 0;
+	let stats: StatsLog = { lesson_id: statsLog.lesson_id, entries: statsLog.entries.slice(start, limit) };
+	$: stats = { lesson_id: statsLog.lesson_id, entries: statsLog.entries.slice(start, limit) };
+
 	const plurals = getPluralStrs(config.lang, true);
-	const avgs = calcAverages(stats);
-	const print = toStatsArray(avgs);
+	let avgs = calcAverages(stats);
+	let print = toStatsArray(avgs);
 </script>
 
 <div class="dialog-grid">
