@@ -12,6 +12,7 @@ export function shuffle(input: string[]): string[] {
     return array;
 };
 
+// https://lingohub.com/blog/pluralization
 // modified slightly (for multilingual support) from:
 // https://www.30secondsofcode.org/js/s/format-duration/
 export const formatDuration = (ms: number, lang: Language) => {

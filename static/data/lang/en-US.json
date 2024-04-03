@@ -126,6 +126,19 @@
     "lessonDialogConfirmDelete": "Are you sure you want to delete '%s'?",
     "lessonDialogStartLesson": "Start lesson '%s'?",
     "lessonDialogEditLessonSettings": "Edit lesson settings",
-    "statsLogTitle":"Stats for: %s",
-    "statsLogNoStats":"No stats available"
+    "statsLogTitle":"%s stats",
+    "statsLogNoStats":"No stats available",
+    "statsLogTotal":"Total",
+    "statsLogAverage":"Avg",
+    "statsLogSessions":"Sessions",
+    "statsLogBackspaces":"Backspaces",
+    "statsLogWordErrors":"Word Errors",
+    "durationOneSecond":"%n second",
+    "durationOtherSecond":"%n seconds",
+    "durationOneMinute":"%n minute",
+    "durationOtherMinute":"%n minutes",
+    "durationOneHour":"%n hour",
+    "durationOtherHour":"%n hours",
+    "durationOneDay":"%n day",
+    "durationOtherDay":"%n days"
 }

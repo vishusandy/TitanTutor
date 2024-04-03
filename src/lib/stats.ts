@@ -1,23 +1,13 @@
 import { wordLen } from "./conf/stats";
 import type { CheckMode } from "./types/types";
 import type { WordState } from "./word_state";
-
+import type { StatsEntry } from "./types/stats";
 // https://www.speedtypingonline.com/typing-equations
 
 
 
 export type UserStatsObject = { [P in keyof UserStats]: UserStats[P] };
 
-export type StatsEntry = {
-    duration: number,
-    keystrokes: number,
-    wordErrors: number,
-    backspaces: number,
-    words: number,
-    chars: number,
-    uncorrectedErrors: number,
-    correctedErrors: number,
-};
 
 export type StatsLog = {lesson_id: string, entries: StatsEntry[]};
 

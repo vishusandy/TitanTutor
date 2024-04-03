@@ -4,9 +4,10 @@
 
 	import type { PageData } from '../$types';
 
-	import { formatDuration } from '$lib/util/util';
+	import { formatDuration } from '$lib/util/lang';
 	import { home } from '$lib/util/nav';
 	import { loadUserConfig } from '$lib/config';
+	import { getPluralStrs } from '$lib/util/lang';
 
 	export let data: PageData;
 	let db = data.db;
@@ -18,6 +19,7 @@
 	let accuracy: string = '';
 	let trackStats: boolean = config.logStats;
 	let trackStatsCheckbox: HTMLInputElement;
+	let plurals = getPluralStrs(config.lang);
 
 	export function getData(): boolean {
 		return true;
@@ -79,7 +81,7 @@
 		<!-- </div> -->
 		<!-- <div class="grid"> -->
 		<div class="label">Duration</div>
-		<div>{formatDuration(stats.duration, config.lang)}</div>
+		<div>{formatDuration(plurals, stats.duration)}</div>
 
 		<div class="label">{config.lang.statsDialogUncorrectedErrors}</div>
 		<div>{stats.uncorrectedErrors}</div>

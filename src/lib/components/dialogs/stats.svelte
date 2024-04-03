@@ -1,11 +1,13 @@
 <script lang="ts" generics="T extends BaseStats">
 	import type { Config } from '$lib/config';
 	import type { UserStats, BaseStats } from '$lib/stats';
-	import { formatDuration } from '$lib/util/util';
+	import { formatDuration } from '$lib/util/lang';
+	import { getPluralStrs } from '$lib/util/lang';
 
 	export let stats: T;
 	export let config: Config;
 	export let db: IDBDatabase;
+	let plurals = getPluralStrs(config.lang);
 
 	const userStats = (stats as unknown as UserStats).sessions !== undefined;
 
@@ -64,7 +66,7 @@
 <hr />
 <div class="dialog-grid">
 	<div class="label">Duration</div>
-	<div>{formatDuration(stats.duration, config.lang)}</div>
+	<div>{formatDuration(plurals, stats.duration)}</div>
 
 	<div class="label">{config.lang.statsDialogUncorrectedErrors}</div>
 	<div>{stats.uncorrectedErrors}</div>
