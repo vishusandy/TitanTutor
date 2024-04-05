@@ -16,10 +16,7 @@ export const defaultStats: StatsEntry = {
 export function calcAverages(stats: StatsLog): AccumStats {
     let k: keyof StatsEntry;
 
-    // @ts-ignore
-    const s: AccumStats = {
-        count: 0
-    };
+    const s: AccumStats = { count: 0 } as AccumStats;
     for (k in defaultStats) {
         s[k] = [0, 0];
     }
@@ -34,7 +31,7 @@ export function calcAverages(stats: StatsLog): AccumStats {
 
     const count = s.count;
     for (k in defaultStats) {
-        s[k][1] = s[k][0] !== 0? s[k][0] / count: 0;
+        s[k][1] = s[k][0] / count;
     }
 
     return s;

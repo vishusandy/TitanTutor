@@ -8,6 +8,7 @@
 	import { home } from '$lib/util/nav';
 	import { loadUserConfig } from '$lib/config';
 	import { getPluralStrs } from '$lib/util/lang';
+	import { formatNaN } from '$lib/util/util';
 
 	export let data: PageData;
 	let db = data.db;
@@ -23,16 +24,10 @@
 		return true;
 	}
 
-	// Inspired by:
-	// https://carl-topham.com/articles/intl-number-formatting-percentage
-	function formatNaN(num: number, options?: Intl.NumberFormatOptions) {
-		return Number.isNaN(num) ? config.lang.notAvailable : Intl.NumberFormat(navigator.language, options).format(num);
-	}
-
 	function calc() {
-		grossWpm = formatNaN(stats.getGrossWpm(), { style: 'decimal', maximumFractionDigits: 2 });
-		netWpm = formatNaN(stats.getNetWpm(), { style: 'decimal', maximumFractionDigits: 2 });
-		accuracy = formatNaN(stats.getAccuracy(), { style: 'percent' });
+		grossWpm = formatNaN(config.lang, stats.getGrossWpm(), { style: 'decimal', maximumFractionDigits: 2 });
+		netWpm = formatNaN(config.lang, stats.getNetWpm(), { style: 'decimal', maximumFractionDigits: 2 });
+		accuracy = formatNaN(config.lang, stats.getAccuracy(), { style: 'percent' });
 	}
 
 	calc();

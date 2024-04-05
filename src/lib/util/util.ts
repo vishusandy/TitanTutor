@@ -30,3 +30,10 @@ export function uniqueChars(arr: string[]): Set<string> {
     arr.forEach(w => [...w].forEach(c => set.add(c)));
     return set;
 }
+
+
+	// Inspired by:
+	// https://carl-topham.com/articles/intl-number-formatting-percentage
+	export function formatNaN(lang: Language, num: number, options: Intl.NumberFormatOptions = { style: 'decimal', maximumFractionDigits: 2 }) {
+		return Number.isNaN(num) ? lang.notAvailable : Intl.NumberFormat(navigator.language, options).format(num);
+	}

@@ -22,13 +22,13 @@ export function showVoiceDialog(config: Config, db: IDBDatabase): Promise<Audio 
 }
 
 export function showStatsDialog<T extends BaseStats>(title: string, config: Config, db: IDBDatabase, stats: T): Promise<boolean | undefined> {
-    const dialogProps: DialogProps = { title, content: Stats, hasSubmit: false, config, db };
+    const dialogProps: DialogProps = { title, content: Stats, hasSubmit: false, config, db: undefined };
     const passProps = { stats };
     return createDialog(dialogProps, passProps);
 }
 
 export function showStatsConfirmDialog<T extends BaseStats>(config: Config, db: IDBDatabase, stats: T): Promise<boolean | undefined> {
-    const dialogProps: DialogProps = { title: config.lang.statsDialogSaveTitle, content: Stats, hasSubmit: true, config, db, cancelLabel: config.lang.no, submitLabel: config.lang.yes };
+    const dialogProps: DialogProps = { title: config.lang.statsDialogSaveTitle, content: Stats, hasSubmit: true, config, db: undefined, cancelLabel: config.lang.no, submitLabel: config.lang.yes };
     const passProps = { stats };
     return createDialog(dialogProps, passProps);
 }
@@ -57,7 +57,7 @@ interface DialogProps {
     content: InnerDialogComponent;
     hasSubmit: boolean;
     config: Config;
-    db: IDBDatabase;
+    db: IDBDatabase | undefined;
     closeLabel?: string;
     submitLabel?: string;
     cancelLabel?: string;

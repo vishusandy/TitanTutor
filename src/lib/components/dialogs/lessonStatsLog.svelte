@@ -5,7 +5,8 @@
 	import { calcAverages, toStatsArray } from '$lib/data/stats';
 	import { translateStatsKey } from '$lib/util/lang';
 	import { lesson_stats_store, remove } from '$lib/db';
-	import { invalidateAll } from '$app/navigation';
+	import { formatNaN } from '$lib/util/util';
+	import type { StatsEntry } from '$lib/types/stats';
 
 	export let config: Config;
 	export let statsLog: StatsLog;
@@ -32,6 +33,16 @@
 			print = toStatsArray(avgs);
 		}
 	}
+
+	function displayNum(k: keyof StatsEntry, n: number) {
+		if (Number.isNaN(n)) {
+			return config.lang.notAvailable;
+		} else if (k === 'duration') {
+			return formatDuration(plurals, n, ' ');
+		} else {
+			return n.toString();
+		}
+	}
 </script>
 
 <div class="dialog-grid">
@@ -43,13 +54,13 @@
 	<div />
 	<div class="value">{avgs.count}</div>
 
-	{#each print as e}
-		<div class="key" class:duration={e[0] === 'duration'}>{translateStatsKey(config.lang, e[0])}</div>
-		<div class="value" class:duration={e[0] === 'duration'}>
-			{e[0] === 'duration' ? formatDuration(plurals, e[2], ' ') : e[2]}
+	{#each print as [k, tot, avg]}
+		<div class="key" class:duration={k === 'duration'}>{translateStatsKey(config.lang, k)}</div>
+		<div class="value" class:duration={k === 'duration'}>
+			{displayNum(k, avg)}
 		</div>
-		<div class="value" class:duration={e[0] === 'duration'}>
-			{e[0] === 'duration' ? formatDuration(plurals, e[1], ' ') : e[1]}
+		<div class="value" class:duration={k === 'duration'}>
+			{displayNum(k, tot)}
 		</div>
 	{/each}
 

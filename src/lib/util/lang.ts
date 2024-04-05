@@ -37,7 +37,7 @@ export function translateStatsKey(lang: Language, key: keyof StatsEntry): string
 // Pluralization:
 //   https://lingohub.com/blog/pluralization
 //   https://www.unicode.org/cldr/charts/44/supplemental/language_plural_rules.html
-function pluralizeDur(plurals: PluralStrs, durs: Dur, sep: string) {
+export function pluralizeDur(plurals: PluralStrs, durs: Dur, sep: string): string {
     const empty = [durs.day, durs.hour, durs.minute].find((n) => n !== 0) === undefined;
     const pluralize = (k: keyof Dur, v: number) => v === 1? plurals[k].one: plurals[k].other;
     const isEmpty = (k: string, v: number) => v !== 0 || (k === 'second' && empty);
@@ -53,10 +53,10 @@ function pluralizeDur(plurals: PluralStrs, durs: Dur, sep: string) {
 export function getDuration(ms: number): Dur {
     if (ms < 0) ms = -ms;
     return {
-        day: Math.floor(ms / 86400000),
-        hour: Math.floor(ms / 3600000) % 24,
-        minute: Math.floor(ms / 60000) % 60,
-        second: Math.floor(ms / 1000) % 60,
+        day: Math.floor(ms / 86_400_000),
+        hour: Math.floor(ms / 3_600_000) % 24,
+        minute: Math.floor(ms / 60_000) % 60,
+        second: Math.floor(ms / 1_000) % 60,
     };
 }
 

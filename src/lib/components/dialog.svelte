@@ -9,7 +9,7 @@
 	export let title: string;
 	export let passProps: any;
 	export let config: Config;
-	export let db: IDBDatabase;
+	export let db: IDBDatabase | undefined;
 	export let hasSubmit: boolean;
 	export let closeCallback: CloseFn<T>;
 	export let content: InnerDialogComponent;
