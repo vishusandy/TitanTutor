@@ -34,7 +34,7 @@ export function calcAverages(stats: StatsLog): AccumStats {
 
     const count = s.count;
     for (k in defaultStats) {
-        s[k][1] = s[k][0] / count;
+        s[k][1] = s[k][0] !== 0? s[k][0] / count: 0;
     }
 
     return s;
