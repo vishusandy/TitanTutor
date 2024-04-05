@@ -54,7 +54,7 @@
 	{/each}
 
 	<div class="merge reset-stats">
-		<button class="danger" on:click={resetStats}>{config.lang.resetStats}</button>
+		<!-- <button class="danger" on:click={resetStats}>{config.lang.resetStats}</button> -->
 	</div>
 </div>
 
