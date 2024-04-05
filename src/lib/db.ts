@@ -1,7 +1,8 @@
 import { defaultUserId } from "./conf/config";
+import { LogStats } from "./types/config";
 
 const DB_NAME = 'titantutor';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 export const config_store = 'user_config';
 export const lesson_opts_store = 'lesson_options';
@@ -14,6 +15,7 @@ type StoreType = {
     key: string,
     autoIncrement: boolean,
 };
+
 
 const stores: StoreType[] = [
     { store: config_store, key: 'user', autoIncrement: false },
@@ -52,6 +54,7 @@ export function connect(): Promise<IDBDatabase> {
                     createStore(db, s);
                 }
             } else {
+                // version 2 moved shortcuts from Config propreties to an object
                 if (e.oldVersion === 1) {
                     const store = t.objectStore(config_store);
                     const req = store.get(defaultUserId);
@@ -66,12 +69,32 @@ export function connect(): Promise<IDBDatabase> {
                         db.deleteObjectStore(config_store);
                         db.createObjectStore(config_store, { keyPath: 'user' })
                             .createIndex('user', 'user', { unique: true });
-                    }
+                        }
                 }
+                
+                // version 3 created lesson_stats_store and changed user_lessons_store to be autoIncrementing
                 if (e.oldVersion <= 2) {
+                    // user lessons could not be added at this time so this is safe
                     db.deleteObjectStore(user_lessons_store);
                     createStore(db, { store: user_lessons_store, key: 'id', autoIncrement: true });
                     createStore(db, { store: lesson_stats_store, key: 'lesson_id', autoIncrement: false })
+                }
+                
+                // version 4 changed logStats from boolean to a const enum
+                if (e.oldVersion <= 3) {
+                    const store = t.objectStore(config_store);
+                    const req = store.get(defaultUserId);
+                    req.onsuccess = (e: Event) => {
+                        const c = req.result;
+                        if(c !== undefined) {
+                            c.logStats = c.logStats === true? LogStats.Always: LogStats.Off;
+                            store.put(c);
+                        }
+                    };
+                    req.onerror = () => {
+                        db.deleteObjectStore(config_store);
+                        createStore(db, { store: config_store, key: 'user', autoIncrement: false });
+                    }
                 }
             }
         }

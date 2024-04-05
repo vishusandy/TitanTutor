@@ -17,8 +17,6 @@
 	let grossWpm: string = '';
 	let netWpm: string = '';
 	let accuracy: string = '';
-	let trackStats: boolean = config.logStats;
-	let trackStatsCheckbox: HTMLInputElement;
 	let plurals = getPluralStrs(config.lang);
 
 	export function getData(): boolean {
@@ -50,14 +48,6 @@
 		config = c;
 		stats = c.userStats;
 		calc();
-	}
-
-	async function changeTrackStats() {
-		trackStats = trackStatsCheckbox.checked;
-		const c = await loadUserConfig(db);
-		c.logStats = trackStats;
-		config = c;
-		c.saveUserConfig(db);
 	}
 
 	function cancel() {
@@ -102,16 +92,6 @@
 
 	<form>
 		<div class="actions">
-			<div class="track-stats-container">
-				<input
-					id="log-stats"
-					type="checkbox"
-					checked={trackStats}
-					bind:this={trackStatsCheckbox}
-					on:change={changeTrackStats}
-				/>
-				<label for="log-stats">{config.lang.statsDialogTrackUserStats}</label>
-			</div>
 			<button type="button" class="danger" on:click={clearUserStats}>{config.lang.resetStats}</button>
 		</div>
 	</form>
@@ -129,14 +109,5 @@
 
 	.actions {
 		flex-direction: column;
-		align-items: center;
-	}
-
-	.track-stats-container {
-		margin-bottom: 0.5rem;
-	}
-
-	#log-stats {
-		margin-right: 0.4rem;
 	}
 </style>

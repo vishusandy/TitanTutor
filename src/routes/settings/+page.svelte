@@ -16,6 +16,7 @@
 	import { CheckMode } from '$lib/types/types';
 	import { clearAll } from '$lib/db';
 	import { showVoiceDialog } from '$lib/util/dialog';
+	import type { LogStats } from '$lib/types/config';
 
 	export let data: PageData;
 	let db = data.db;
@@ -30,7 +31,7 @@
 	let backspace: boolean = config.backspace;
 	let wordBatchSize: number = config.wordBatchSize;
 	let minQueue: number = config.minQueue;
-	let logStats: boolean = config.logStats;
+	let logStats: LogStats = config.logStats;
 	let remap: Remap = config.remap;
 	let lang: Language = config.lang;
 	let spaceOptional: boolean = config.spaceOptional;
@@ -178,10 +179,12 @@
 		<label for="minQueue">{config.lang.configMinQueue}</label>
 		<input id="minQueue" type="number" min="1" max="100" step="1" bind:value={minQueue} />
 
-		<div class="merge">
-			<input id="logStats" type="checkbox" bind:checked={logStats} />
-			<label for="logStats">{config.lang.configLogLessonStats}</label>
-		</div>
+		<label for="logStats">{config.lang.configLogLessonStats}</label>
+		<select id="logStats" bind:value={logStats}>
+			<option value={0}>Never</option>
+			<option value={1}>Prompt</option>
+			<option value={2}>Always</option>
+		</select>
 	</div>
 
 	<div class="actions">

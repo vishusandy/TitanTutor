@@ -4,6 +4,12 @@ import type { Language } from "../data/language";
 import { type UserStats, type UserStatsObject } from "../stats";
 import type { LessonTypingConfig } from '$lib/types/lessons'
 
+export const enum LogStats {
+    Off = 0,
+    Prompt = 1,
+    Always = 2,
+}
+
 export type ShortuctConfig = {
     stop: string;
     pause: string;
@@ -17,7 +23,7 @@ export type ConfigProps = {
     lastLesson: string | null,
     tts: Audio | undefined,
     shortcuts: ShortuctConfig,
-    logStats: boolean,
+    logStats: LogStats,
     caseSensitive: boolean,
     audioDefaults: string[], // array to match different browsers' tts languages
     remap: Remap,

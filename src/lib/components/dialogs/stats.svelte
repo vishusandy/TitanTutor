@@ -1,6 +1,7 @@
 <script lang="ts" generics="T extends BaseStats">
 	import type { Config } from '$lib/config';
 	import type { UserStats, BaseStats } from '$lib/stats';
+	import { LogStats } from '$lib/types/config';
 	import { formatDuration } from '$lib/util/lang';
 	import { getPluralStrs } from '$lib/util/lang';
 
@@ -14,7 +15,7 @@
 	let grossWpm: string = '';
 	let netWpm: string = '';
 	let accuracy: string = '';
-	let trackStats: boolean = config.logStats;
+	let trackStats: LogStats = config.logStats;
 	let trackStatsCheckbox: HTMLInputElement;
 
 	export function getData(): boolean {
@@ -46,8 +47,8 @@
 	}
 
 	function changeTrackStats() {
-		trackStats = trackStatsCheckbox.checked;
-		config.logStats = trackStats;
+		// trackStats = trackStatsCheckbox.checked;
+		// config.logStats = trackStats;
 		config = config;
 		config.saveUserConfig(db);
 	}
@@ -93,7 +94,7 @@
 				<input
 					id="log-stats"
 					type="checkbox"
-					checked={trackStats}
+					checked={trackStats === LogStats.Prompt}
 					bind:this={trackStatsCheckbox}
 					on:change={changeTrackStats}
 				/>
