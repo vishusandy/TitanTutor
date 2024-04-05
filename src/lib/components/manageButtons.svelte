@@ -87,15 +87,15 @@
 	{#if custom}
 		<button class="remove-btn icon" on:click={() => deleteLesson()} title={config.lang.delete}><Close /></button>
 	{/if}
-	{#if custom}
-		<button class="edit-btn icon" on:click={() => editLesson()} title={config.lang.edit}><Pencil2 /></button>
-	{/if}
 	<button disabled={stats === undefined} on:click={showLessonStatsDialog} class="stats-btn icon" title={statsAlt}
 		><Stats /></button
 	>
 	<button class="settings-btn icon" on:click={() => editSettings()} title={config.lang.openLessonConfigDialog}>
 		<Cog />
 	</button>
+	{#if custom}
+		<button class="edit-btn icon" on:click={() => editLesson()} title={config.lang.edit}><Pencil2 /></button>
+	{/if}
 </div>
 
 <style>
@@ -141,7 +141,17 @@
 		vector-effect: non-scaling-stroke;
 	}
 
+	:global(.settings-btn svg path) {
+		vector-effect: non-scaling-stroke;
+		stroke-width: 1.4;
+	}
+
 	:global(.settings-btn svg) {
-		fill: orange;
+		fill: #3ab1cf;
+		stroke: #005469 !important;
+	}
+
+	:global(.settings-btn:hover svg) {
+		stroke: #002a35 !important;
 	}
 </style>

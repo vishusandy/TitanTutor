@@ -14,6 +14,7 @@
 	import { lessonPlans } from '$lib/conf/lesson_plans';
 	import { loadUserConfig } from '$lib/config';
 	import type { StatsLog } from '$lib/stats';
+	import Start from '$lib/components/imgs/start.svelte';
 
 	export let data: PageData;
 	let db = data.db;
@@ -84,8 +85,10 @@
 					<button
 						class="lesson-btn"
 						class:highlight={les.id === config.lastLesson}
-						on:click={() => startLesson(les.id, les.name)}>{les.name}</button
-					>
+						on:click={() => startLesson(les.id, les.name)}
+						><Start />
+						<div>{les.name}</div>
+					</button>
 				</div>
 			{/each}
 
@@ -120,8 +123,10 @@
 										class="lesson-btn"
 										on:click={() => {
 											if (l) startLesson(l.id, l.name);
-										}}>{l?.name}</button
-									>
+										}}
+										><Start />
+										<div>{l?.name}</div>
+									</button>
 								</div>
 							{/if}
 						{/each}
@@ -159,21 +164,58 @@
 	}
 
 	.lesson-btn {
-		display: block;
-		background-color: transparent;
+		color: #172024;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		/* background-color: transparent; */
+		/* background-color: #fbf8fc; */
+		background-color: #f0f0f5;
 		/* user-select: text; */
 		cursor: pointer;
-		margin: 0.2rem 0px;
+		margin: 0.2rem 0px 0.2rem 0.6rem;
 		width: 100%;
-		text-align: start;
 		font-size: 1rem;
-		font-family: var(--font-sans-humanist);
+		font-family: var(--font-humanist);
 		border-radius: 1rem;
-		padding: 0.2rem 0.8rem;
+		padding: 0.3rem 0.8rem 0.3rem 0.8rem;
+	}
+	.lesson-btn:not(:active, :focus) {
+		box-shadow: 0px 0px 2px #5b505e;
 	}
 
-	.lesson-btn:hover {
-		background-color: white;
+	.lesson-btn:hover,
+	.lesson-btn:active,
+	.lesson-btn:focus {
+		background-color: #f0edf1;
+		background-color: #e9e9f0;
+	}
+
+	.lesson-btn div {
+		text-align: left;
+		flex-basis: 100%;
+		margin-left: 0.5rem;
+	}
+
+	:global(.lesson-btn svg) {
+		width: 1.1rem;
+		height: 1.1rem;
+		fill: rgb(240, 161, 13);
+		stroke: rgba(73, 47, 0, 0.568);
+		stroke-width: 1px;
+		filter: drop-shadow(0px 0px 1px #777);
+		/* margin-inline-end: 0.3rem; */
+		/* order:2; */
+	}
+
+	:global(.lesson-btn:active svg, .lesson-btn:focus svg, .lesson-btn:hover svg) {
+		fill: rgb(236, 104, 15);
+		stroke: rgba(73, 47, 0, 0.897);
+	}
+
+	:global(.lesson-btn svg polygon) {
+		vector-effect: non-scaling-stroke;
+		stroke-linecap: round;
 	}
 
 	.highlight {
@@ -183,5 +225,6 @@
 	.new-lesson {
 		grid-column: 1/5;
 		text-align: center;
+		margin-top: 1.5rem;
 	}
 </style>
