@@ -150,6 +150,7 @@
 		display: flex;
 		align-items: center;
 		margin: 0px 0px;
+		flex-wrap: wrap;
 	}
 
 	.custom.subgrids {
@@ -174,11 +175,11 @@
 		/* user-select: text; */
 		cursor: pointer;
 		margin: 0.2rem 0px 0.2rem 0.6rem;
-		width: 100%;
 		font-size: 1rem;
 		font-family: var(--font-humanist);
 		border-radius: 1rem;
 		padding: 0.3rem 0.8rem 0.3rem 0.8rem;
+		flex-grow: 1;
 	}
 	.lesson-btn:not(:active, :focus) {
 		box-shadow: 0px 0px 2px #5b505e;

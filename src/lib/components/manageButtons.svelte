@@ -102,6 +102,7 @@
 	.buttons {
 		display: flex;
 		align-items: center;
+		/* flex-wrap: wrap; */
 	}
 
 	.buttons button {

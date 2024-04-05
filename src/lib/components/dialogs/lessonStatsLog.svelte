@@ -5,7 +5,6 @@
 	import { calcAverages, toStatsArray } from '$lib/data/stats';
 	import { translateStatsKey } from '$lib/util/lang';
 	import { lesson_stats_store, remove } from '$lib/db';
-	import { formatNaN } from '$lib/util/util';
 	import type { StatsEntry } from '$lib/types/stats';
 
 	export let config: Config;
