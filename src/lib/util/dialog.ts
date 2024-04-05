@@ -9,7 +9,6 @@ import type { BaseStats, StatsLog } from "../stats";
 import type { InnerDialogComponent, CloseFn } from "../types/types";
 import type { Lesson } from "$lib/lessons/lesson";
 import type { LessonTypingConfig, StorableBaseLesson } from "$lib/types/lessons";
-import User from "../components/dialogs/user_config.svelte";
 import type { Audio } from "$lib/audio";
 import EditLesson from "$lib/components/dialogs/edit_lesson.svelte";
 import type { UserWordList } from "$lib/lessons/base/user_wordlist";
@@ -44,11 +43,6 @@ export function showEditLessonDialog(config: Config, db: IDBDatabase, lesson: Us
     const dialogProps: DialogProps = { title: (lesson !== null) ? config.lang.lessonDialogEditLesson : config.lang.lessonDialogAddLesson, content: EditLesson, hasSubmit: true, config, db, cancelLabel: config.lang.cancel, submitLabel: config.lang.save };
     const passProps = { lesson };
     return createDialog(dialogProps, passProps);
-}
-
-export function showConfigDialog(config: Config, db: IDBDatabase): Promise<Config | undefined> {
-    const dialogProps: DialogProps = { title: config.lang.configDialogTitile, content: User, hasSubmit: true, config, db };
-    return createDialog(dialogProps);
 }
 
 export async function showLessonConfigDialog(config: Config, db: IDBDatabase, lesson: Lesson, lessonOptions: Partial<LessonTypingConfig>, confirmPrompt: string | undefined): Promise<Promise<[Lesson, Partial<LessonTypingConfig>] | undefined>> {
