@@ -75,7 +75,7 @@
     "statsDialogGrossWpm": "Gross WPM",
     "statsDialogNetWpm": "Net WPM",
     "statsDialogAccuracy": "Accuracy",
-    "statsDialogClearUserStats": "Reset stats",
+    "resetStats": "Reset stats",
     "statsDialogTrackUserStats": "Track overall stats",
     "statsResetPrompt": "Are you sure you want to reset all stats?",
     "openLessonConfigDialog": "Lesson Settings",
@@ -117,7 +117,7 @@
     "lessonDialogCustomTitle": "Custom Lessons",
     "lessonDialogStockTitle": "Lessons",
     "lessonDialogAddLesson": "New Lesson",
-    "lessonDialogEditLesson": "New Lesson",
+    "lessonDialogEditLesson": "Edit Lesson",
     "lessonDialogNewLesson": "New Lesson",
     "lessonDialogLessonName": "Name",
     "lessonDialogLessonId": "Lesson ID",
@@ -148,5 +148,6 @@
     "durationShortOneHour":"%nh",
     "durationShortOtherHour":"%nh",
     "durationShortOneDay":"%nd",
-    "durationShortOtherDay":"%nd"
+    "durationShortOtherDay":"%nd",
+    "resetLessonStats": "Reset stats for '%s'?"
 }

@@ -4,6 +4,8 @@
 	import { formatDuration, getPluralStrs } from '$lib/util/lang';
 	import { calcAverages, toStatsArray } from '$lib/data/stats';
 	import { translateStatsKey } from '$lib/util/lang';
+	import { lesson_stats_store, remove } from '$lib/db';
+	import { invalidateAll } from '$app/navigation';
 
 	export let config: Config;
 	export let statsLog: StatsLog;
@@ -19,6 +21,17 @@
 	const plurals = getPluralStrs(config.lang, true);
 	let avgs = calcAverages(stats);
 	let print = toStatsArray(avgs);
+
+	async function resetStats() {
+		if (window.confirm(config.lang.resetLessonStats.replace('%s', lesson_name))) {
+			await remove(db, lesson_stats_store, statsLog.lesson_id);
+			console.log('removed stats');
+			statsLog = { lesson_id: statsLog.lesson_id, entries: [] };
+			stats = { lesson_id: statsLog.lesson_id, entries: statsLog.entries.slice(start, limit) };
+			avgs = calcAverages(stats);
+			print = toStatsArray(avgs);
+		}
+	}
 </script>
 
 <div class="dialog-grid">
@@ -39,6 +52,10 @@
 			{e[0] === 'duration' ? formatDuration(plurals, e[1], ' ') : e[1]}
 		</div>
 	{/each}
+
+	<div class="merge reset-stats">
+		<button class="danger" on:click={resetStats}>{config.lang.resetStats}</button>
+	</div>
 </div>
 
 <style>
@@ -47,6 +64,14 @@
 		grid-template-columns: 3fr 1fr 1fr;
 		column-gap: 2rem;
 		/* row-gap: 1.3rem; */
+	}
+
+	.reset-stats {
+		text-align: center;
+	}
+
+	.merge {
+		grid-column: 1/4;
 	}
 
 	.grid-header {

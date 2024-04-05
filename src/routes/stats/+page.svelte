@@ -112,7 +112,7 @@
 				/>
 				<label for="log-stats">{config.lang.statsDialogTrackUserStats}</label>
 			</div>
-			<button type="button" class="danger" on:click={clearUserStats}>{config.lang.statsDialogClearUserStats}</button>
+			<button type="button" class="danger" on:click={clearUserStats}>{config.lang.resetStats}</button>
 		</div>
 	</form>
 

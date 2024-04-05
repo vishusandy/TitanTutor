@@ -82,7 +82,7 @@ export class Language {
     readonly statsDialogGrossWpm: string = '';
     readonly statsDialogNetWpm: string = '';
     readonly statsDialogAccuracy: string = '';
-    readonly statsDialogClearUserStats: string = '';
+    readonly resetStats: string = '';
     readonly statsDialogTrackUserStats: string = '';
     readonly statsResetPrompt: string = '';
     readonly openLessonConfigDialog: string = '';
@@ -158,6 +158,7 @@ export class Language {
     readonly durationShortOtherHour: string = '';
     readonly durationShortOneDay: string = '';
     readonly durationShortOtherDay: string = '';
+    readonly resetLessonStats: string = '';
     
     [index: string]: string;
     
