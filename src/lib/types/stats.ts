@@ -9,5 +9,11 @@ export type StatsEntry = {
     correctedErrors: number,
 };
 
+/**
+ * Entries are in format: `[total, average]`
+ */
 export type AccumStats = { [K in keyof StatsEntry]: [number, number] } & { count: number };
+/**
+ * Uses the format: `[StatsEntry, total, average]`
+ */
 export type StatsArray = [keyof StatsEntry, number, number][];
