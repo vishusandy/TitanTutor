@@ -1,0 +1,20 @@
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<marker
+			id="arrow"
+			viewBox="0 0 10 10"
+			refX="5"
+			refY="5"
+			markerWidth="2"
+			markerHeight="2"
+			orient="auto-start-reverse"
+		>
+			<path style="fill: none;" d="M 1 1 L 4.924 4.939 L 1 9" />
+		</marker>
+	</defs>
+	<path
+		d="M 249.855 50 C 403.697 50 499.849 216.736 422.928 350.125 C 346.008 483.513 153.703 483.513 76.782 350.125 C 29.964 268.939 45.726 166.098 114.7 102.698"
+		transform="matrix(0.694658, -0.71934, 0.71934, 0.694658, -103.559212, 256.195799)"
+		style="marker-start: url('#arrow')"
+	/>
+</svg>

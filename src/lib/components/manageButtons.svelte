@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 
-	// import Start from '$lib/components/imgs/start.svelte';
 	import Close from '$lib/components/imgs/close.svelte';
 	import Pencil2 from '$lib/components/imgs/pencil2.svelte';
 	import Cog from '$lib/components/imgs/cog.svelte';
 	import Stats from '$lib/components/imgs/stats.svelte';
+	import Reset from '$lib/components/imgs/reset.svelte';
 
 	import { Config, loadUserConfig } from '$lib/config';
 	import { showEditLessonDialog, showLessonConfigDialog, showLessonStatsLog } from '$lib/util/dialog';
-	import { remove, addUpdate, user_lessons_store, get, lesson_opts_store } from '$lib/db';
+	import { remove, addUpdate, user_lessons_store, get, lesson_opts_store, lesson_stats_store } from '$lib/db';
 	import { loadUserLesson, type UserWordList } from '$lib/lessons/base/user_wordlist';
 	import type { LessonTypingConfig, StorableBaseLesson, StoredOverrides } from '$lib/types/lessons';
 	import { Lesson } from '$lib/lessons/lesson';
@@ -22,7 +22,6 @@
 	export let stats: StatsLog | undefined;
 	const dispatch = createEventDispatcher();
 
-	// let statsAlt = stats ? config.lang.statsLogNoStats : config.lang.openLessonConfigDialog;
 	let statsAlt = stats ? config.lang.openUserStatsDialog : config.lang.statsLogNoStats;
 
 	async function editLesson() {
@@ -81,12 +80,23 @@
 			showLessonStatsLog(config, db, lesson.name, stats);
 		}
 	}
+
+	async function resetStats() {
+		if (stats !== undefined && window.confirm(config.lang.resetLessonStats.replace('%s', lesson.name))) {
+			await remove(db, lesson_stats_store, stats.lesson_id);
+			console.log('removed stats');
+			stats = undefined;
+		}
+	}
 </script>
 
 <div class="buttons">
 	{#if custom}
 		<button class="remove-btn icon" on:click={() => deleteLesson()} title={config.lang.delete}><Close /></button>
 	{/if}
+	<button class="reset-btn icon" on:click={resetStats} disabled={stats === undefined}>
+		<Reset />
+	</button>
 	<button disabled={stats === undefined} on:click={showLessonStatsDialog} class="stats-btn icon" title={statsAlt}
 		><Stats /></button
 	>
@@ -103,10 +113,6 @@
 		display: flex;
 		align-items: center;
 		/* flex-wrap: wrap; */
-	}
-
-	.buttons button {
-		/* margin-inline-end: 0.2rem; */
 	}
 
 	.icon {
@@ -128,6 +134,13 @@
 		height: 1.6rem;
 	}
 
+	.reset-btn {
+		--stroke: #000;
+	}
+	.reset-btn:disabled {
+		--stroke: #aaa;
+	}
+
 	:global(.start-btn svg polygon) {
 		fill: rgb(123, 206, 39);
 		stroke: #000;
@@ -140,6 +153,14 @@
 		fill: none;
 		stroke-width: 2.2;
 		vector-effect: non-scaling-stroke;
+	}
+
+	:global(.reset-btn:not(:disabled) svg path) {
+		stroke: #2e8ea6;
+	}
+
+	:global(.reset-btn:disabled svg path) {
+		stroke: #aaa;
 	}
 
 	:global(.settings-btn svg path) {
