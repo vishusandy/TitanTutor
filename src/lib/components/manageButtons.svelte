@@ -4,6 +4,7 @@
 	import Close from '$lib/components/imgs/close.svelte';
 	import Pencil2 from '$lib/components/imgs/pencil2.svelte';
 	import Cog from '$lib/components/imgs/cog.svelte';
+	import Cog2 from '$lib/components/imgs/cog2.svelte';
 	import Stats from '$lib/components/imgs/stats.svelte';
 	import Reset from '$lib/components/imgs/reset.svelte';
 
@@ -100,7 +101,7 @@
 		><Stats /></button
 	>
 	<button class="settings-btn icon" on:click={() => editSettings()} title={config.lang.openLessonConfigDialog}>
-		<Cog />
+		<Cog2 />
 	</button>
 	{#if custom}
 		<button class="edit-btn icon" on:click={() => editLesson()} title={config.lang.edit}><Pencil2 /></button>
@@ -124,8 +125,8 @@
 	}
 
 	.settings-btn {
-		width: 1.7rem;
-		height: 1.7rem;
+		width: 1.8rem;
+		height: 1.8rem;
 	}
 
 	.edit-btn {
@@ -168,7 +169,7 @@
 	}
 
 	:global(.settings-btn svg) {
-		fill: #3ab1cf;
+		fill: #b1dce7;
 		stroke: #005469 !important;
 	}
 
