@@ -159,6 +159,7 @@ export class Language {
     readonly durationShortOneDay: string = '';
     readonly durationShortOtherDay: string = '';
     readonly resetLessonStats: string = '';
+    readonly resetLessonStatsPrompt: string = '';
     
     [index: string]: string;
     

@@ -149,5 +149,6 @@
     "durationShortOtherHour":"%nh",
     "durationShortOneDay":"%nd",
     "durationShortOtherDay":"%nd",
-    "resetLessonStats": "Reset stats for '%s'?"
+    "resetLessonStats": "Reset stats",
+    "resetLessonStatsPrompt": "Reset stats for '%s'?"
 }

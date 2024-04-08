@@ -82,9 +82,8 @@
 	}
 
 	async function resetStats() {
-		if (stats !== undefined && window.confirm(config.lang.resetLessonStats.replace('%s', lesson.name))) {
+		if (stats !== undefined && window.confirm(config.lang.resetLessonStatsPrompt.replace('%s', lesson.name))) {
 			await remove(db, lesson_stats_store, stats.lesson_id);
-			console.log('removed stats');
 			stats = undefined;
 		}
 	}
@@ -94,7 +93,7 @@
 	{#if custom}
 		<button class="remove-btn icon" on:click={() => deleteLesson()} title={config.lang.delete}><Close /></button>
 	{/if}
-	<button class="reset-btn icon" on:click={resetStats} disabled={stats === undefined}>
+	<button class="reset-btn icon" on:click={resetStats} disabled={stats === undefined} title={config.lang.resetLessonStats}>
 		<Reset />
 	</button>
 	<button disabled={stats === undefined} on:click={showLessonStatsDialog} class="stats-btn icon" title={statsAlt}

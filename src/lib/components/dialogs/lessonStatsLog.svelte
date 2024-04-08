@@ -9,8 +9,8 @@
 
 	export let config: Config;
 	export let statsLog: StatsLog;
-	export let lesson_name: string;
 	export let db: IDBDatabase;
+	db;
 
 	const total = statsLog.entries.length;
 	let limit: number | undefined = undefined;
@@ -21,17 +21,6 @@
 	const plurals = getPluralStrs(config.lang, true);
 	let avgs = calcAverages(stats);
 	let print = toStatsArray(avgs);
-
-	async function resetStats() {
-		if (window.confirm(config.lang.resetLessonStats.replace('%s', lesson_name))) {
-			await remove(db, lesson_stats_store, statsLog.lesson_id);
-			console.log('removed stats');
-			statsLog = { lesson_id: statsLog.lesson_id, entries: [] };
-			stats = { lesson_id: statsLog.lesson_id, entries: statsLog.entries.slice(start, limit) };
-			avgs = calcAverages(stats);
-			print = toStatsArray(avgs);
-		}
-	}
 
 	function displayNum(k: keyof StatsEntry, n: number) {
 		if (Number.isNaN(n)) {
