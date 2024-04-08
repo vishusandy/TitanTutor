@@ -169,11 +169,15 @@
 	}
 
 	:global(.settings-btn svg) {
-		fill: #b1dce7;
-		stroke: #005469 !important;
+		/* fill: #b1dce7; */
+		fill: #cddee2;
+		stroke: #728185 !important;
 	}
 
 	:global(.settings-btn:hover svg) {
-		stroke: #002a35 !important;
+		stroke: #304d55 !important;
+	}
+	:global(.settings-btn:active svg, .settings-btn:focus svg) {
+		fill: #c6f4ff;
 	}
 </style>

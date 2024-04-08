@@ -39,7 +39,7 @@ button.icon:not(:disabled) {
 }
 button.icon:disabled svg {
     // filter: brightness(0.8) grayscale(100%);
-    filter: grayscale(100%) contrast(50%);
+    filter: grayscale(100%) contrast(50%) opacity(0.5);
 }
 
 button.icon svg {
@@ -47,6 +47,7 @@ button.icon svg {
     stroke-linecap: round;
     stroke-linejoin: miter;
     stroke-miterlimit: 0;
+    filter:blur(0.4px);
 }
 
 button.icon:disabled svg {
