@@ -201,17 +201,17 @@
 	:global(.lesson-btn svg) {
 		width: 1.1rem;
 		height: 1.1rem;
-		fill: rgb(240, 161, 13);
-		stroke: rgba(73, 47, 0, 0.568);
+		fill: rgb(255, 222, 130);
+		stroke: rgba(235, 113, 0, 0.568);
 		stroke-width: 1px;
-		filter: drop-shadow(0px 0px 1px #777);
+		/* filter: drop-shadow(0px 0px 1px #777); */
 		/* margin-inline-end: 0.3rem; */
 		/* order:2; */
 	}
 
 	:global(.lesson-btn:active svg, .lesson-btn:focus svg, .lesson-btn:hover svg) {
-		fill: rgb(236, 104, 15);
-		stroke: rgba(73, 47, 0, 0.897);
+		fill: rgb(253, 141, 49);
+		stroke: rgba(141, 68, 0, 0.568);
 	}
 
 	:global(.lesson-btn svg polygon) {
