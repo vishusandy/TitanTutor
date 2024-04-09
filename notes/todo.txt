@@ -7,9 +7,8 @@ fix:
 finish:
 
 features:
-    - add button to clear lesson stats in stats dialog
-    - add language select to lessons page to optionally allow filtering by language
     - remove indeterminate state from overridable check boxes as it is confusing
+    - add language select to lessons page to optionally allow filtering by language
     
     - allow user to change shortcuts
         - must be a function key OR have alt/ctrl/meta modifier
