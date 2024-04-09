@@ -2,8 +2,8 @@
 	import { createEventDispatcher } from 'svelte';
 
 	import Close from '$lib/components/imgs/close.svelte';
-	import Pencil2 from '$lib/components/imgs/pencil2.svelte';
-	import Cog2 from '$lib/components/imgs/cog2.svelte';
+	import Pencil2 from '$lib/components/imgs/pencil.svelte';
+	import Cog2 from '$lib/components/imgs/cog_small.svelte';
 	import Stats from '$lib/components/imgs/stats.svelte';
 	import Reset from '$lib/components/imgs/reset.svelte';
 	import Start from '$lib/components/imgs/start.svelte';

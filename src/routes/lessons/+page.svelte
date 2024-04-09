@@ -5,7 +5,7 @@
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 
-	import ManageButtons from '$lib/components/manageButtons.svelte';
+	import ManageButtons from '$lib/components/manage_buttons.svelte';
 	import Start from '$lib/components/imgs/start.svelte';
 
 	import { home } from '$lib/util/nav';

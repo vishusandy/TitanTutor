@@ -1,7 +1,7 @@
 import Dialog from "../components/dialog.svelte";
 import Tts from "../components/dialogs/tts.svelte";
 import Stats from "../components/dialogs/stats.svelte";
-import LessonStatsLog from "../components/dialogs/lessonStatsLog.svelte";
+import LessonStatsLog from "../components/dialogs/lesson_stats_log.svelte";
 import LessonConfig from "../components/dialogs/lesson_options.svelte";
 
 import type { Config } from "../config";
