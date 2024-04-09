@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 
 	import ManageButtons from '$lib/components/manageButtons.svelte';
+	import Start from '$lib/components/imgs/start.svelte';
 
 	import { home } from '$lib/util/nav';
 	import { showEditLessonDialog } from '$lib/util/dialog';
@@ -14,7 +15,6 @@
 	import { lessonPlans } from '$lib/conf/lesson_plans';
 	import { loadUserConfig } from '$lib/config';
 	import type { StatsLog } from '$lib/stats';
-	import Start from '$lib/components/imgs/start.svelte';
 
 	export let data: PageData;
 	let db = data.db;
@@ -82,13 +82,7 @@
 						custom={true}
 						stats={statsMap.get(les.id)}
 					/>
-					<button
-						class="lesson-btn"
-						class:highlight={les.id === config.lastLesson}
-						on:click={() => startLesson(les.id, les.name)}
-						><Start />
-						<div>{les.name}</div>
-					</button>
+					<div class:highlight={les.id === config.lastLesson}>{les.name}</div>
 				</div>
 			{/each}
 
@@ -118,15 +112,7 @@
 										custom={false}
 										stats={statsMap.get(l.id)}
 									/>
-									<button
-										class:highlight={l?.id === config.lastLesson}
-										class="lesson-btn"
-										on:click={() => {
-											if (l) startLesson(l.id, l.name);
-										}}
-										><Start />
-										<div>{l?.name}</div>
-									</button>
+									<div class:highlight={l?.id === config.lastLesson}>{l?.name}</div>
 								</div>
 							{/if}
 						{/each}
@@ -151,6 +137,14 @@
 		align-items: center;
 		margin: 0px 0px;
 		flex-wrap: wrap;
+	}
+
+	.stock-lesson:nth-child(2n + 1),
+	.custom-lesson:nth-child(2n + 1) {
+		background: #f0f0f5;
+	}
+	.stock-lesson:nth-child(2n) {
+		background: #f8f8f8;
 	}
 
 	.custom.subgrids {
@@ -201,9 +195,9 @@
 	:global(.lesson-btn svg) {
 		width: 1.1rem;
 		height: 1.1rem;
+		stroke-width: 1px;
 		fill: rgb(255, 222, 130);
 		stroke: rgba(235, 113, 0, 0.568);
-		stroke-width: 1px;
 		/* filter: drop-shadow(0px 0px 1px #777); */
 		/* margin-inline-end: 0.3rem; */
 		/* order:2; */

@@ -3,10 +3,10 @@
 
 	import Close from '$lib/components/imgs/close.svelte';
 	import Pencil2 from '$lib/components/imgs/pencil2.svelte';
-	import Cog from '$lib/components/imgs/cog.svelte';
 	import Cog2 from '$lib/components/imgs/cog2.svelte';
 	import Stats from '$lib/components/imgs/stats.svelte';
 	import Reset from '$lib/components/imgs/reset.svelte';
+	import Start from '$lib/components/imgs/start.svelte';
 
 	import { Config, loadUserConfig } from '$lib/config';
 	import { showEditLessonDialog, showLessonConfigDialog, showLessonStatsLog } from '$lib/util/dialog';
@@ -15,6 +15,7 @@
 	import type { LessonTypingConfig, StorableBaseLesson, StoredOverrides } from '$lib/types/lessons';
 	import { Lesson } from '$lib/lessons/lesson';
 	import type { StatsLog } from '$lib/stats';
+	import { home } from '$lib/util/nav';
 
 	export let config: Config;
 	export let lesson: StorableBaseLesson;
@@ -88,13 +89,27 @@
 			stats = undefined;
 		}
 	}
+
+	async function startLesson() {
+		if (window.confirm(config.lang.lessonDialogStartLesson.replace('%s', lesson.name))) {
+			const c = await loadUserConfig(db);
+			c.lastLesson = lesson.id;
+			c.saveUserConfig(db);
+			home();
+		}
+	}
 </script>
 
 <div class="buttons">
 	{#if custom}
 		<button class="remove-btn icon" on:click={() => deleteLesson()} title={config.lang.delete}><Close /></button>
 	{/if}
-	<button class="reset-btn icon" on:click={resetStats} disabled={stats === undefined} title={config.lang.resetLessonStats}>
+	<button
+		class="reset-btn icon"
+		on:click={resetStats}
+		disabled={stats === undefined}
+		title={config.lang.resetLessonStats}
+	>
 		<Reset />
 	</button>
 	<button disabled={stats === undefined} on:click={showLessonStatsDialog} class="stats-btn icon" title={statsAlt}
@@ -106,12 +121,16 @@
 	{#if custom}
 		<button class="edit-btn icon" on:click={() => editLesson()} title={config.lang.edit}><Pencil2 /></button>
 	{/if}
+	<button class="start-btn icon" on:click={startLesson}>
+		<Start />
+	</button>
 </div>
 
 <style>
 	.buttons {
 		display: flex;
 		align-items: center;
+		margin-right: 0.5rem;
 		/* flex-wrap: wrap; */
 	}
 
@@ -141,11 +160,19 @@
 		--stroke: #aaa;
 	}
 
+	.start-btn {
+		padding: 0.35rem;
+	}
 	:global(.start-btn svg polygon) {
-		fill: rgb(123, 206, 39);
+		/* fill: rgb(145, 230, 61); */
+		fill: rgb(157, 231, 71);
 		stroke: #000;
 		vector-effect: non-scaling-stroke;
 		stroke-width: 1;
+	}
+	:global(.start-btn:hover svg polygon) {
+		fill: rgb(95, 172, 7);
+		fill: rgb(193, 255, 24);
 	}
 
 	:global(.remove-btn svg line) {
@@ -153,6 +180,9 @@
 		fill: none;
 		stroke-width: 2.2;
 		vector-effect: non-scaling-stroke;
+	}
+	:global(.remove-btn:hover svg line) {
+		stroke: #ec1515;
 	}
 
 	:global(.reset-btn:not(:disabled) svg path) {
