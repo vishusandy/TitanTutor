@@ -173,7 +173,7 @@ export class AdaptiveList implements Lesson {
     }
 
     overrides(): LessonOptsAvailable {
-        return { ...mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail), random: 'disabled', checkMode: CheckMode.Char };
+        return { ...mergeOptsAvail(this.base.overrides(), defaultLessonOptsAvail), random: true, checkMode: CheckMode.Char };
     }
 
     static async fromForm(lesson: Lesson, config: Config, db: IDBDatabase, form: LessonFormState): Promise<Lesson> {
