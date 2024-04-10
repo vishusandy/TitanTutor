@@ -1,8 +1,8 @@
 <script lang="ts">
-	import OptionalNumber from './overridable_inputs/optional_number.svelte';
-	import Number from './overridable_inputs/number.svelte';
-	import Bool from './overridable_inputs/bool.svelte';
-	import Select from './overridable_inputs/select.svelte';
+	import OverridableBool from './overridable_inputs/overridable_bool.svelte';
+	import OverridableNumber from './overridable_inputs/overridable_number.svelte';
+	import OverridableOptionalNumber from './overridable_inputs/overridable_optional_number.svelte';
+	import OverridableSelect from './overridable_inputs/overridable_select.svelte';
 
 	import type { Config } from '$lib/config';
 	import { Lesson } from '$lib/lessons/lesson';
@@ -18,7 +18,7 @@
 	import { adaptive_typeid } from '$lib/conf/lesson_ids';
 	import type { TypoData } from '$lib/lessons/base/adaptive_list';
 	import { adaptive_store, remove } from '$lib/db';
-
+	
 	export let config: Config;
 	export let originalLesson: Lesson;
 	export let lessonOptions: Partial<LessonTypingConfig>;
@@ -87,9 +87,14 @@
 		let k: keyof LessonTypingConfig;
 		for (k in defaultLessonFormState) {
 			if (overrides[k] !== 'enabled' && overrides[k] !== 'disabled') {
+				// forced to specific value by overrides
 				// @ts-ignore
 				s[k] = overrides[k];
+			} else if (overrides[k] === 'disabled') {
+				// @ts-ignore
+				s[k] = 'disabled';
 			} else if (opts[k] !== undefined) {
+				// use stored value
 				// @ts-ignore
 				s[k] = opts[k];
 			} else {
@@ -97,7 +102,7 @@
 				s[k] = defaultLessonFormState[k];
 			}
 		}
-		overrideSources = overrideSources;
+
 		return s;
 	}
 
@@ -156,38 +161,32 @@
 </script>
 
 <div class="dialog-grid">
-	<OptionalNumber
+	<OverridableOptionalNumber
 		bind:getState={dataFns.until}
 		on:updateForm={updateState}
 		id="until"
 		label={config.lang.configUntil}
 		initialState={state.until}
-		defaultValue={100}
 		nullLabel={config.lang.infinite}
 		min={1}
 		step={1}
 		override={overrides.until}
 		inheritValue={config.until}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.until}
 	/>
 
-	<Select
+	<OverridableSelect
 		bind:getState={dataFns.checkMode}
 		on:updateForm={updateState}
 		id="checkMode"
 		label={config.lang.configCheckMode}
 		choices={wordModeChoices}
-		initialValue={state.checkMode}
+		initialState={state.checkMode}
 		override={overrides.checkMode}
 		inheritValue={wordModeChoices[config.checkMode].key}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.checkMode}
 	/>
-
-	<Bool
+	<OverridableBool
 		bind:getState={dataFns.random}
 		on:updateForm={updateState}
 		id="random"
@@ -197,12 +196,10 @@
 		initialState={state.random}
 		override={overrides.random}
 		inheritValue={config.random}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.random}
 	/>
 
-	<Bool
+	<OverridableBool
 		bind:getState={dataFns.backspace}
 		on:updateForm={updateState}
 		id="backspace"
@@ -212,12 +209,10 @@
 		initialState={state.backspace}
 		override={overrides.backspace}
 		inheritValue={config.backspace}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.backspace}
 	/>
 
-	<Bool
+	<OverridableBool
 		bind:getState={dataFns.adaptive}
 		on:updateForm={updateState}
 		id="adaptive"
@@ -227,8 +222,6 @@
 		initialState={state.adaptive}
 		override={overrides.adaptive}
 		inheritValue={config.adaptive}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.adaptive}
 	/>
 
@@ -238,7 +231,7 @@
 		</div>
 	{/if}
 
-	<Bool
+	<OverridableBool
 		bind:getState={dataFns.spaceOptional}
 		on:updateForm={updateState}
 		id="spaceOptional"
@@ -248,12 +241,10 @@
 		initialState={state.spaceOptional}
 		override={overrides.spaceOptional}
 		inheritValue={config.spaceOptional}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.spaceOptional}
 	/>
 
-	<Bool
+	<OverridableBool
 		bind:getState={dataFns.caseSensitive}
 		on:updateForm={updateState}
 		id="caseSensitive"
@@ -263,40 +254,32 @@
 		initialState={state.caseSensitive}
 		override={overrides.caseSensitive}
 		inheritValue={config.caseSensitive}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.caseSensitive}
 	/>
 
-	<Number
+	<OverridableNumber
 		bind:getState={dataFns.minQueue}
 		on:updateForm={updateState}
 		id="minQueue"
 		label={config.lang.configMinQueue}
 		initialState={state.minQueue}
-		defaultValue={config.minQueue}
 		min={1}
 		max={100}
 		override={overrides.minQueue}
 		inheritValue={config.minQueue}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.minQueue}
 	/>
 
-	<Number
+	<OverridableNumber
 		bind:getState={dataFns.wordBatchSize}
 		on:updateForm={updateState}
 		id="wordBatchSize"
 		label={config.lang.configWordBatchSize}
 		initialState={state.wordBatchSize}
-		defaultValue={config.wordBatchSize}
 		min={1}
 		max={100}
 		override={overrides.wordBatchSize}
 		inheritValue={config.wordBatchSize}
-		inheritLabel={config.lang.useUserValue}
-		overrideLabel={config.lang.disabledLabel}
 		overrideMessage={overrideSources.wordBatchSize}
 	/>
 </div>
