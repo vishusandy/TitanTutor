@@ -14,6 +14,7 @@ import EditLesson from "$lib/components/dialogs/edit_lesson.svelte";
 import type { UserWordList } from "$lib/lessons/base/user_wordlist";
 import { adaptive_store, get } from "$lib/db";
 import type { TypoData } from "$lib/lessons/base/adaptive_list";
+import type { OptAvailable, UserValue } from "$lib/types/forms";
 
 
 export function showVoiceDialog(config: Config, db: IDBDatabase): Promise<Audio | undefined> {
@@ -50,6 +51,16 @@ export async function showLessonConfigDialog(config: Config, db: IDBDatabase, le
     const dialogProps: DialogProps = { title: config.lang.lessonConfigDialogTitle, content: LessonConfig, hasSubmit: true, config, db, confirmPrompt };
     const passProps = { originalLesson: lesson, lessonOptions, adaptiveData };
     return createDialog(dialogProps, passProps);
+}
+
+export function initState<T>(override: OptAvailable<T>, initialState: UserValue<T>, inheritValue: T) {
+    if (override !== 'enabled' && override !== 'disabled') {
+		return override;
+	} else if (initialState === 'inherit') {
+		return inheritValue;
+	} else {
+		return initialState;
+	}
 }
 
 interface DialogProps {
