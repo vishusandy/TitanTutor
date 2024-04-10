@@ -6,16 +6,16 @@ import type { LessonTypingConfig } from "./lessons";
 export type OptAvailable<T> = 'enabled' | 'disabled' | T;
 
 /**
- * Helper type to allow a type to inherit a value from the user settings by specifying "user" as the value.
+ * Helper type to allow a type to inherit a value from the user settings by specifying "inherit" as the value.
  * 
-  * `UserValue<T>` expands to: `T | "user"`
+  * `UserValue<T>` expands to: `T | "inherit"`
  */
 export type UserValue<T> = T | 'inherit';
 
 /**
  * Helper type that extends {@link UserValue} by allowing the string "disabled" to specify that it cannot be used.
  * 
- * `FormUserValue<T>` expands to: `T | "user" | "disabled"`
+ * `FormUserValue<T>` expands to: `T | "inherit" | "disabled"`
  */
 export type FormUserValue<T> = UserValue<T> | 'disabled';
 
