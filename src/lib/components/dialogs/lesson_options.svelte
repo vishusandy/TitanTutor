@@ -18,7 +18,7 @@
 	import { adaptive_typeid } from '$lib/conf/lesson_ids';
 	import type { TypoData } from '$lib/lessons/base/adaptive_list';
 	import { adaptive_store, remove } from '$lib/db';
-	
+
 	export let config: Config;
 	export let originalLesson: Lesson;
 	export let lessonOptions: Partial<LessonTypingConfig>;
@@ -26,11 +26,11 @@
 	export let db: IDBDatabase;
 	db; // suppress the unused-export-let warning from above
 
-	// @ts-ignore
-	let overrideSources: { [K in keyof LessonFormState]: string } = {};
 	let curLesson: Lesson = originalLesson;
 	let overrides = curLesson.overrides();
 	let state: LessonFormState = initializeState(lessonOptions);
+	// @ts-ignore
+	let overrideSources: { [K in keyof LessonFormState]: string } = {};
 	setOverrideLabels();
 
 	let waiting = false;
