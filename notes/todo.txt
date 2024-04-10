@@ -7,7 +7,6 @@ fix:
 finish:
 
 features:
-    - remove indeterminate state from overridable check boxes as it is confusing
     - add language select to lessons page to optionally allow filtering by language
     
     - allow user to change shortcuts
